@@ -1,0 +1,59 @@
+.search-bar {
+  display: flex;
+  align-items: center;
+  background-color: color-mix(in srgb, var(--primary-white) 10%, transparent);
+  border: 0.2rem solid color-mix(in srgb, var(--primary-white) 30%, transparent);
+  border-radius: 3rem;
+  padding: 0.8rem 1.6rem;
+  width: fit-content;
+  max-width: 40rem;
+  transition: border-color 0.2s ease;
+}
+
+.search-icon {
+  width: 1.8rem;
+  height: 1.8rem;
+  opacity: 0.8;
+  filter: invert(1);
+}
+
+.search-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-primary, #ffffff);
+  font-family: inherit;
+  font-size: 1.4rem;
+  margin-left: 1.2rem;
+  outline: none;
+}
+
+.search-input::placeholder {
+  color: var(--text-primary, #ffffff);
+  opacity: 0.8; 
+}
+
+/* Efectos guays */
+.search-bar:focus-within .search-icon {
+  opacity: 1;
+}
+
+.search-bar:hover .search-icon {
+  opacity: 1;
+}
+
+.search-bar:focus-within {
+  border: 0.2rem solid color-mix(in srgb, var(--primary-white) 50%, transparent);
+}
+
+.search-bar:hover {
+  border: 0.2rem solid color-mix(in srgb, var(--primary-white) 50%, transparent);
+  background-color: color-mix(in srgb, var(--primary-white) 15%, transparent);
+}
+
+/*Responsive*/
+@media (max-width: 1124px) {
+    .search-bar {
+      display: none;
+    }
+}

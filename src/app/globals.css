@@ -1,26 +1,47 @@
-@import "tailwindcss";
-
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /*Negro para el fondo*/
+  --bg-main: #0a0a0a;
+
+  /*Los colores del degradado del fondo*/
+  --gradient-bg-start: #141414;
+  --gradient-bg-end: #36565F;
+
+  /*Los colores del degradado de rojo*/
+  --gradient-red-start: #C23D65;
+  --gradient-red-middle: #94314F;
+  --gradient-red-end: #671E34;
+
+  /*Colores principales*/
+  --primary-red: #94314F;
+  --error-red: #FF5356;
+  --primary-white: #E2F0F0;
+  --white: #ffff;
+  --black: #000000;
+  --green: #35565F;
+
+  /*Colores sombras*/
+  --shadow-dark-red: #4A0F22;
+  --shadow-light-red: #C98AA0;
+
+  /*Fuentes*/
+  --font-main: var(--font-raleway);
+  --font-heading: var(--font-anton);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  font-size: 62.5%; /* Transforma 1rem en exactamente 10px */
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  /*Color por si acaso*/
+  background-color: var(--bg-main);
+
+  /*Degradado*/
+  background-image: linear-gradient(180deg, var(--gradient-bg-start) 0%, var(--gradient-bg-end) 100%);
+
+  min-height: 200vh;
+  color: var(--primary-white);
+  margin:0;
+  font-size: 1.6rem;
+  font-family: var(--font-main);
 }

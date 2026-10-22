@@ -1,0 +1,89 @@
+.bottom-nav {
+  position: fixed;
+  bottom: 5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  
+  width: 90%;
+  max-width: 40rem;
+  height: 6.5rem; 
+  padding: 0 1rem;
+  
+  background-color: color-mix(in srgb, var(--primary-white) 10%, transparent);
+  backdrop-filter: blur(12px); 
+  box-shadow: 0 0.8rem 0.8rem rgba(0, 0, 0, 0.15);
+  -webkit-backdrop-filter: blur(12px);
+  
+  border: 0.2rem solid color-mix(in srgb, var(--primary-white) 10%, transparent);
+  border-radius: 4rem;
+  z-index: 1000;
+}
+
+.bottom-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 4.8rem;
+  height: 4.8rem;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+  text-decoration: none;
+}
+
+.bottom-item.active {
+  background-color: var(--primary-red);
+}
+
+.bottom-item span[class^="icon-"] {
+  width: 2.4rem;
+  height: 2.4rem;
+  background-color: var(--primary-white);
+}
+
+.primary-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/*Iconos*/
+
+.icon-search {
+  -webkit-mask-image: url('/magnifying-glass-solid-full.svg');
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  
+  mask-image: url('/magnifying-glass-solid-full.svg');
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+}
+
+.icon-home {
+  -webkit-mask-image: url('/house-regular-full.svg');
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  
+  mask-image: url('/house-regular-full.svg');
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+}
+
+.icon-logo-img {
+  width: 6rem;
+  height: 6rem;
+}
+
+/*Responsive*/
+@media (min-width: 1025px) {
+  .bottom-nav {
+    display: none;
+  }
+}
