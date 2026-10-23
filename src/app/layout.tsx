@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Header from "../../components/Header/Header";
 import BottomNav from "../../components/BottomNav/BotttomNav";
+import Footer from "../../components/Footer/Footer";
 
 const raleway = Raleway({
   subsets: ["latin"],
@@ -32,6 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Header />
         {children}
         <BottomNav />
+        <Footer />
       </body>
     </html>
   );
