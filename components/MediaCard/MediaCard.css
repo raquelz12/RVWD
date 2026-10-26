@@ -1,0 +1,151 @@
+.media-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  width: 26rem;
+  height: auto;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.media-card:hover {
+  transform: translateY(-0.4rem);
+}
+
+/*Imagen y contenedor*/
+.media-image-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: 26rem;
+  height: 26rem;
+  overflow: hidden;
+  border: 0.2rem solid color-mix(in srgb, var(--primary-white) 30%, transparent);
+  border-radius: 2.4rem;
+  background-color: color-mix(in srgb, var(--primary-white) 15%, transparent);
+  box-shadow: 0 0.4rem 1.2rem rgba(0, 0, 0, 0.2);
+}
+
+.media-image {
+  width: 24rem;
+  height: 24rem;
+  transition: transform 0.3s ease;
+  border-radius: 1.6rem;
+}
+
+.media-card:hover .media-image {
+  transform: scale(1.1);
+}
+
+.user-badge-pill {
+  position: absolute;
+  top: 1.2rem;
+  left: 1.2rem;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  background-color: var(--primary-red, #94314F);
+  padding: 0.4rem 1.2rem 0.4rem 0.4rem;
+  border-radius: 2rem;
+  backdrop-filter: blur(4px);
+}
+
+.user-picture {
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-name {
+  font-size: 1.2rem;
+  color: #ffffff;
+}
+
+.score-badge {
+  position: absolute;
+  top: -1rem;
+  right: -1rem;
+  z-index: 10;
+  width: 4.8rem;
+  height: 4.8rem;
+  background-color: var(--primary-red, #94314F);
+  color: var(--primary-white, #E2F0F0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 2rem;
+  font-weight: 300;
+  border: 0.1rem solid rgba(255,255,255,0.2);
+}
+
+/*Texto hover*/
+.image-gradient-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0) 100%);
+  padding: 3.5rem 1.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  opacity: 0; 
+  transition: opacity 0.3s ease;
+}
+
+.media-card:hover .image-gradient-info { 
+  opacity: 1; 
+}
+
+.gradient-title {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--primary-white, #E2F0F0);
+  margin: 0;
+}
+
+.gradient-type {
+  font-size: 1.4rem;
+  color: var(--primary-white, #E2F0F0);
+  margin: 0;
+}
+
+/*Barra inferior*/
+.artist-red-bar {
+  position: absolute;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  width: 100%;
+  height: 2.5rem;
+  background-color: var(--primary-red, #94314F);
+}
+
+.bar-icon-user {
+  margin-left: 2rem;
+  width: 1.6rem;
+  height: 1.6rem;
+  background-color: var(--primary-white, #E2F0F0);
+  -webkit-mask-image: url('/user-regular-full.svg');
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-image: url('/user-regular-full.svg');
+  mask-size: contain;
+  mask-repeat: no-repeat;
+}
+
+.bar-artist-name {
+  font-size: 1.6rem;
+  font-weight: 400;
+  color: var(--primary-white, #E2F0F0);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

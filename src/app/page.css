@@ -1,0 +1,304 @@
+.body-landing-page {
+  display: flex;
+  flex-direction: column;
+  gap: 8rem;
+  padding: 4rem 2rem;
+  width: 100%;
+  max-width: 120rem;
+  margin: 0 auto;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+.head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.6rem;
+  margin-top: 4rem;
+}
+
+.head-text:first-child {
+  font-family: var(--font-heading);
+  font-size: 4.8rem;
+  color: var(--primary-white);
+  margin-bottom: 0.8rem;
+}
+
+.head-text {
+  font-size: 2.4rem;
+  color: var(--primary-white);
+  margin: 0;
+  max-width: 60rem;
+}
+
+/*Novedades*/
+.new {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  min-width: 0;
+}
+
+.new-title {
+  font-size: 2.4rem;
+  font-weight: 600;
+  color: var(--pimary-white, #e2f0f0);
+  margin: 0;
+  padding-bottom: 1.2rem;
+}
+
+.new-cards {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 2.4rem;
+}
+
+.carousel-pagination {
+  display: none;
+}
+
+/*Buscador*/
+.search {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.4rem;
+}
+
+.search-title {
+  font-size: 2rem;
+  color: var(--primary-white, #ffffff);
+  margin: 0;
+  text-align: center;
+}
+
+/*Información*/
+.info-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 2.4rem;
+  width: 100%;
+  margin-bottom: 4rem;
+}
+
+.info-title {
+  font-family: var(--font-heading);
+  font-size: 2.4rem;
+  font-weight: 600;
+  color: var(--primary-white, #e2f0f0);
+  margin: 0;
+}
+
+.info {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 2.4rem;
+  width: 100%;
+  counter-reset: info-counter;
+}
+
+.info-card {
+  counter-increment: info-counter;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.07) 0%,
+    rgba(255, 255, 255, 0.02) 100%
+  );
+  border: 0.15rem solid rgba(255, 255, 255, 0.12);
+  border-radius: 2.4rem;
+  padding: 3.6rem 2.8rem;
+  min-height: 20rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  text-align: left;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+}
+
+.info-card:nth-child(1),
+.info-card:nth-child(2),
+.info-card:nth-child(3) {
+  grid-column: span 2;
+}
+
+.info-card:nth-child(4),
+.info-card:nth-child(5) {
+  grid-column: span 3;
+  background: linear-gradient(
+    135deg,
+    rgba(157, 43, 69, 0.22) 0%,
+    rgba(255, 255, 255, 0.03) 100%
+  );
+}
+
+.info-card::before {
+  content: "0" counter(info-counter);
+  font-family: var(--font-heading);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--primary-white, #ffffff);
+  background-color: var(--primary-red, #9d2b45);
+  padding: 0.5rem 1.2rem;
+  border-radius: 2rem;
+  letter-spacing: 0.1rem;
+  z-index: 2;
+  box-shadow: 0 0.4rem 1rem rgba(157, 43, 69, 0.35);
+}
+
+.info-card::after {
+  position: absolute;
+  right: 1.2rem;
+  bottom: -2.5rem;
+  font-family: var(--font-heading);
+  font-size: 15rem;
+  font-weight: 900;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.04);
+  pointer-events: none;
+  user-select: none;
+  transition: transform 0.4s ease, color 0.4s ease;
+  z-index: 1;
+}
+
+.info-card:nth-child(1)::after { content: "Я"; }
+.info-card:nth-child(2)::after { content: "V"; }
+.info-card:nth-child(3)::after { content: "W"; }
+.info-card:nth-child(4)::after { content: "D"; }
+.info-card:nth-child(5)::after { content: "★"; }
+
+.info-card:hover {
+  transform: translateY(-0.6rem);
+  border-color: var(--color-primary, #9d2b45);
+  box-shadow: 0 1.2rem 2.8rem rgba(0, 0, 0, 0.35);
+}
+
+.info-card:hover::after {
+  transform: scale(1.12) rotate(-8deg);
+  color: rgba(157, 43, 69, 0.25);
+}
+
+.info-card-text {
+  font-size: 1.8rem;
+  font-weight: 500;
+  color: var(--primary-white, #ffffff);
+  line-height: 1.5;
+  margin: 0;
+  z-index: 2;
+  max-width: 90%;
+}
+
+/*Responsive*/
+@media (max-width: 768px) {
+  .body-landing-page {
+    gap: 6rem;
+  }
+
+  .head-text:first-child {
+    font-size: 3.6rem;
+  }
+
+  .head-text {
+    font-size: 1.6rem;
+  }
+
+  .carousel-wrapper {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .new-cards {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    gap: 0;
+    padding-bottom: 2rem;
+    box-sizing: border-box;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .new-cards::-webkit-scrollbar {
+    display: none;
+  }
+
+  .carousel-item {
+    flex: 0 0 100%;
+    width: 100%;
+    max-width: 100%;
+    scroll-snap-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+  }
+
+  .carousel-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 0.8rem;
+  }
+
+  .pagination-letter {
+    font-family: var(--font-heading);
+    font-size: 1.6rem;
+    color: color-mix(in srgb, var(--primary-white) 15%, transparent);
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .pagination-letter.active {
+    color: var(--color-primary, #9d2b45);
+    font-size: 2.2rem;
+    font-weight: bold;
+    text-shadow: 0 0 0.8rem rgba(157, 43, 69, 0.5);
+  }
+
+  .info {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .info-card:nth-child(n) {
+    grid-column: span 1;
+    min-height: 17rem;
+    padding: 2.4rem;
+    position: sticky;
+    background-color: var(--bg-card, #182226);
+    box-shadow: 0 -0.8rem 2rem rgba(0, 0, 0, 0.35);
+  }
+
+  .info-card:nth-child(1) { top: 8rem; }
+  .info-card:nth-child(2) { top: 9.5rem; }
+  .info-card:nth-child(3) { top: 11rem; }
+  .info-card:nth-child(4) { top: 12.5rem; }
+  .info-card:nth-child(5) { top: 14rem; }
+
+  .info-card-text {
+    font-size: 1.6rem;
+  }
+
+  .info-card::after {
+    font-size: 12rem;
+    bottom: -1.5rem;
+  }
+}

@@ -1,0 +1,53 @@
+.custom-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 2rem;
+  font-size: 1.6rem;
+  font-weight: semi-bold;
+  border-radius: 3rem;
+  border: 0.2rem solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.custom-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/*Variantes*/
+.custom-button.primary {
+  background-color: var(--primary-red, #9d2b45);
+  color: var(--primary-white, #e2f0f0);
+}
+
+.custom-button.primary:hover:not(:disabled) {
+  transform: translateY(-0.2rem);
+  filter: brightness(1.1);
+  box-shadow: 0 0.4rem 1.2rem rgba(157, 43, 69, 0.3);
+}
+
+/*Secundario*/
+.custom-button.secondary {
+  background-color: var(--primary-white, #e2f0f0);
+  color: var(--primary-red, #9d2b45);
+}
+
+.custom-button.secondary:hover:not(:disabled) {
+  background-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-0.2rem);
+}
+
+/* Contorno (Solo el borde rojo, sin fondo) */
+.custom-button.outline {
+  background-color: transparent;
+  border-color: var(--primary-white, #e2f0f0);
+  color: var(--primary-white, #e2f0f0);
+}
+
+.custom-button.outline:hover:not(:disabled) {
+  background-color: rgba(157, 43, 69, 0.1);
+  transform: translateY(-0.2rem);
+}
