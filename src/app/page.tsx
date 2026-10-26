@@ -5,10 +5,12 @@ import './page.css';
 import MediaCard from '../../components/MediaCard/MediaCard';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import Button from '../../components/Button/Button';
+import { useModal } from '@/context/ModalContext';
 
 export default function Home() {
   const [activeIndex, setActiveIndex] = useState(0);
   const carouselRef = useRef<HTMLDivElement>(null);
+  const { openModal } = useModal();
 
   const handleScroll = () => {
     if (carouselRef.current) {
@@ -38,7 +40,7 @@ export default function Home() {
         <p className="head-text">Descubre tus nuevos gustos</p>
         <p className="head-text">Comparte tus opiniones con la comunidad</p>
         <p className="head-text">Escribe ЯVWS de tus artistas, álbumes y canciones favoritas</p>
-        <Button variant="primary" onClick={() => { /* Acción al hacer clic */ }}>
+        <Button variant="primary" onClick={() => openModal('register') }>
           Empieza aquí
         </Button>
       </div>

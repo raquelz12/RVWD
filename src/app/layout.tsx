@@ -5,6 +5,8 @@ import "./globals.css";
 import Header from "../../components/Header/Header";
 import BottomNav from "../../components/BottomNav/BotttomNav";
 import Footer from "../../components/Footer/Footer";
+import GlobalModals from "../../components/GlobalModal";
+import { ModalProvider } from "@/context/ModalContext";
 
 const raleway = Raleway({
   subsets: ["latin"],
@@ -30,10 +32,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${raleway.variable} ${antonCustom.variable}`}
     >
       <body>
-        <Header />
-        {children}
-        <BottomNav />
-        <Footer />
+        <ModalProvider>
+          <Header />
+          {children}
+          <BottomNav />
+          <GlobalModals />
+          <Footer />
+        </ModalProvider>
       </body>
     </html>
   );

@@ -1,0 +1,62 @@
+.modal-header h2 {
+    margin: 0;
+    font-size: 2.4rem;
+}
+
+.modal-header p {
+    padding-bottom: 1.6rem;
+    margin: 0;
+}
+
+.modal-form {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    gap: 1.6rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.checkbox-group {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.checkbox-group input[type="checkbox"] {
+    width: 1.6rem;
+    height: 1.6rem;
+    border: 0.2rem solid var(--primary-white, #E2F0F0);
+    border-radius: 0.4rem;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.checkbox-group a {
+    text-decoration: none;
+    font-weight: bold;
+    color: var(--primary-white, #E2F0F0);
+    transition: color 0.15s ease;
+}
+
+.checkbox-group a:hover {
+    color: var(--primary-red, #94314F);
+}
+
+.button-group {
+    display: flex;
+    flex-direction: column;
+    width: 60%;
+    gap: 1.6rem;
+    align-self: center;
+}
+
+.modal-footer {
+    text-align: center;
+    margin-top: 1.6rem;
+}
