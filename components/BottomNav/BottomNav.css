@@ -24,6 +24,7 @@
 }
 
 .bottom-item {
+  cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -48,6 +49,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+}
+
+.primary-action:hover {
+  background-color: rgba(157, 43, 69, 0.25);
+  transform: scale(1.05);
 }
 
 /*Iconos*/

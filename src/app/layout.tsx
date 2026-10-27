@@ -7,6 +7,7 @@ import BottomNav from "../../components/BottomNav/BotttomNav";
 import Footer from "../../components/Footer/Footer";
 import GlobalModals from "../../components/GlobalModal";
 import { ModalProvider } from "@/context/ModalContext";
+import RButton from "../../components/RButton/RButton";
 
 const raleway = Raleway({
   subsets: ["latin"],
@@ -37,6 +38,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
           <BottomNav />
           <GlobalModals />
+          <RButton />
           <Footer />
         </ModalProvider>
       </body>

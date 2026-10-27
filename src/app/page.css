@@ -88,7 +88,6 @@
 }
 
 .info-title {
-  font-family: var(--font-heading);
   font-size: 2.4rem;
   font-weight: 600;
   color: var(--primary-white, #e2f0f0);
@@ -146,7 +145,6 @@
   content: "0" counter(info-counter);
   font-family: var(--font-heading);
   font-size: 1.3rem;
-  font-weight: 700;
   color: var(--primary-white, #ffffff);
   background-color: var(--primary-red, #9d2b45);
   padding: 0.5rem 1.2rem;

@@ -21,9 +21,22 @@
     background-color: color-mix(in srgb, var(--primary-white) 15%, transparent);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     max-width: 500px;
-    width: 90%;
+    width: 80%;
     position: relative;
     animation: modalSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    max-height: 85vh;
+    overflow-y: auto;
+}
+
+.modal-form {
+    padding-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+}
+
+.form-group {
+    transition: all 0.3s ease;
 }
 
 .modal-close {
@@ -61,4 +74,18 @@
     opacity: 1;
     transform: translateY(0) scale(1);
   }
+}
+
+.form-group label {
+  margin-bottom: 1rem;
+}
+
+.modal::-webkit-scrollbar,
+.modal-content::-webkit-scrollbar {
+  display: none;
+}
+
+.modal,
+.modal-content {
+  scrollbar-width: none;
 }

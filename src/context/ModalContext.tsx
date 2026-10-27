@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, ReactNode } from 'react';
 
-type ModalType = 'register' | 'login' | null;
+type ModalType = 'register' | 'login' | 'add' | null;
 
 interface ModalContextType {
   activeModal: ModalType;

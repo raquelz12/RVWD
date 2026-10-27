@@ -1,6 +1,11 @@
+'use client';
+
 import './BottomNav.css';
 
+import { useModal } from '@/context/ModalContext';
+
 export default function BottomNav() {
+  const { openModal } = useModal();
   const isAdmin = false; 
 
   return (
@@ -14,9 +19,11 @@ export default function BottomNav() {
       </a>
 
       {!isAdmin && (
-        <a href="/crear" className="bottom-item primary-action">
+        <button className="bottom-item primary-action" onClick={(e) => {
+          openModal('add');
+        }}>
             <img src="/Logo.svg" alt="Crear" className="icon-logo-img" />
-        </a>
+        </button>
       )}
 
       <a href="/perfil" className="bottom-item active">

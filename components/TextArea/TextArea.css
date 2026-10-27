@@ -1,0 +1,27 @@
+.textarea {
+  width: 100%;
+  padding: 1.5rem 2.3rem;
+  box-sizing: border-box;
+  background-color: color-mix(in srgb, var(--primary-white) 10%, transparent);
+  border: 0.2rem solid color-mix(in srgb, var(--primary-white) 30%, transparent);
+  border-radius: 2.4rem;
+  font-size: 1.6rem;
+  transition: border-color 0.2s ease;
+  color: var(--primary-white, #E2F0F0);
+  font-family: inherit;
+  resize: none;
+}
+
+.textarea::placeholder {
+  color: var(--primary-white, #E2F0F0);
+  opacity: 0.8;
+}
+
+.textarea:focus-within {
+  border: 0.2rem solid color-mix(in srgb, var(--primary-white) 50%, transparent);
+}
+
+.textarea:hover {
+  border: 0.2rem solid color-mix(in srgb, var(--primary-white) 50%, transparent);
+  background-color: color-mix(in srgb, var(--primary-white) 15%, transparent);
+}

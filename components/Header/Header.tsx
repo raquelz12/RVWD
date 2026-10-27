@@ -3,15 +3,17 @@
 import { useState } from 'react';
 import './Header.css';
 import SearchBar from '../SearchBar/SearchBar';
+import { useModal } from '@/context/ModalContext';
 
 export default function Header() {
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const isAdmin = false;
+    const { openModal } = useModal();
 
     return (
         <header className="header">
-            <div className="logo">ЯVWD</div>
+            <div className="logo"><a href="/"><span className="red">Я</span>VWD</a></div>
             <button 
                 className="hamburger-btn" 
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -49,7 +51,7 @@ export default function Header() {
                     <button className="nav-button" aria-label="Notificaciones">
                         <span className="icon-bell"></span>
                     </button>
-                    <button className="nav-button" aria-label="Perfil">
+                    <button className="nav-button" aria-label="Perfil" onClick={() => openModal('login')}>
                         <span className="icon-user"></span>
                     </button>
                 </div>

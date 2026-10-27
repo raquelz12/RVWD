@@ -1,6 +1,6 @@
 .custom-button {
   display: inline-flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: center;
   padding: 1rem 2rem;
   font-size: 1.6rem;
@@ -10,6 +10,7 @@
   cursor: pointer;
   transition: all 0.2s ease;
   font-family: inherit;
+  letter-spacing: 0.08rem;
 }
 
 .custom-button:disabled {
@@ -27,6 +28,12 @@
   transform: translateY(-0.2rem);
   filter: brightness(1.1);
   box-shadow: 0 0.4rem 1.2rem rgba(157, 43, 69, 0.3);
+}
+
+.custom-button.primary.active {
+  filter: brightness(1.2);
+  box-shadow: 0 0 1.2rem rgba(157, 43, 69, 0.6);
+  outline: 0.2rem solid var(--primary-white, #e2f0f0);
 }
 
 /*Secundario*/
