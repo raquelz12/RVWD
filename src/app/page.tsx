@@ -76,7 +76,7 @@ export default function Home() {
       </div>
       <div className="search">
         <p className="search-title">Busca canciones, artistas, álbumes...</p>
-        <SearchBar placeholder="Buscar..."/>
+        <SearchBar placeholder="Buscar..." value="" onChange={(): void => {}} />
       </div>
       <div className="info-wrapper">
         <div className="info-title">¿Qué puedes hacer en ЯVWD?</div>

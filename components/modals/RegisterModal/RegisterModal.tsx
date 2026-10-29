@@ -5,6 +5,7 @@ import Modal from '../../Modal/Modal';
 import Button from '../../Button/Button';
 import Input from '../../Input/Input';
 import { useModal } from '@/context/ModalContext';
+import { useRouter } from 'next/navigation';
 import './RegisterModal.css';
 
 export interface RegisterModalProps {
@@ -18,10 +19,14 @@ export default function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [passwordRepeat, setPasswordRepeat] = useState('');
+    const router = useRouter();
+    const { closeModal } = useModal();
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // Pra cuando haya back
+        // Para cuando haya back
+        closeModal();
+        router.push('/onboarding');
     };
 
     return (

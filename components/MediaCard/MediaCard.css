@@ -6,10 +6,19 @@
   height: auto;
   cursor: pointer;
   transition: transform 0.2s ease, opacity 0.2s ease;
+  align-items: center;
+  justify-content: center;
 }
 
 .media-card:hover {
   transform: translateY(-0.4rem);
+}
+
+.media-card.force-show-info .image-gradient-info,
+.media-card.force-show-info {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: translateY(0) !important; 
 }
 
 /*Imagen y contenedor*/

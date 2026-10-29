@@ -25,6 +25,7 @@
 }
 
 .custom-button.primary:hover:not(:disabled) {
+  background-color: var(--primary-red-hover, #b33a57);
   transform: translateY(-0.2rem);
   filter: brightness(1.1);
   box-shadow: 0 0.4rem 1.2rem rgba(157, 43, 69, 0.3);

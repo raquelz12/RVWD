@@ -49,8 +49,9 @@ export default function AddModal({ isOpen, onClose }: AddModalProps) {
         }
     }, [title]);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleAddSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        //Logica del back
     };
 
     return (
@@ -60,7 +61,7 @@ export default function AddModal({ isOpen, onClose }: AddModalProps) {
                 <p>Comparte tu opinión con la comunidad de ЯVWD</p>
             </div>
 
-            <form onSubmit={handleSubmit} className="modal-form">
+            <form onSubmit={handleAddSubmit} className="modal-form">
                 <div className="form-group">
                     <label>¿De qué quieres hacer una RVW?</label>
                     <div className="options">
@@ -151,7 +152,10 @@ export default function AddModal({ isOpen, onClose }: AddModalProps) {
                     <div className="form-group fade-in-section" ref={scoreRef}>
                         <label>Dale una nota</label>
                         <div className="score-card-preview">
-                            <Score score={parseFloat(score)} />
+                            <Score 
+                                score={score} 
+                                onChange={(val) => setScore(val)}
+                            />
                             <div className="score-label-container">
                                 <span className="score-brand">Tu <span className="logo-text">RVW</span> score</span>
                             </div>

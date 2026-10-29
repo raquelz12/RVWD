@@ -11,8 +11,13 @@
   --gradient-red-middle: #94314F;
   --gradient-red-end: #671E34;
 
+  /*Los colores del degradado de gris y blanco*/
+  --gradient-grey: #D3D3D3;
+  --gradient-white: #E2F0F0;
+
   /*Colores principales*/
   --primary-red: #94314F;
+  --primary-red-hover: #b33a57;
   --error-red: #FF5356;
   --primary-white: #E2F0F0;
   --white: #ffff;

@@ -1,0 +1,41 @@
+.artist-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.6rem;
+  padding: 2rem;
+  border: 0.2rem solid color-mix(in srgb, var(--primary-white) 30%, transparent);
+  border-radius: 2.4rem;
+  background-color: color-mix(in srgb, var(--primary-white) 15%, transparent);
+  transition: all 0.3s ease;
+  min-width: 10rem;
+  max-width: 20rem;
+}
+
+.artist-image img {
+  width: 13rem;
+  height: 13rem;
+  transition: all 0.3s ease;
+  border-radius: 9rem;
+}
+
+.artist-card:hover {
+  transform: translateY(-0.5rem);
+  background-color: color-mix(in srgb, var(--primary-white) 20%, transparent);
+  cursor: pointer;
+}
+
+.artist-card:active {
+  transform: translateY(-0.2rem);
+  background-color: color-mix(in srgb, var(--primary-white) 25%, transparent);
+}
+
+.artist-card.selected {
+  border: 0.2rem solid color-mix(in srgb, var(--primary-red) 50%, transparent);
+  background-color: color-mix(in srgb, var(--primary-red) 15%, transparent);
+}
+
+.artist-card.selected:hover {
+  background-color: color-mix(in srgb, var(--primary-red) 40%, transparent);
+}

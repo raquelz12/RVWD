@@ -8,11 +8,12 @@ export interface MediaCardProps {
   title: string;
   artist: string;
   imageUrl: string;
+  forceShowInfo?: boolean;
 }
 
-export default function MediaCard({ type, title, artist, imageUrl, userName, userPicture, score }: MediaCardProps) {
+export default function MediaCard({ type, title, artist, imageUrl, userName, userPicture, score, forceShowInfo }: MediaCardProps) {
   return (
-    <article className={`media-card ${type === 'artista' ? 'is-artist' : ''}`}>
+    <article className={`media-card ${type === 'artista' ? 'is-artist' : ''} ${forceShowInfo ? 'force-show-info' : ''}`}>
       <div className="media-image-container">
         {userName && (
           <div className="user-badge-pill">

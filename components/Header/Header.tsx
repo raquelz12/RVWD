@@ -45,7 +45,7 @@ export default function Header() {
                     </>
                 )}
                 
-                <SearchBar placeholder="Busca canciones, usuarios, ..." />
+                <SearchBar placeholder="Busca canciones, usuarios, ..." value="" onChange={(): void => {}} />
                 
                 <div className="user-profile">
                     <button className="nav-button" aria-label="Notificaciones">

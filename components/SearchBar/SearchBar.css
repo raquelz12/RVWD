@@ -5,7 +5,7 @@
   border: 0.2rem solid color-mix(in srgb, var(--primary-white) 30%, transparent);
   border-radius: 3rem;
   padding: 0.8rem 1.6rem;
-  width: fit-content;
+  max-width: 40rem;
   max-width: 40rem;
   transition: border-color 0.2s ease;
 }

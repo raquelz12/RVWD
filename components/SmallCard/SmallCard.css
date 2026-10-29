@@ -1,0 +1,82 @@
+.small-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  width: 25rem;
+  height: 10rem;
+  gap: 1rem;
+  padding: 1.2rem;
+  border: 0.2rem solid color-mix(in srgb, var(--primary-white) 30%, transparent);
+  border-radius: 2.4rem;
+  background-color: color-mix(in srgb, var(--primary-white) 15%, transparent);
+  transition: all 0.3s ease;
+}
+
+.small-card-img-wrapper {
+  width: 10rem;
+  height: 10rem;
+  object-fit: cover;
+  border-radius: 1.6rem;
+}
+
+.small-card-img-wrapper img {
+  width: 10rem;
+  height: 10rem;
+  object-fit: cover;
+  border-radius: 1.6rem;
+}
+
+.small-info-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.small-info-container .small-type {
+  background-color: color-mix(in srgb, var(--primary-white) 20%, transparent);
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.8rem;
+  font-family: inherit;
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 400;
+}
+
+.small-info-container .small-title {
+  font-family: inherit;
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 500;
+}
+
+.small-info-container .small-artist {
+  font-family: inherit;
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 400;
+}
+
+/* Variantes */
+
+.small-card:hover {
+  transform: translateY(-0.5rem);
+  background-color: color-mix(in srgb, var(--primary-white) 20%, transparent);
+  cursor: pointer;
+}
+
+.small-card:active {
+  transform: translateY(-0.2rem);
+  background-color: color-mix(in srgb, var(--primary-white) 25%, transparent);
+}
+
+.small-card.selected {
+  border: 0.2rem solid color-mix(in srgb, var(--primary-red) 50%, transparent);
+  background-color: color-mix(in srgb, var(--primary-red) 15%, transparent);
+}
+
+.small-card.selected:hover {
+  background-color: color-mix(in srgb, var(--primary-red) 40%, transparent);
+}
