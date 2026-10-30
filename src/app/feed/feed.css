@@ -215,6 +215,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: flex-start;
+    flex-wrap: wrap;
     gap: 1rem;
     width: 100%;
 }
@@ -495,4 +496,14 @@
         pointer-events: none; 
         transition: opacity 0.4s ease;
     }
+
+    .favorite-weekly-rvws-cards {
+        flex-direction: column;
+    }
+
+    .users-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    }
+
 }
