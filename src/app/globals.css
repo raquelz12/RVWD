@@ -63,6 +63,10 @@ body {
   scrollbar-width: none;
 }
 
+.RVWS {
+  font-family: var(--font-heading);
+}
+
 /*Responsive*/
 @media (max-width: 1024px) {
   

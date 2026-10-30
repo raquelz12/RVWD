@@ -1,5 +1,6 @@
-import './ReviewBigCard.css';
+'use client';
 
+import './ReviewBigCard.css';
 import Score from '../Score/Score';
 
 interface ReviewBigCardProps {
@@ -40,7 +41,7 @@ export default function ReviewBigCard({
                     <img src={userImageUrl} alt={username} />
                     <div className="review-big-card-user-info">
                         <p className="user-name">{username}</p>
-                        <p className="user-followed">{followed ? 'Siguiendo' : 'No siguiendo'}</p>
+                        <p className="user-followed">{followed ? 'Le sigues' : 'No le sigues'}</p>
                     </div>
                 </div>
                 <button className="review-big-card-extra-btn">
@@ -59,7 +60,7 @@ export default function ReviewBigCard({
                             <p className="review-big-card-artist">{artist}</p>
                         </div>
                         <div className="review-big-card-score">
-                            <Score score={parseFloat(score?.toString() || '0')} />
+                            <Score variant="red" input={false} score={parseFloat(score?.toString() || '0')} />
                         </div>
                     </div>
                     <div className="review-big-card-review">

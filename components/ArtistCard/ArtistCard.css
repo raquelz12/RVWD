@@ -11,6 +11,17 @@
   transition: all 0.3s ease;
   min-width: 10rem;
   max-width: 20rem;
+  position: relative;
+}
+
+.follow-button {
+  width: 100%;
+}
+
+.artist-card .score-circle-input-wrapper {
+  position: absolute;
+  top: -2rem;
+  right: -2rem;
 }
 
 .artist-image img {

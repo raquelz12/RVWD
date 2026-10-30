@@ -4,11 +4,14 @@ import React from 'react';
 import './Score.css';
 
 export interface ScoreProps {
+    className?: string;
     score: number | string;
     onChange?: (value: string) => void;
+    input: boolean;
+    variant?: 'red' | 'white';
 }
 
-export default function Score({ score, onChange }: ScoreProps) {
+export default function Score({ className, score, onChange, input, variant }: ScoreProps) {
     const [currentScore, setCurrentScore] = React.useState(score);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,17 +37,23 @@ export default function Score({ score, onChange }: ScoreProps) {
     };
 
     return (
-        <div className="score-circle-input-wrapper">
-            <input 
-                type="number" 
-                step="0.1" 
-                min="0" 
-                max="10" 
-                value={currentScore} 
-                onChange={handleChange}
-                placeholder="0.0"
-                className="score-circle-real-input"
-            />
+        <div className={`score-circle-input-wrapper ${variant === 'red' ? 'score-red' : 'score-white'} ${className || ''}`}>
+            {input && (
+                <input 
+                    type="number" 
+                    step="0.1" 
+                    min="0" 
+                    max="10" 
+                    value={currentScore} 
+                    onChange={handleChange}
+                    placeholder="0.0"
+                    className={`score-circle-real-input ${className || ''}`}
+                />
+            ) || (
+                <div className={`score-circle ${className || ''}`}>
+                    {currentScore}
+                </div>
+            )}
         </div>
     );
 }

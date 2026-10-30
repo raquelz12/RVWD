@@ -186,6 +186,7 @@ export default function OnboardingPage() {
               {defaultArtists.map((artist) => (
                 <div key={artist} onClick={() => toggleArtist(artist)} style={{ cursor: 'pointer' }}>
                   <ArtistCard 
+                    hasScore={false}
                     name={artist} 
                     isSelected={selectedArtists.includes(artist)} 
                   />
@@ -373,6 +374,7 @@ export default function OnboardingPage() {
                     <div className="review-score-input">
                       <label>Deja tu puntuación</label>
                       <Score 
+                        input={true}
                         score={reviewScore}
                         onChange={(newScore) => setReviewScore(newScore)}
                       />
@@ -400,7 +402,9 @@ export default function OnboardingPage() {
             )}
 
             <div className="button-group" style={{ marginTop: '2rem' }}>
-              <Button variant="text">Omitir</Button>
+              <Button variant="text" onClick={() => {window.location.href="/feed";}}>
+                Omitir
+              </Button>
               {reviewSubStep === 1 ? (
                 <Button 
                   onClick={() => setReviewSubStep(2)} 
@@ -421,9 +425,6 @@ export default function OnboardingPage() {
 
   return (
     <main className="onboarding-container">
-      <div className="progress-bar">
-        <div className="progress-fill" style={{ width: `${(currentStep / 3) * 100}%` }}></div>
-      </div>
       <div className="step-content fade-in-section">
         {renderStepContent()}
       </div>

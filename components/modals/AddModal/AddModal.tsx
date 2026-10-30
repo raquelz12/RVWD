@@ -153,6 +153,8 @@ export default function AddModal({ isOpen, onClose }: AddModalProps) {
                         <label>Dale una nota</label>
                         <div className="score-card-preview">
                             <Score 
+                                input={true}
+                                variant="red"
                                 score={score} 
                                 onChange={(val) => setScore(val)}
                             />

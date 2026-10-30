@@ -37,7 +37,7 @@ export default function Header() {
                     </>
                 ) : (
                     <>
-                        <a href="#" className="nav-link">Feed</a>
+                        <a href="/feed" className="nav-link">Feed</a>
                         <a href="#" className="nav-link">Explorar</a>
                         <a href="#" className="nav-link">Artistas</a>
                         <a href="#" className="nav-link">Álbumes</a>

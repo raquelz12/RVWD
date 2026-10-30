@@ -1,4 +1,7 @@
+'use client';
+
 import './MediaCard.css';
+import Score from '../Score/Score';
 
 export interface MediaCardProps {
   userName?: string;
@@ -14,16 +17,16 @@ export interface MediaCardProps {
 export default function MediaCard({ type, title, artist, imageUrl, userName, userPicture, score, forceShowInfo }: MediaCardProps) {
   return (
     <article className={`media-card ${type === 'artista' ? 'is-artist' : ''} ${forceShowInfo ? 'force-show-info' : ''}`}>
+      {score && (
+          <div className="media-score-position">
+            <Score input={false} score={score} variant="red" />
+          </div>
+        )}
       <div className="media-image-container">
         {userName && (
           <div className="user-badge-pill">
             <img src={userPicture || '/placeholderCards.png'} className="user-picture" alt={userName} />
             <span className="user-name">{userName}</span>
-          </div>
-        )}
-        {score && (
-          <div className="score-badge">
-            {score}
           </div>
         )}
         <div className="image-wrapper">

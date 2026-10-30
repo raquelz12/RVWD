@@ -1,6 +1,6 @@
 .bottom-nav {
   position: fixed;
-  bottom: 5rem;
+  bottom: 1rem;
   left: 50%;
   transform: translateX(-50%);
   
