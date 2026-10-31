@@ -1,0 +1,31 @@
+/* Contenedor principal (forma de píldora) */
+.toggle-wrapper {
+    width: 4.8rem;
+    height: 2.6rem;
+    background-color: rgba(255, 255, 255, 0.15); /* Gris oscuro (apagado) */
+    border-radius: 3rem;
+    padding: 0.3rem;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-sizing: border-box;
+}
+
+.toggle-handle {
+    width: 2rem;
+    height: 2rem;
+    background-color: var(--primary-white, #ffffff);
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transform: translateX(0);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.toggle-wrapper.active {
+    background-color: var(--primary-red, #9d2b45);
+}
+
+.toggle-wrapper.active .toggle-handle {
+    transform: translateX(2.2rem);
+}
