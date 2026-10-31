@@ -304,9 +304,9 @@ export default function OnboardingPage() {
           <div className="step step-3">
             <div className="step-header">
               <div className="step-indicator">
-                <span className="dot inactive"></span>
-                <span className="dot inactive"></span>
-                <span className="dot active"></span>
+                <Dot type="filled" />
+                <Dot type="filled" />
+                <Dot type="filled" />
                 <span className="step-text">3/3</span>
               </div>
               <h2>Deja tu primera RVW</h2>

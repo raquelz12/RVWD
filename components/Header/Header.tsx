@@ -51,7 +51,7 @@ export default function Header() {
                     <button className="nav-button" aria-label="Notificaciones">
                         <span className="icon-bell"></span>
                     </button>
-                    <button className="nav-button" aria-label="Perfil" onClick={() => openModal('login')}>
+                    <button className="nav-button" aria-label="Perfil" onClick={() => window.location.href = "/profile"}>
                         <span className="icon-user"></span>
                     </button>
                 </div>

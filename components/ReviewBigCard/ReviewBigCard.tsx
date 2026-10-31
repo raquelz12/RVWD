@@ -2,6 +2,7 @@
 
 import './ReviewBigCard.css';
 import Score from '../Score/Score';
+import { profile } from 'console';
 
 interface ReviewBigCardProps {
     username?: string;
@@ -17,6 +18,7 @@ interface ReviewBigCardProps {
     reviewDate?: string;
     commentsCount?: number;
     favoritesCount?: number;
+    profile?: boolean;
 }
 
 export default function ReviewBigCard({
@@ -32,22 +34,27 @@ export default function ReviewBigCard({
     reviewText,
     reviewDate,
     commentsCount,
-    favoritesCount
+    favoritesCount,
+    profile
 }: ReviewBigCardProps) {
     return (
         <div className="review-big-card">
-            <div className="review-big-card-header">
-                <div className="review-big-card-user">
-                    <img src={userImageUrl} alt={username} />
-                    <div className="review-big-card-user-info">
-                        <p className="user-name">{username}</p>
-                        <p className="user-followed">{followed ? 'Le sigues' : 'No le sigues'}</p>
+            {userImageUrl && username && followed !== undefined && (
+                <div className="review-big-card-header">
+                    <div className="review-big-card-user">
+                        <img src={userImageUrl} alt={username} />
+                        <div className="review-big-card-user-info">
+                            <p className="user-name">{username}</p>
+                            <p className="user-followed">{followed ? 'Le sigues' : 'No le sigues'}</p>
+                        </div>
+                    </div>
+                    <div className="review-big-card-extra">
+                        <button className="review-big-card-extra-btn">
+                            ...
+                        </button>
                     </div>
                 </div>
-                <button className="review-big-card-extra-btn">
-                    ...
-                </button>
-            </div>
+            )}
             <div className="review-big-card-content">
                 <div className="review-big-card-image">
                     <img src={imageUrl} alt={title} />
@@ -59,9 +66,24 @@ export default function ReviewBigCard({
                             <p className="review-big-card-title">{title}</p>
                             <p className="review-big-card-artist">{artist}</p>
                         </div>
+                        {profile && (
                         <div className="review-big-card-score">
-                            <Score variant="red" input={false} score={parseFloat(score?.toString() || '0')} />
+                            <div className="review-big-card-score-wrapper">
+                                <p className="review-big-card-score-text">Tu puntuación</p>
+                                <Score variant="red" input={false} score={parseFloat(score?.toString() || '0')} />
+                            </div>
+                            <div className="review-big-card-score-wrapper">
+                            <p className="review-big-card-score-text">
+                                    <span className="RVWS">RVWD</span>score
+                                </p>
+                                <Score variant="white" input={false} score={parseFloat(score?.toString() || '0')} />
+                            </div>
                         </div>
+                        ) || (
+                            <div className="review-big-card-score">
+                                <Score variant="red" input={false} score={parseFloat(score?.toString() || '0')} />
+                            </div>
+                        )}
                     </div>
                     <div className="review-big-card-review">
                         <span className="title">{titleReview}</span>

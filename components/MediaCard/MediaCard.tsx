@@ -14,6 +14,29 @@ export interface MediaCardProps {
   forceShowInfo?: boolean;
 }
 
+//Ejemplo para pegar en otros lados:
+// Con score:
+// <MediaCard
+//   type="cancion"
+//   title="Jukiar"
+//   artist="Clarent"
+//   imageUrl="placeholderCards.png"
+//   userName="@raquelz.12204"
+//   userPicture="placeholderCards.png"
+//   score={85}
+//   forceShowInfo={true}
+// />
+// Sin score:
+// <MediaCard
+//   type="album"
+//   title="Jukiar"
+//   artist="Clarent"
+//   imageUrl="placeholderCards.png"
+//   userName="@raquelz.12204"
+//   userPicture="placeholderCards.png"
+//   forceShowInfo={true}
+// />
+
 export default function MediaCard({ type, title, artist, imageUrl, userName, userPicture, score, forceShowInfo }: MediaCardProps) {
   return (
     <article className={`media-card ${type === 'artista' ? 'is-artist' : ''} ${forceShowInfo ? 'force-show-info' : ''}`}>

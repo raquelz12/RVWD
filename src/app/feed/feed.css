@@ -306,6 +306,13 @@
     border: 0.2rem solid color-mix(in srgb, var(--primary-white) 30%, transparent);
     border-radius: 2.4rem;
     background-color: color-mix(in srgb, var(--primary-white) 15%, transparent);
+    transition: all 0.3s ease;
+}
+
+.user-card:hover {
+    transform: translateY(-0.2rem);
+    cursor: pointer;
+    background-color: color-mix(in srgb, var(--primary-white) 30%, transparent);
 }
 
 .user-card img {

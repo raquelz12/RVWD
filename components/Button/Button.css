@@ -57,8 +57,13 @@
 }
 
 .custom-button.outline:hover:not(:disabled) {
-  background-color: rgba(157, 43, 69, 0.1);
+  background-color: rgba(255, 255, 255, 0.1);
   transform: translateY(-0.2rem);
+}
+
+.custom-button.outline.active {
+  background-color: rgba(255, 255, 255, 0.2);
+  outline: 0.2rem solid var(--primary-white, #e2f0f0);
 }
 
 /* Botón de texto (sin fondo ni borde) */
@@ -71,4 +76,17 @@
 .custom-button.text:hover:not(:disabled) {
   text-decoration: underline;
   transform: translateY(-0.2rem);
+}
+
+/* Botón de peligro (rojo) */
+.custom-button.danger {
+  background-color: var(--danger-red, #ff4d4f);
+  color: var(--primary-white, #e2f0f0);
+}
+
+.custom-button.danger:hover:not(:disabled) {
+  background-color: var(--danger-red-hover, #ff7875);
+  transform: translateY(-0.2rem);
+  filter: brightness(1.1);
+  box-shadow: 0 0.4rem 1.2rem rgba(255, 77, 79, 0.3);
 }

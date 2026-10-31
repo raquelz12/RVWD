@@ -18,7 +18,8 @@
   /*Colores principales*/
   --primary-red: #94314F;
   --primary-red-hover: #b33a57;
-  --error-red: #FF5356;
+  --danger-red: #FF5356;
+  --danger-red-hover: #ff7875;
   --primary-white: #E2F0F0;
   --white: #ffff;
   --black: #000000;

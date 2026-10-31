@@ -10,7 +10,7 @@ export interface ArtistCardProps {
   followed?: boolean;
   hasScore?: boolean;
   score?: number;
-  variant: 'red' | 'white';
+  variant?: 'red' | 'white';
 }
 
 export default function ArtistCard({ name, isSelected, followed, hasScore, score, variant }: ArtistCardProps) {

@@ -7,6 +7,8 @@ import ArtistCard from '../../../components/ArtistCard/ArtistCard';
 import MediaCard from '../../../components/MediaCard/MediaCard';
 import FeedTabs from '../../../components/FeedTabs/FeedTabs';
 
+export const instant = false;
+
 export default async function Feed({ searchParams }: { searchParams: Promise<{ tab?: string }> }) {
     const resolvedParams = await searchParams;
     const currentTab = resolvedParams.tab || 'para-ti';

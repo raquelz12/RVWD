@@ -90,7 +90,7 @@
 .review-big-card-content {
     display: flex;
     flex-direction: row;
-    align-items: flex-start;
+    align-items: center;
     justify-content: center;
     gap: 1rem;
     width: 100%;
@@ -206,6 +206,7 @@
     cursor: pointer;
     color: var(--primary-white);
     font-size: 1.4rem;
+    font-family: inherit;
     transition: color 0.3s ease;
 }
 
@@ -218,6 +219,39 @@
 
 .review-big-card-footer-btn:hover {
     color: var(--primary-red);
+}
+
+.review-big-card-score {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    padding-right: 1rem;
+}
+
+.review-big-card-score-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.review-big-card-score-text {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: center;
+    font-size: 1.6rem;
+    margin-bottom: 2rem;
+    line-height: 1;
+    min-height: 2rem;
+}
+
+.review-big-card-score-text .RVWS {
+    font-size: 2rem;
+    margin-right: 0.4rem;
 }
 
 /* Responsive */
@@ -237,11 +271,10 @@
     .review-big-card-review .text {
         font-size: 1.4rem;
     }
-}
 
-@media (max-width: 480px) {
     .review-big-card {
         padding: 1rem;
+        max-width: 40rem;
     }
 
     .review-big-card-content {
@@ -250,11 +283,29 @@
     }
 
     .review-big-card-image {
+        display: flex;
+        justify-content: center;
+        align-items: center;
         width: 100%;
+        max-width: 35rem;
         height: auto;
+    }
+
+    .review-big-card-image img {
+        width: 100%;
     }
 
     .review-big-card-info {
         width: 100%;
+    }
+
+    .review-big-card-score {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+    }
+
+    .review-big-card-score-text {
+        display: none;
     }
 }

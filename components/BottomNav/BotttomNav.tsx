@@ -1,7 +1,6 @@
 'use client';
 
 import './BottomNav.css';
-
 import { useModal } from '@/context/ModalContext';
 
 export default function BottomNav() {
@@ -26,7 +25,7 @@ export default function BottomNav() {
         </button>
       )}
 
-      <a href="/perfil" className="bottom-item active">
+      <a href="/profile" className="bottom-item active">
         <span className="icon-user"></span>
       </a>
 
