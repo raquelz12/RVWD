@@ -2,7 +2,6 @@
 
 import './ReviewBigCard.css';
 import Score from '../Score/Score';
-import { profile } from 'console';
 
 interface ReviewBigCardProps {
     username?: string;
@@ -13,12 +12,14 @@ interface ReviewBigCardProps {
     artist?: string;
     imageUrl?: string;
     score?: number;
+    pageScore?: number;
     titleReview?: string;
     reviewText?: string;
     reviewDate?: string;
     commentsCount?: number;
     favoritesCount?: number;
-    profile?: boolean;
+    profile?: boolean; // Indica si la tarjeta sale solo la socre red o las dos
+    onClick?: () => void;
 }
 
 export default function ReviewBigCard({
@@ -30,15 +31,17 @@ export default function ReviewBigCard({
     artist,
     imageUrl,
     score,
+    pageScore,
     titleReview,
     reviewText,
     reviewDate,
     commentsCount,
     favoritesCount,
-    profile
+    profile,
+    onClick
 }: ReviewBigCardProps) {
     return (
-        <div className="review-big-card">
+        <div className="review-big-card" onClick={onClick}>
             {userImageUrl && username && followed !== undefined && (
                 <div className="review-big-card-header">
                     <div className="review-big-card-user">
@@ -76,7 +79,7 @@ export default function ReviewBigCard({
                             <p className="review-big-card-score-text">
                                     <span className="RVWS">RVWD</span>score
                                 </p>
-                                <Score variant="white" input={false} score={parseFloat(score?.toString() || '0')} />
+                                <Score variant="white" input={false} score={parseFloat(pageScore?.toString() || '0')} />
                             </div>
                         </div>
                         ) || (
@@ -95,7 +98,7 @@ export default function ReviewBigCard({
                             <button className="review-big-card-footer-btn" onClick={() => {}}>
                                 {commentsCount} <img src="/comments-solid-full.svg" alt="Comentarios" />
                             </button>
-                        <button className="review-big-card-footer-btn" onClick={() => {}}>
+                            <button className="review-big-card-footer-btn" onClick={() => {}}>
                                 {favoritesCount} <img src="/star-regular-full.svg" alt="Favoritos" />
                             </button>
                         </div>

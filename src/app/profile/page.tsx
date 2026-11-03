@@ -8,6 +8,7 @@ import './profile.css';
 import { useState, useRef } from 'react';
 import Input from '../../../components/Input/Input';
 import TextArea from '../../../components/TextArea/TextArea';
+import Link from 'next/link';
 
 export default function ProfilePage() {
 
@@ -286,7 +287,7 @@ export default function ProfilePage() {
                             profile={true}
                         />
                     </div>
-                    <Button variant="text" className="profile-load-more-btn">Ver todas</Button>
+                    <Link href="/profile/reviews" className="view-all-reviews-link">Ver todas</Link>
                 </section>
             </div>
         </div>

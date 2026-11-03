@@ -463,8 +463,30 @@
   padding-bottom: 1rem;
 }
 
-.profile-load-more-btn {
-  padding-bottom: 4rem;
+.view-all-reviews-link {
+  text-decoration: none;
+  background-color: transparent;
+  border: none;
+  color: var(--primary-white, #e2f0f0);
+  margin-bottom: 3rem;
+  text-align: center;
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  padding: 1rem 2rem;
+  font-size: 1.6rem;
+  font-weight: 600;
+  border-radius: 3rem;
+  border: 0.2rem solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  letter-spacing: 0.08rem;
+}
+
+.view-all-reviews-link:hover {
+  text-decoration: underline;
+  transform: translateY(-0.2rem);
 }
 
 /* --------------------------RESPONSIVE-------------------------- */

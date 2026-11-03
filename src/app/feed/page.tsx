@@ -6,6 +6,7 @@ import ReviewBigCard from '../../../components/ReviewBigCard/ReviewBigCard';
 import ArtistCard from '../../../components/ArtistCard/ArtistCard';
 import MediaCard from '../../../components/MediaCard/MediaCard';
 import FeedTabs from '../../../components/FeedTabs/FeedTabs';
+import Link from 'next/link';
 
 export const instant = false;
 
@@ -25,21 +26,23 @@ export default async function Feed({ searchParams }: { searchParams: Promise<{ t
                             <img src="/arrow-up-long-solid-full.svg" alt="Flecha" />
                             <span className="RVWS">RVWS</span> nuevas
                         </div>
-                        <ReviewBigCard
-                            username="@raquelz.12204"
-                            userImageUrl="/placeholderCards.png"
-                            followed={true}
-                            type="Álbum"
-                            title="No pasa nada hombre"
-                            artist="Clarent"
-                            imageUrl="/placeholderCards.png"
-                            score={8.5}
-                            titleReview="Mi opinión sobre este álbum"
-                            reviewText="Este álbum es increíble. Toda la música es genial y los arreglos son perfectos."
-                            reviewDate="2023-01-01"
-                            commentsCount={10}
-                            favoritesCount={5}
-                        />
+                        <Link href="/reviews/123" style={{ textDecoration: 'none', color: 'inherit', width: '100%' }}>
+                            <ReviewBigCard
+                                username="@raquelz.12204"
+                                userImageUrl="/placeholderCards.png"
+                                followed={true}
+                                type="Álbum"
+                                title="No pasa nada hombre"
+                                artist="Clarent"
+                                imageUrl="/placeholderCards.png"
+                                score={8.5}
+                                titleReview="Mi opinión sobre este álbum"
+                                reviewText="Este álbum es increíble. Toda la música es genial y los arreglos son perfectos."
+                                reviewDate="2023-01-01"
+                                commentsCount={10}
+                                favoritesCount={5}
+                            />
+                        </Link>
                         <div className="might-like-section">
                             <div className="section-header">
                                 <h3 className="title">Artistas que te podrían gustar</h3>
