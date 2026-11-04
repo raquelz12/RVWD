@@ -26,9 +26,7 @@
     margin: 0;
 }
 
-/* =========================================
-   LAYOUT DE COLUMNAS
-   ========================================= */
+/* Columnas */
 .notifications-columns-wrapper {
     display: flex;
     flex-direction: row;
@@ -69,9 +67,7 @@
     gap: 3rem;
 }
 
-/* =========================================
-   ITEM DE NOTIFICACIÓN (Columna Izquierda)
-   ========================================= */
+/* Notificaciones */
 .notif-item {
     display: flex;
     flex-direction: row;
@@ -129,9 +125,7 @@
     font-weight: 600;
 }
 
-/* =========================================
-   SOLICITUD DE SEGUIMIENTO (Columna Derecha)
-   ========================================= */
+/* Solicitudes de Seguimiento */
 .follow-request-item {
     display: flex;
     flex-direction: column;
@@ -141,8 +135,7 @@
 
 .follow-request-text {
     margin: 0 0 0 3.4rem;
-    font-size: 1.4rem;
-    color: var(--primary-white);
+    font-size: 1.6rem;
 }
 
 .follow-request-actions {
@@ -159,13 +152,7 @@
     width: auto;
 }
 
-/* =========================================
-   RESPONSIVE (Móviles y Tablets)
-   ========================================= */
-
-/* =========================================
-   RESPONSIVE Y ESTADOS MÓVILES
-   ========================================= */
+/* Responsive */
 
 .mobile-follow-requests,
 .mobile-back-requests {

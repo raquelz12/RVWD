@@ -2,7 +2,7 @@
     position: absolute;
     top: calc(100% + 1rem);
     right: 0;
-    width: 34rem; /* Un poco más ancho para acomodar el avatar */
+    width: 34rem;
     background-color: rgba(24, 34, 38, 0.95);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
@@ -40,7 +40,6 @@
     background-color: rgba(255,255,255,0.05);
 }
 
-/* Estilos de Avatar y Contenido (Similares a Notifications) */
 .notif-avatar {
     width: 2.8rem;
     height: 2.8rem;
@@ -79,13 +78,12 @@
     justify-content: center;
     width: 1rem;
     height: 1rem;
-    margin-left: auto; /* Empuja el punto rojo a la derecha del todo */
-    color: var(--primary-red, #9d2b45);
+    margin-left: auto;
 }
 
 .notif-text {
     margin: 0;
-    font-size: 1.3rem;
+    font-size: 1.6rem;
     line-height: 1.4;
     color: var(--primary-white);
 }
@@ -109,12 +107,11 @@
     background-color: rgba(255,255,255,0.05);
 }
 
-/* Para móvil: el menú sube si estás usando un menú inferior flotante */
 @media (max-width: 768px) {
     .notif-dropdown-menu {
         top: auto;
-        bottom: calc(100% + 1rem); /* Hacia arriba */
-        right: -2rem; /* Centrado relativo al icono */
+        bottom: calc(100% + 1rem);
+        right: -2rem;
         width: 90vw; 
         max-width: 35rem;
     }
