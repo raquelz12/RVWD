@@ -377,6 +377,7 @@ export default function OnboardingPage() {
                         input={true}
                         score={reviewScore}
                         onChange={(newScore) => setReviewScore(newScore)}
+                        variant="red"
                       />
                     </div>
                   </div>

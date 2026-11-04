@@ -1,37 +1,68 @@
 'use client';
 
+import { useState } from 'react';
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 import './BottomNav.css';
 import { useModal } from '@/context/ModalContext';
+import NotificationDropdown from '../NotificationDropdown/NotificationDropdown';
 
 export default function BottomNav() {
-  const { openModal } = useModal();
-  const isAdmin = false; 
+    const { openModal } = useModal();
+    const pathname = usePathname();
+    const isAdmin = false; 
 
-  return (
-    <nav className="bottom-nav">
-      <a href="/feed" className="bottom-item">
-        <span className="icon-home"></span>
-      </a>
-      
-      <a href="/buscar" className="bottom-item">
-        <span className="icon-search"></span>
-      </a>
+    const [isNotifOpen, setIsNotifOpen] = useState(false);
 
-      {!isAdmin && (
-        <button className="bottom-item primary-action" onClick={(e) => {
-          openModal('add');
-        }}>
-            <img src="/Logo.svg" alt="Crear" className="icon-logo-img" />
-        </button>
-      )}
+    const toggleNotifMenu = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setIsNotifOpen(!isNotifOpen);
+    };
 
-      <a href="/profile" className="bottom-item active">
-        <span className="icon-user"></span>
-      </a>
+    const isActive = (path: string) => {
+        if (!pathname) return false;
+        return pathname.includes(path);
+    };
 
-      <a href="/notificaciones" className="bottom-item">
-        <span className="icon-bell"></span>
-      </a>
-    </nav>
-  );
+    return (
+        <nav className="bottom-nav">
+            
+            {/* INICIO / FEED */}
+            <Link href="/feed" className={`bottom-item ${isActive('/feed') ? 'active' : ''}`}>
+                <span className="icon-home"></span>
+            </Link>
+            
+            {/* BUSCAR */}
+            <Link href="/buscar" className={`bottom-item ${isActive('/buscar') ? 'active' : ''}`}>
+                <span className="icon-search"></span>
+            </Link>
+            
+            {/* BOTÓN CENTRAL CREAR */}
+            {!isAdmin && (
+                <button className="bottom-item primary-action" onClick={() => openModal('add')}>
+                    <img src="/Logo.svg" alt="Crear" className="icon-logo-img" />
+                </button>
+            )}
+            
+            {/* PERFIL */}
+            <Link href="/profile" className={`bottom-item ${isActive('/profile') ? 'active' : ''}`}>
+                <span className="icon-user"></span>
+            </Link>
+            
+            {/* NOTIFICACIONES */}
+            <div className="bottom-item" style={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <button 
+                    onClick={toggleNotifMenu}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '1rem', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                >
+                    <span className={`icon-bell ${isNotifOpen ? 'active' : ''}`}></span>
+                </button>
+                
+                {isNotifOpen && (
+                    <NotificationDropdown onClose={() => setIsNotifOpen(false)} />
+                )}
+            </div>
+            
+        </nav>
+    );
 }

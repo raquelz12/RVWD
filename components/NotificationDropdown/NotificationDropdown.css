@@ -1,0 +1,121 @@
+.notif-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 1rem);
+    right: 0;
+    width: 34rem; /* Un poco más ancho para acomodar el avatar */
+    background-color: rgba(24, 34, 38, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1.6rem;
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    overflow: hidden;
+    cursor: default;
+}
+
+.notif-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.notif-header h3 {
+    margin: 0;
+    font-size: 1.6rem;
+    font-weight: 500;
+    font-family: inherit;
+}
+
+.notif-item {
+    display: flex;
+    gap: 1.2rem;
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    transition: background 0.2s;
+    cursor: pointer;
+    align-items: flex-start;
+}
+
+.notif-item:hover {
+    background-color: rgba(255,255,255,0.05);
+}
+
+/* Estilos de Avatar y Contenido (Similares a Notifications) */
+.notif-avatar {
+    width: 2.8rem;
+    height: 2.8rem;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.notif-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    width: 100%;
+}
+
+.notif-item-header {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.notif-username {
+    font-size: 1.3rem;
+    color: var(--primary-white);
+    font-weight: 500;
+}
+
+.notif-time {
+    font-size: 1.2rem;
+    color: rgba(255,255,255,0.5);
+}
+
+.notif-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1rem;
+    height: 1rem;
+    margin-left: auto; /* Empuja el punto rojo a la derecha del todo */
+    color: var(--primary-red, #9d2b45);
+}
+
+.notif-text {
+    margin: 0;
+    font-size: 1.3rem;
+    line-height: 1.4;
+    color: var(--primary-white);
+}
+
+.notif-text strong {
+    font-weight: 600;
+}
+
+.notif-see-all {
+    display: block;
+    text-align: center;
+    padding: 1.5rem;
+    color: var(--primary-red, #9d2b45);
+    font-size: 1.4rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.notif-see-all:hover {
+    background-color: rgba(255,255,255,0.05);
+}
+
+/* Para móvil: el menú sube si estás usando un menú inferior flotante */
+@media (max-width: 768px) {
+    .notif-dropdown-menu {
+        top: auto;
+        bottom: calc(100% + 1rem); /* Hacia arriba */
+        right: -2rem; /* Centrado relativo al icono */
+        width: 90vw; 
+        max-width: 35rem;
+    }
+}
