@@ -12,6 +12,7 @@ export interface MediaCardProps {
   artist: string;
   imageUrl: string;
   forceShowInfo?: boolean;
+  scoreType?: 'red' | 'white';
 }
 
 //Ejemplo para pegar en otros lados:
@@ -37,12 +38,12 @@ export interface MediaCardProps {
 //   forceShowInfo={true}
 // />
 
-export default function MediaCard({ type, title, artist, imageUrl, userName, userPicture, score, forceShowInfo }: MediaCardProps) {
+export default function MediaCard({ type, title, artist, imageUrl, userName, userPicture, score, forceShowInfo, scoreType }: MediaCardProps) {
   return (
     <article className={`media-card ${type === 'artista' ? 'is-artist' : ''} ${forceShowInfo ? 'force-show-info' : ''}`}>
       {score && (
           <div className="media-score-position">
-            <Score input={false} score={score} variant="red" />
+            <Score input={false} score={score} variant={scoreType || "red"} />
           </div>
         )}
       <div className="media-image-container">

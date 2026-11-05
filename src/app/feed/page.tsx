@@ -96,9 +96,15 @@ export default async function Feed({ searchParams }: { searchParams: Promise<{ t
                                 </label>
                             </div>
                             <div className="new-releases-cards">
-                                <SmallCard type="album" title="No pasa nada hombre" artist="Clarent" imageUrl="/placeholderCards.png" />
-                                <SmallCard type="album" title="No pasa nada hombre" artist="Clarent" imageUrl="/placeholderCards.png" />
-                                <SmallCard type="album" title="No pasa nada hombre" artist="Clarent" imageUrl="/placeholderCards.png" />
+                                <Link href="/album/123" style={{ textDecoration: 'none', color: 'inherit' }}>
+                                    <SmallCard type="album" title="No pasa nada hombre" artist="Clarent" imageUrl="/placeholderCards.png" />
+                                </Link>
+                                <Link href="/album/123" style={{ textDecoration: 'none', color: 'inherit' }}>
+                                    <SmallCard type="album" title="No pasa nada hombre" artist="Clarent" imageUrl="/placeholderCards.png" />
+                                </Link>
+                                <Link href="/album/123" style={{ textDecoration: 'none', color: 'inherit' }}>
+                                    <SmallCard type="album" title="No pasa nada hombre" artist="Clarent" imageUrl="/placeholderCards.png" />
+                                </Link>
                             </div>
                         </div>
                     </div>
@@ -123,15 +129,21 @@ export default async function Feed({ searchParams }: { searchParams: Promise<{ t
                                 <div className="weekly-top-cards-list">
                                     <span className="weekly-top-card">
                                         <span className="weekly-top-card-number">1</span>
-                                        <SmallCard variant="large" type="album" title="No pasa nada hombre" artist="Clarent" imageUrl="/placeholderCards.png" score={8.5} />
+                                        <Link href="/album/123" style={{ textDecoration: 'none', color: 'inherit', flex: 1 }}>
+                                            <SmallCard variant="large" type="album" title="No pasa nada hombre" artist="Clarent" imageUrl="/placeholderCards.png" score={8.5} />
+                                        </Link>
                                     </span>
                                     <span className="weekly-top-card">
                                         <span className="weekly-top-card-number">2</span>
-                                        <SmallCard variant="large" type="album" title="No pasa nada hombre" artist="Clarent" imageUrl="/placeholderCards.png" score={8.5} />
+                                        <Link href="/album/123" style={{ textDecoration: 'none', color: 'inherit', flex: 1 }}>
+                                            <SmallCard variant="large" type="album" title="No pasa nada hombre" artist="Clarent" imageUrl="/placeholderCards.png" score={8.5} />
+                                        </Link>
                                     </span>
                                     <span className="weekly-top-card">
                                         <span className="weekly-top-card-number">3</span>
-                                        <SmallCard variant="large" type="album" title="No pasa nada hombre" artist="Clarent" imageUrl="/placeholderCards.png" score={8.5} />
+                                        <Link href="/album/123" style={{ textDecoration: 'none', color: 'inherit', flex: 1 }}>
+                                            <SmallCard variant="large" type="album" title="No pasa nada hombre" artist="Clarent" imageUrl="/placeholderCards.png" score={8.5} />
+                                        </Link>
                                     </span>
                                 </div>
                             </div>
@@ -152,22 +164,7 @@ export default async function Feed({ searchParams }: { searchParams: Promise<{ t
                                     <Button variant="text">Ver más</Button>
                                 </div>
                                 <div className="users-cards">
-                                    <div className="user-card">
-                                        <img src="/placeholderCards.png" alt="Usuario" className="user-image" />
-                                        <div className="user-info">
-                                            <span className="username">@raquelz.12204</span>
-                                            <span className="name">Raquel Z.</span>
-                                        </div>
-                                        <Button variant="primary">Seguir</Button>
-                                    </div>
-                                    <div className="user-card">
-                                        <img src="/placeholderCards.png" alt="Usuario" className="user-image" />
-                                        <div className="user-info">
-                                            <span className="username">@raquelz.12204</span>
-                                            <span className="name">Raquel Z.</span>
-                                        </div>
-                                        <Button variant="primary">Seguir</Button>
-                                    </div>
+                                    {/* Múltiples User Cards... */}
                                     <div className="user-card">
                                         <img src="/placeholderCards.png" alt="Usuario" className="user-image" />
                                         <div className="user-info">

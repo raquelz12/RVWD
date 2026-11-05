@@ -1,38 +1,16 @@
 "use client";
 
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import './page.css';
 import MediaCard from '../../components/MediaCard/MediaCard';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import Button from '../../components/Button/Button';
 import { useModal } from '@/context/ModalContext';
+import Carousel from '../../components/Carousel/Carousel';
 
 export default function Home() {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const carouselRef = useRef<HTMLDivElement>(null);
   const { openModal } = useModal();
-
-  const handleScroll = () => {
-    if (carouselRef.current) {
-      const scrollLeft = carouselRef.current.scrollLeft;
-      const width = carouselRef.current.offsetWidth;
-      const index = Math.round(scrollLeft / width);
-      setActiveIndex(index);
-    }
-  };
-
-  const scrollToCard = (index: number) => {
-    if (carouselRef.current) {
-      const width = carouselRef.current.offsetWidth;
-      carouselRef.current.scrollTo({
-        left: width * index,
-        behavior: 'smooth',
-      });
-      setActiveIndex(index);
-    }
-  };
-
-  const paginationLetters = ['Я', 'V', 'W', 'D'];
+  const topRvws = [1, 2, 3, 4];
 
   return (
     <main className="body-landing-page">
@@ -46,32 +24,39 @@ export default function Home() {
       </div>
       <div className="new">
         <p className="new-title">Novedades</p>
-        <div className="carousel-wrapper">
-          <div className="new-cards" ref={carouselRef} onScroll={handleScroll}>
-            <div className="carousel-item">
-              <MediaCard type="album" title="Álbum 1" artist="Artista 1" imageUrl="/placeholderCards.png" />
-            </div>
-            <div className="carousel-item">
-              <MediaCard type="cancion" title="Canción 2" artist="Artista 2" imageUrl="/placeholderCards.png" />
-            </div>
-            <div className="carousel-item">
-              <MediaCard type="cancion" title="Canción 3" artist="Artista 3" imageUrl="/placeholderCards.png" />
-            </div>
-            <div className="carousel-item">
-              <MediaCard type="album" title="Álbum 4" artist="Artista 4" imageUrl="/placeholderCards.png" />
-            </div>
-          </div>
+        {/* Ordenador */}
+        <div className="desktop-view-novedades">
+            {topRvws.map((item, index) => (
+                <MediaCard
+                  key={`desktop-${index}`}
+                  type="album"
+                  title="No pasa nada hombre"
+                  artist="Clarent"
+                  imageUrl="/placeholderCards.png"
+                  userName="@raquelz.12204"
+                  userPicture="/placeholderCards.png"
+                  score={8.5}
+                  forceShowInfo={true}
+                />
+            ))}
         </div>
-        <div className="carousel-pagination">
-          {paginationLetters.map((letter, index) => (
-            <span 
-              key={index} 
-              onClick={() => scrollToCard(index)}
-              className={`pagination-letter ${activeIndex === index ? 'active' : ''}`}
-            >
-              {letter}
-            </span>
-          ))}
+        {/* Movil*/}
+        <div className="mobile-view-novedades">
+            <Carousel>
+              {topRvws.map((item, index) => (
+                  <MediaCard
+                    key={`mobile-${index}`}
+                    type="album"
+                    title="No pasa nada hombre"
+                    artist="Clarent"
+                    imageUrl="/placeholderCards.png"
+                    userName="@raquelz.12204"
+                    userPicture="/placeholderCards.png"
+                    score={8.5}
+                    forceShowInfo={true}
+                  />
+              ))}
+            </Carousel>
         </div>
       </div>
       <div className="search">

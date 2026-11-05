@@ -9,6 +9,8 @@ import { useState, useRef } from 'react';
 import Input from '../../../components/Input/Input';
 import TextArea from '../../../components/TextArea/TextArea';
 import Link from 'next/link';
+import Carousel from '../../../components/Carousel/Carousel';
+import ProfileStats from '../../../components/ProfileStats/ProfileStats';
 
 export default function ProfilePage() {
 
@@ -26,7 +28,10 @@ export default function ProfilePage() {
             { id: 2, type: "cancion" as const, title: "Jukiar 2", artist: "Clarent", imageUrl: "/placeholderCards.png" },
             null,
             { id: 4, type: "cancion" as const, title: "Jukiar 4", artist: "Clarent", imageUrl: "/placeholderCards.png" }
-        ]
+        ],
+        followers: 569,
+        following: 124,
+        rvws: 38
     });
 
     const [backupData, setBackupData] = useState(profileData);
@@ -103,30 +108,47 @@ export default function ProfilePage() {
         setSongSearchQuery('');
     };
 
-    /* Estados carrousel y cosas de animación */
+    const renderSongSlots = () => {
+        return profileData.topSongs.map((song, index) => (
+            <div key={`song-slot-${index}`} className="song-slot-container">
+                {song !== null && activeSearchSlot !== index && (
+                    <div className={`filled-slot group ${removingSlot === index ? 'removing' : ''} ${isEditing ? 'jiggle-anim' : ''}`}>
+                        <MediaCard title={song.title} type="cancion" artist={song.artist} imageUrl={song.imageUrl} forceShowInfo={true} />
+                        {isEditing && (
+                            <div className="remove-overlay" onClick={() => handleRemoveSong(index)}>
+                                <div className="remove-btn-circle"><span className="close-icon">&times;</span></div>
+                            </div>
+                        )}
+                    </div>
+                )}
+                {activeSearchSlot === index && isEditing && (
+                    <div className={`search-slot-active ${closingSlot === index ? 'closing' : ''}`}>
+                        <SearchBar placeholder="Busca tu canción favorita..." value={songSearchQuery} onChange={(e) => setSongSearchQuery(e.target.value)} />
+                        {songSearchQuery.trim() !== '' && (
+                            <div className="search-dropdown-results slot-search-dropdown">
+                                {searchResultsSongs.length > 0 ? (
+                                    searchResultsSongs.map((resultSong, i) => (
+                                        <div key={`search-song-${i}`} className="search-result-item" onClick={() => handleSelectSong(resultSong, index)}>
+                                            <img src={resultSong.imageUrl} alt={resultSong.title} />
+                                            <div><p className="result-title">{resultSong.title}</p><p className="result-sub">{resultSong.artist}</p></div>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className="search-result-item" style={{ pointerEvents: 'none' }}><p className="result-sub">No se encontró "{songSearchQuery}"</p></div>
+                                )}
+                            </div>
+                        )}
+                        <button className="cancel-search-btn" onClick={() => handleCancelSearch(index)}>Cancelar</button>
+                    </div>
+                )}
 
-    const [activeIndex, setActiveIndex] = useState(0);
-    const carouselRef = useRef<HTMLDivElement>(null);
-    const paginationLetters = ['Я', 'V', 'W', 'D'];
-
-    const handleScroll = () => {
-        if (carouselRef.current) {
-            const scrollLeft = carouselRef.current.scrollLeft;
-            const width = carouselRef.current.offsetWidth;
-            const index = Math.round(scrollLeft / width);
-            setActiveIndex(index);
-        }
-    };
-
-    const scrollToCard = (index: number) => {
-        if (carouselRef.current) {
-            const width = carouselRef.current.offsetWidth;
-            carouselRef.current.scrollTo({
-                left: width * index,
-                behavior: 'smooth',
-            });
-            setActiveIndex(index);
-        }
+                {song === null && activeSearchSlot !== index && (
+                    <div className={`empty-slot ${isEditing ? 'editable' : ''}`} onClick={() => { if (isEditing) { setActiveSearchSlot(index); setSongSearchQuery(''); } }}>
+                        {isEditing ? <div className="add-circle-btn"><div className="plus-icon">+</div></div> : <div className="empty-text-placeholder">Falta canción</div>}
+                    </div>
+                )}
+            </div>
+        ));
     };
 
     return (
@@ -141,7 +163,6 @@ export default function ProfilePage() {
                         <img src="placeholder.png" alt="ProfilePicture" />
                         {isEditing && <div className="profile-pic-overlay edit-anim"><img src="camera-solid-full.svg" alt="Edit" /></div>}
                     </div>
-                    
                     <div className="profile-info-details">
                         <div className="profile-info-upper">
                             <div className="profile-info-name">
@@ -157,7 +178,6 @@ export default function ProfilePage() {
                                     </div>
                                 )}
                             </div>
-
                             {ownProfile && (
                                 <div className="profile-info-buttons">
                                     {isEditing ? (
@@ -173,12 +193,7 @@ export default function ProfilePage() {
                                     )}
                                 </div>
                             )}
-
-                            <div className="profile-info-stats desktop-stats">
-                                <div className="profile-info-stat"><p className="profile-info-stat-number">100</p><p className="profile-info-stat-label">Reseñas</p></div>
-                                <div className="profile-info-stat"><p className="profile-info-stat-number">50</p><p className="profile-info-stat-label">Seguidores</p></div>
-                                <div className="profile-info-stat"><p className="profile-info-stat-number">75</p><p className="profile-info-stat-label">Seguidos</p></div>
-                            </div>
+                            <ProfileStats className="desktop-stats" followers={profileData.followers} following={profileData.following} rvws={profileData.rvws} />
                         </div>
                         
                         <div className="profile-info-bio">
@@ -188,71 +203,19 @@ export default function ProfilePage() {
                                 <p className="profile-info-bio-text view-anim">{profileData.bio}</p>
                             )}
                         </div>
-                        <div className="profile-info-stats mobile-stats">
-                            <div className="profile-info-stat"><p className="profile-info-stat-number">567</p><p className="profile-info-stat-label">Seguidores</p></div>
-                            <div className="profile-info-stat"><p className="profile-info-stat-number">569</p><p className="profile-info-stat-label">Seguidos</p></div>
-                            <div className="profile-info-stat"><p className="profile-info-stat-number">124</p><p className="profile-info-stat-label"><span className="RVWS">RVWS</span></p></div>
-                        </div>
+                        <ProfileStats className="mobile-stats" followers={profileData.followers} following={profileData.following} rvws={profileData.rvws} />
                     </div>
                 </section>
                 {/*----------------------- Top Songs Section---------------------------- */}
                 <section className="profile-top-songs">
                     <span className="profile-subtitle">Tus top 4 canciones</span>
-                    <div className="carousel-wrapper">
-                        <div className="top-songs-grid" ref={carouselRef} onScroll={handleScroll}>
-                            {profileData.topSongs.map((song, index) => (
-                                <div key={`song-slot-${index}`} className="song-slot-container">
-                                    {song !== null && activeSearchSlot !== index && (
-                                        <div className={`filled-slot group ${removingSlot === index ? 'removing' : ''} ${isEditing ? 'jiggle-anim' : ''}`}>
-                                            <MediaCard title={song.title} type="cancion" artist={song.artist} imageUrl={song.imageUrl} forceShowInfo={true} />
-                                            {isEditing && (
-                                                <div className="remove-overlay" onClick={() => handleRemoveSong(index)}>
-                                                    <div className="remove-btn-circle"><span className="close-icon">&times;</span></div>
-                                                </div>
-                                            )}
-                                        </div>
-                                    )}
-                                    {activeSearchSlot === index && isEditing && (
-                                        <div className={`search-slot-active ${closingSlot === index ? 'closing' : ''}`}>
-                                            <SearchBar placeholder="Busca tu canción favorita..." value={songSearchQuery} onChange={(e) => setSongSearchQuery(e.target.value)} />
-                                            {songSearchQuery.trim() !== '' && (
-                                                <div className="search-dropdown-results slot-search-dropdown">
-                                                    {searchResultsSongs.length > 0 ? (
-                                                        searchResultsSongs.map((resultSong, i) => (
-                                                            <div key={`search-song-${i}`} className="search-result-item" onClick={() => handleSelectSong(resultSong, index)}>
-                                                                <img src={resultSong.imageUrl} alt={resultSong.title} />
-                                                                <div><p className="result-title">{resultSong.title}</p><p className="result-sub">{resultSong.artist}</p></div>
-                                                            </div>
-                                                        ))
-                                                    ) : (
-                                                        <div className="search-result-item" style={{ pointerEvents: 'none' }}><p className="result-sub">No se encontró "{songSearchQuery}"</p></div>
-                                                    )}
-                                                </div>
-                                            )}
-                                            <button className="cancel-search-btn" onClick={() => handleCancelSearch(index)}>Cancelar</button>
-                                        </div>
-                                    )}
-
-                                    {song === null && activeSearchSlot !== index && (
-                                        <div className={`empty-slot ${isEditing ? 'editable' : ''}`} onClick={() => { if (isEditing) { setActiveSearchSlot(index); setSongSearchQuery(''); } }}>
-                                            {isEditing ? <div className="add-circle-btn"><div className="plus-icon">+</div></div> : <div className="empty-text-placeholder">Falta canción</div>}
-                                        </div>
-                                    )}
-
-                                </div>
-                            ))}
-                        </div>
+                    <div className="desktop-top-songs">
+                        {renderSongSlots()}
                     </div>
-                    <div className="carousel-pagination">
-                        {paginationLetters.map((letter, index) => (
-                            <span 
-                                key={index} 
-                                onClick={() => scrollToCard(index)}
-                                className={`pagination-letter ${activeIndex === index ? 'active' : ''}`}
-                            >
-                                {letter}
-                            </span>
-                        ))}
+                    <div className="mobile-top-songs">
+                        <Carousel>
+                            {renderSongSlots()}
+                        </Carousel>
                     </div>
                 </section>
                 <section className="profile-reviews">
@@ -271,6 +234,7 @@ export default function ProfilePage() {
                             reviewDate="2023-01-01"
                             commentsCount={10}
                             favoritesCount={5}
+                            pageScore={7.8}
                             profile={true}
                         />
                         <ReviewBigCard
@@ -284,6 +248,7 @@ export default function ProfilePage() {
                             reviewDate="2023-01-01"
                             commentsCount={10}
                             favoritesCount={5}
+                            pageScore={7.8}
                             profile={true}
                         />
                     </div>

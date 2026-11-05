@@ -52,7 +52,7 @@ export default function NotificationDropdown({ onClose }: Props) {
                     </div>
                 ))}
             </div>
-            <Link href="/notificaciones" className="notif-see-all" onClick={onClose}>
+            <Link href="/notifications" className="notif-see-all" onClick={onClose}>
                 Ver todas
             </Link>
         </div>

@@ -1,13 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import './BottomNav.css';
 import { useModal } from '@/context/ModalContext';
 import NotificationDropdown from '../NotificationDropdown/NotificationDropdown';
 
-export default function BottomNav() {
+// 1. Le cambiamos el nombre a tu función principal por BottomNavContent
+function BottomNavContent() {
     const { openModal } = useModal();
     const pathname = usePathname();
     const isAdmin = false; 
@@ -64,5 +65,13 @@ export default function BottomNav() {
             </div>
             
         </nav>
+    );
+}
+
+export default function BottomNav() {
+    return (
+        <Suspense fallback={<nav className="bottom-nav"></nav>}>
+            <BottomNavContent />
+        </Suspense>
     );
 }
