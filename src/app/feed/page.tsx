@@ -7,6 +7,7 @@ import ArtistCard from '../../../components/ArtistCard/ArtistCard';
 import MediaCard from '../../../components/MediaCard/MediaCard';
 import FeedTabs from '../../../components/FeedTabs/FeedTabs';
 import Link from 'next/link';
+import { mockAlbums } from '../lib/mockData';
 
 export const instant = false;
 
@@ -96,15 +97,19 @@ export default async function Feed({ searchParams }: { searchParams: Promise<{ t
                                 </label>
                             </div>
                             <div className="new-releases-cards">
-                                <Link href="/album/123" style={{ textDecoration: 'none', color: 'inherit' }}>
-                                    <SmallCard type="album" title="No pasa nada hombre" artist="Clarent" imageUrl="/placeholderCards.png" />
-                                </Link>
-                                <Link href="/album/123" style={{ textDecoration: 'none', color: 'inherit' }}>
-                                    <SmallCard type="album" title="No pasa nada hombre" artist="Clarent" imageUrl="/placeholderCards.png" />
-                                </Link>
-                                <Link href="/album/123" style={{ textDecoration: 'none', color: 'inherit' }}>
-                                    <SmallCard type="album" title="No pasa nada hombre" artist="Clarent" imageUrl="/placeholderCards.png" />
-                                </Link>
+                                {mockAlbums.map((album) => (
+                                    <Link 
+                                        key={album.id} 
+                                        href={`/album/${album.id}`} 
+                                    >
+                                        <SmallCard 
+                                            type="album" 
+                                            title={album.name} 
+                                            artist={album.artist.name} 
+                                            imageUrl={album.coverUrl} 
+                                        />
+                                    </Link>
+                                ))}
                             </div>
                         </div>
                     </div>

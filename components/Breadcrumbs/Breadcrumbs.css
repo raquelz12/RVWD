@@ -1,0 +1,32 @@
+.breadcrumbs{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    width: 100%;
+    gap: 0.5rem;
+    margin-bottom: 3rem;
+    padding-left: 0.5rem;
+}
+
+.breadcrumb-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.4rem;
+}
+
+.breadcrumb-link {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.breadcrumb-link:hover {
+    color: var(--primary-red);
+}
+
+@media (max-width: 768px) {
+    .breadcrumbs {
+        display: none;
+    }
+}

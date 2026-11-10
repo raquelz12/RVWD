@@ -1,4 +1,26 @@
 /* escritorio */
+.helper-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    margin-top: 10rem;
+}
+
+.helper-image {
+    width: 5rem;
+    height: 5rem;
+    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(103%) contrast(103%);
+}
+
+.helper-text {
+    padding: 4rem;
+    text-align: center;
+    font-size: 2rem;
+}
+
 .mobile-album-view {
     display: none;
 }
@@ -58,6 +80,13 @@
 .album-artist {
     font-size: 2rem;
     margin: 0;
+    text-decoration: none;
+    color: inherit;
+    transition: color 0.3s ease;
+}
+
+.album-artist:hover {
+    color: var(--primary-red, #9d2b45);
 }
 
 .star-icon {
@@ -208,6 +237,11 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.media-card-link {
+    text-decoration: none;
+    color: inherit;
 }
 
 /* movil */
