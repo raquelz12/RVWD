@@ -1,0 +1,128 @@
+.contact-container {
+    display: flex;
+    flex-direction: column;
+    padding: 4rem 2rem;
+    width: 100%;
+    max-width: 120rem;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+.contact-header {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem .8rem;
+    padding-bottom: 4rem;
+}
+
+.contact-title {
+    font-size: 3.6rem;
+    margin: 0;
+    font-weight: 500;
+}
+
+.contact-description {
+    font-size: 2rem;
+    margin: 0;
+}
+
+.contact-column-wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    padding: 0 3.2rem;
+}
+
+.contact-column {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+    flex: 1;
+    padding: 1rem;
+}
+
+/* Formulario de sugerencias */
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-label {
+    font-weight: 500;
+}
+
+.required-fields-note {
+    font-size: 1.4rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.terms-conditions {
+    font-size: 1.4rem;
+}
+
+.terms-conditions a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s;
+}
+
+.terms-conditions a:hover {
+    color: var(--primary-red);
+}
+
+.contact-column-title {
+    margin: 0;
+}
+
+.contact-column-email {
+    font-size: 2rem;
+    font-weight: 500;
+    margin: 0;
+}
+
+.contact-column-text {
+    margin: 0;
+}
+
+.contact-column-text a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s;
+}
+
+.contact-column-text a:hover {
+    color: var(--primary-red);
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+    .contact-column-wrapper {
+        flex-direction: column;
+        padding: 0 1.6rem;
+    }
+
+    .contact-description {
+        text-align: justify;
+    }
+
+    .contact-column {
+        padding: 0;
+        padding-bottom: 4rem;
+    }
+
+    .contact-column-title {
+        padding-left: 0;
+    }
+}
