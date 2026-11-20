@@ -49,8 +49,8 @@
     border: none;
     color: var(--primary-white, #e2f0f0);
     cursor: pointer;
-    padding: 0.6rem;
-    border-radius: 0.8rem;
+    padding: 1rem;
+    border-radius: 9rem;
     transition: color 0.2s ease, background-color 0.2s ease;
 }
 
@@ -153,9 +153,7 @@
     padding: 2rem 0;
 }
 
-/* =========================================
-   SANCIONES (DOTS + TEXTO)
-   ========================================= */
+/* sanciones */
 .sanctions-wrapper {
     display: flex;
     align-items: center;
@@ -173,9 +171,7 @@
     color: rgba(255, 255, 255, 0.8);
 }
 
-/* =========================================
-   LISTA MÓVIL (OCULTA EN PC)
-   ========================================= */
+/* movil */
 .users-list-mobile {
     display: none;
     flex-direction: column;
@@ -227,9 +223,7 @@
     line-height: 1;
 }
 
-/* =========================================
-   PAGINACIÓN
-   ========================================= */
+/* paginacion */
 .users-pagination {
     display: flex;
     justify-content: center;
@@ -265,13 +259,12 @@
     font-size: 1.4rem;
 }
 
-/* =========================================
-   RESPONSIVE MÓVIL
-   ========================================= */
+/* responsive */
 @media (max-width: 850px) {
     .admin-users-container {
-        padding: 3rem 1.8rem 6rem 1.8rem;
+        padding: 3rem 1.8rem 6rem 0;
         gap: 2.5rem;
+        max-width: 90%;
     }
 
     .admin-users-header h1 {
@@ -291,7 +284,7 @@
 
     .users-filters-group {
         display: none;
-        width: 100%;
+        width: 50%;
         flex-wrap: wrap;
         gap: 1rem;
     }
