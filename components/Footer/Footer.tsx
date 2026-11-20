@@ -5,10 +5,10 @@ export default function Footer() {
     return (
         <footer className="footer">
             <div className="footer-links">
-                <a href="#" className="footer-link">Sobre nosotros</a>
-                <a href="#" className="footer-link">Política de privacidad y cookies</a>
-                <a href="#" className="footer-link">Aviso legal y términos</a>
-                <a href="#" className="footer-link">Normas de la comunidad</a>
+                <Link href="/about" className="footer-link">Sobre nosotros</Link>
+                <Link href="/privacy" className="footer-link">Política de privacidad y cookies</Link>
+                <Link href="/legal" className="footer-link">Aviso legal y términos</Link>
+                <Link href="/rules" className="footer-link">Normas de la comunidad</Link>
                 <Link href="/contact" className="footer-link">Contacto</Link>
                 <Link href="/suggestions" className="footer-link">Sugerencias</Link>
             </div>
