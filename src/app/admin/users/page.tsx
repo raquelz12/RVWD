@@ -134,7 +134,7 @@ export default function AdminUsersPage() {
                     <span className="center-col">Rol</span>
                     <span className="center-col">Denuncias</span>
                     <span className="center-col">Sanciones</span>
-                    <span className="center-col">Fecha creación</span>
+                    <span className="center-col col-date">Fecha creación</span>
                 </div>
 
                 <div className="users-table-body">
@@ -151,7 +151,7 @@ export default function AdminUsersPage() {
                             <span className="center-col cell-text">{user.role}</span>
                             <span className="center-col cell-text">{user.reports}</span>
                             <div className="center-col">{renderSanctions(user.sanctions)}</div>
-                            <span className="center-col cell-text">{user.createdAt}</span>
+                            <span className="center-col cell-text col-date">{user.createdAt}</span>
                         </Link>
                     ))}
                     {filteredUsers.length === 0 && (
@@ -181,6 +181,11 @@ export default function AdminUsersPage() {
                         </div>
                     </Link>
                 ))}
+                {filteredUsers.length === 0 && (
+                    <div className="no-users-message">
+                        <p>No se encontraron usuarios con los filtros aplicados.</p>
+                    </div>
+                )}
             </section>
             <nav className="users-pagination" aria-label="Paginación de usuarios">
                 <button

@@ -1,3 +1,5 @@
+/* Todo va acotado bajo .admin-users-container para no chocar con otras páginas admin
+   (Next carga el CSS de forma global y reports.css usa los mismos nombres de clase) */
 .admin-users-container {
     display: flex;
     flex-direction: column;
@@ -25,11 +27,12 @@
 .admin-users-toolbar {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 1.5rem;
     flex-wrap: wrap;
 }
 
-.search-and-mobile-filter {
+.admin-users-container .search-and-mobile-filter {
     display: flex;
     align-items: center;
     gap: 1.2rem;
@@ -38,12 +41,14 @@
     max-width: 34rem;
 }
 
-.search-and-mobile-filter .search-bar {
+.admin-users-container .search-and-mobile-filter .search-bar {
+    flex: 1;
     width: 100%;
+    min-width: 0;
     height: 2.4rem;
 }
 
-.mobile-filter-btn {
+.admin-users-container .mobile-filter-btn {
     display: none;
     background: none;
     border: none;
@@ -54,7 +59,7 @@
     transition: color 0.2s ease, background-color 0.2s ease;
 }
 
-.mobile-filter-btn.active {
+.admin-users-container .mobile-filter-btn.active {
     color: var(--primary-red, #9d2b45);
     background-color: rgba(255, 255, 255, 0.08);
 }
@@ -62,7 +67,13 @@
 .users-filters-group {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     gap: 1.4rem;
+}
+
+.users-filters-group .custom-select-container {
+    min-width: 14rem;
+    max-width: 18rem;
 }
 
 /* tabla desktop */
@@ -105,20 +116,22 @@
     background-color: rgba(255, 255, 255, 0.06);
 }
 
-.center-col {
+.admin-users-container .center-col {
     text-align: center;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.user-cell {
+.admin-users-container .user-cell {
     display: flex;
     align-items: center;
     gap: 1.4rem;
+    min-width: 0;
+    text-align: left;
 }
 
-.user-avatar {
+.admin-users-container .user-avatar {
     width: 4.4rem;
     height: 4.4rem;
     border-radius: 50%;
@@ -126,23 +139,31 @@
     flex-shrink: 0;
 }
 
-.user-names {
+.admin-users-container .user-names {
     display: flex;
     flex-direction: column;
     gap: 0.2rem;
+    min-width: 0;
 }
 
-.user-fullname {
+.admin-users-container .user-fullname,
+.admin-users-container .user-handle {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.admin-users-container .user-fullname {
     font-size: 1.6rem;
     font-weight: 500;
 }
 
-.user-handle {
+.admin-users-container .user-handle {
     font-size: 1.4rem;
     color: var(--text-secondary);
 }
 
-.cell-text {
+.admin-users-container .cell-text {
     font-size: 1.6rem;
 }
 
@@ -154,19 +175,19 @@
 }
 
 /* sanciones */
-.sanctions-wrapper {
+.admin-users-container .sanctions-wrapper {
     display: flex;
     align-items: center;
     gap: 0.8rem;
 }
 
-.sanctions-dots {
+.admin-users-container .sanctions-dots {
     display: flex;
     align-items: center;
     gap: 0.4rem;
 }
 
-.sanctions-text {
+.admin-users-container .sanctions-text {
     font-size: 1.35rem;
     color: rgba(255, 255, 255, 0.8);
 }
@@ -182,6 +203,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 1.2rem;
     padding: 1rem 0.6rem;
     text-decoration: none;
     color: inherit;
@@ -197,12 +219,15 @@
     display: flex;
     align-items: center;
     gap: 1.2rem;
+    flex: 1;
+    min-width: 0;
 }
 
 .user-mobile-right {
     display: flex;
     align-items: center;
-    gap: 1.6rem;
+    gap: 1.2rem;
+    flex-shrink: 0;
 }
 
 .user-mobile-status {
@@ -212,12 +237,12 @@
     gap: 0.5rem;
 }
 
-.mobile-status-text {
+.admin-users-container .mobile-status-text {
     font-size: 1.3rem;
     color: rgba(255, 255, 255, 0.85);
 }
 
-.mobile-chevron {
+.admin-users-container .mobile-chevron {
     font-size: 2.2rem;
     color: rgba(255, 255, 255, 0.7);
     line-height: 1;
@@ -232,7 +257,7 @@
     margin-top: 2rem;
 }
 
-.page-btn {
+.users-pagination .page-btn {
     background: none;
     border: none;
     color: rgba(255, 255, 255, 0.65);
@@ -243,54 +268,104 @@
     transition: color 0.2s ease;
 }
 
-.page-btn:hover:not(:disabled),
-.page-btn.active {
+.users-pagination .page-btn:hover:not(:disabled),
+.users-pagination .page-btn.active {
     color: var(--primary-white, #ffffff);
     font-weight: 600;
 }
 
-.page-btn:disabled {
+.users-pagination .page-btn:disabled {
     opacity: 0.3;
     cursor: default;
 }
 
-.page-dots {
+.users-pagination .page-dots {
     color: rgba(255, 255, 255, 0.5);
     font-size: 1.4rem;
 }
 
 /* responsive */
+
+/* tablet: se oculta la fecha de creación para dar aire a la tabla */
+@media (max-width: 1100px) {
+    .admin-users-container {
+        padding: 4.5rem 2rem;
+    }
+
+    .users-table-header,
+    .users-table-row {
+        grid-template-columns: 1.6fr 1fr 1fr 0.9fr 1.2fr;
+        gap: 1.2rem;
+        padding: 1.2rem 1rem;
+    }
+
+    .admin-users-container .col-date {
+        display: none;
+    }
+
+    .admin-users-container .cell-text {
+        font-size: 1.5rem;
+    }
+}
+
+/* movil: lista en lugar de tabla */
 @media (max-width: 850px) {
     .admin-users-container {
-        padding: 3rem 1.8rem 6rem 0;
+        padding: 3rem 1.8rem 8rem 1.8rem;
         gap: 2.5rem;
-        max-width: 90%;
     }
 
     .admin-users-header h1 {
         font-size: 2.8rem;
     }
 
-    .search-and-mobile-filter {
+    .admin-users-header p {
+        font-size: 1.6rem;
+    }
+
+    .admin-users-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1.4rem;
+    }
+
+    .admin-users-container .search-and-mobile-filter {
         max-width: 100%;
+        min-width: 0;
         width: 100%;
     }
 
-    .mobile-filter-btn {
+    .admin-users-container .search-and-mobile-filter .search-bar {
+        max-width: none;
+    }
+
+    .admin-users-container .mobile-filter-btn {
         display: flex;
         align-items: center;
         justify-content: center;
+        flex-shrink: 0;
     }
 
     .users-filters-group {
         display: none;
-        width: 50%;
-        flex-wrap: wrap;
+        width: 100%;
         gap: 1rem;
     }
 
     .users-filters-group.mobile-visible {
-        display: flex;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .users-filters-group .custom-select-container {
+        width: 100%;
+        min-width: 0;
+        max-width: none;
+    }
+
+    /* si el número de selects es impar, el último ocupa toda la fila */
+    .users-filters-group .custom-select-container:last-child:nth-child(odd) {
+        grid-column: 1 / -1;
     }
 
     .users-table-desktop {
@@ -301,12 +376,49 @@
         display: flex;
     }
 
-    .user-avatar {
+    .admin-users-container .user-avatar {
         width: 4rem;
         height: 4rem;
     }
 
-    .sanctions-text {
+    .admin-users-container .sanctions-text {
         font-size: 1.2rem;
+    }
+}
+
+/* moviles pequeños */
+@media (max-width: 400px) {
+    .admin-users-container {
+        padding-left: 1.4rem;
+        padding-right: 1.4rem;
+    }
+
+    .admin-users-header h1 {
+        font-size: 2.4rem;
+    }
+
+    .users-filters-group.mobile-visible {
+        grid-template-columns: 1fr;
+    }
+
+    .user-mobile-left {
+        gap: 1rem;
+    }
+
+    .admin-users-container .user-avatar {
+        width: 3.6rem;
+        height: 3.6rem;
+    }
+
+    .admin-users-container .user-fullname {
+        font-size: 1.5rem;
+    }
+
+    .admin-users-container .user-handle {
+        font-size: 1.3rem;
+    }
+
+    .user-mobile-right {
+        gap: 0.8rem;
     }
 }
