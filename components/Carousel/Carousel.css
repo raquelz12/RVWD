@@ -1,0 +1,67 @@
+.mobile-carousel-module {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.carousel-wrapper {
+    width: 100vw;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.cards-scroll-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    gap: 0;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.cards-scroll-container::-webkit-scrollbar {
+    display: none;
+}
+
+.carousel-slot-container {
+    flex: 0 0 100%;
+    width: 100%;
+    scroll-snap-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    height: 31rem;
+}
+
+.carousel-slot-container > * {
+    width: 26rem;
+}
+
+.carousel-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2rem;
+}
+
+.pagination-letter {
+    font-family: var(--font-heading);
+    font-size: 1.6rem;
+    color: color-mix(in srgb, var(--primary-white) 15%, transparent);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.pagination-letter.active {
+    color: var(--primary-red, #9d2b45);
+    font-size: 2.2rem;
+    font-weight: bold;
+    text-shadow: 0 0 0.8rem rgba(157, 43, 69, 0.5);
+}

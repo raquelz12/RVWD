@@ -1,0 +1,42 @@
+.about-container {
+    display: flex;
+    flex-direction: column;
+    padding: 4rem 2rem;
+    width: 100%;
+    max-width: 120rem;
+    margin: 0 auto;
+    box-sizing: border-box;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.about-title {
+    font-size: 3.6rem;
+    font-weight: 500;
+}
+
+.about-text {
+    font-size: 2rem;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.about-section {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 0 2.4rem;
+}
+
+.about-section-title {
+    font-size: 2rem;
+}
+
+.about-section-text {
+    line-height: 1.5;
+    margin: 0;
+}
+
+.about-button {
+    width: fit-content;
+}

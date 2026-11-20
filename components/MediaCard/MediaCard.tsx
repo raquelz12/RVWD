@@ -1,4 +1,7 @@
+'use client';
+
 import './MediaCard.css';
+import Score from '../Score/Score';
 
 export interface MediaCardProps {
   userName?: string;
@@ -9,21 +12,45 @@ export interface MediaCardProps {
   artist: string;
   imageUrl: string;
   forceShowInfo?: boolean;
+  scoreType?: 'red' | 'white';
 }
 
-export default function MediaCard({ type, title, artist, imageUrl, userName, userPicture, score, forceShowInfo }: MediaCardProps) {
+//Ejemplo para pegar en otros lados:
+// Con score:
+// <MediaCard
+//   type="cancion"
+//   title="Jukiar"
+//   artist="Clarent"
+//   imageUrl="placeholderCards.png"
+//   userName="@raquelz.12204"
+//   userPicture="placeholderCards.png"
+//   score={85}
+//   forceShowInfo={true}
+// />
+// Sin score:
+// <MediaCard
+//   type="album"
+//   title="Jukiar"
+//   artist="Clarent"
+//   imageUrl="placeholderCards.png"
+//   userName="@raquelz.12204"
+//   userPicture="placeholderCards.png"
+//   forceShowInfo={true}
+// />
+
+export default function MediaCard({ type, title, artist, imageUrl, userName, userPicture, score, forceShowInfo, scoreType }: MediaCardProps) {
   return (
     <article className={`media-card ${type === 'artista' ? 'is-artist' : ''} ${forceShowInfo ? 'force-show-info' : ''}`}>
+      {score && (
+          <div className="media-score-position">
+            <Score input={false} score={score} variant={scoreType || "red"} />
+          </div>
+        )}
       <div className="media-image-container">
         {userName && (
           <div className="user-badge-pill">
             <img src={userPicture || '/placeholderCards.png'} className="user-picture" alt={userName} />
             <span className="user-name">{userName}</span>
-          </div>
-        )}
-        {score && (
-          <div className="score-badge">
-            {score}
           </div>
         )}
         <div className="image-wrapper">

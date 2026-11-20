@@ -1,0 +1,147 @@
+.privacy-page-container {
+    display: flex;
+    flex-direction: column;
+    padding: 4rem 2rem;
+    width: 100%;
+    max-width: 120rem;
+    margin: 0 auto;
+    box-sizing: border-box;
+    justify-content: center;
+    gap: 2rem;
+}
+
+/* cabecera */
+.privacy-header-section {
+    padding-bottom: 2rem;
+}
+
+.privacy-main-title {
+    font-size: 3.6rem;
+    font-weight: 500;
+}
+
+.privacy-main-intro {
+    font-size: 2rem;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* sections */
+.privacy-content {
+    display: flex;
+    flex-direction: column;
+    gap: 6rem;
+}
+
+.privacy-section-title {
+    font-size: 2.4rem;
+    font-weight: 500;
+    margin: 0;
+}
+
+.privacy-section {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+.text-block h3 {
+    font-size: 1.6rem;
+    font-weight: 500;
+    margin: 0 0 0.8rem 0;
+    color: var(--primary-white);
+}
+
+.text-block p {
+    font-size: 1.4rem;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.privacy-list {
+    margin: 0;
+    padding-left: 2rem;
+    font-size: 1.4rem;
+    line-height: 1.6;
+}
+
+.privacy-list li {
+    margin-bottom: 0.8rem;
+}
+
+.privacy-list strong {
+    color: var(--primary-white);
+    font-weight: 500;
+}
+
+.inline-link {
+    color: var(--primary-white);
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.inline-link:hover {
+    color: var(--primary-red, #9d2b45);
+}
+
+/* tables */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    border-radius: 0.8rem;
+}
+
+.privacy-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: rgba(255, 255, 255, 0.05);
+    text-align: left;
+}
+
+.privacy-table th, 
+.privacy-table td {
+    padding: 1.2rem 2rem;
+    font-size: 1.4rem;
+    line-height: 1.5;
+}
+
+.privacy-table th {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: var(--primary-white);
+    font-weight: 500;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.privacy-table td {
+    color: rgba(255, 255, 255, 0.7);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.privacy-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.table-note {
+    font-size: 1.3rem !important;
+    color: rgba(255, 255, 255, 0.5) !important;
+    margin-top: -1rem !important;
+    font-style: italic;
+}
+
+/* responsive */
+@media (max-width: 768px) {
+    .privacy-page-container {
+        padding: 4rem 1.5rem;
+    }
+    
+    .privacy-main-title {
+        font-size: 2.6rem;
+    }
+    
+    .privacy-table th, 
+    .privacy-table td {
+        padding: 1rem 1.2rem;
+    }
+}

@@ -18,11 +18,13 @@
   /*Colores principales*/
   --primary-red: #94314F;
   --primary-red-hover: #b33a57;
-  --error-red: #FF5356;
+  --danger-red: #FF5356;
+  --danger-red-hover: #ff7875;
   --primary-white: #E2F0F0;
   --white: #ffff;
   --black: #000000;
   --green: #35565F;
+  --text-secondary: #a1a1aa;
 
   /*Colores sombras*/
   --shadow-dark-red: #4A0F22;
@@ -61,6 +63,10 @@ body::-webkit-scrollbar {
 html,
 body {
   scrollbar-width: none;
+}
+
+.RVWS {
+  font-family: var(--font-heading);
 }
 
 /*Responsive*/

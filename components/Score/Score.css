@@ -1,12 +1,10 @@
 .score-circle-input-wrapper {
     width: 6.4rem;
     height: 6.4rem;
-    background: linear-gradient(to bottom, var(--gradient-red-start), var(--gradient-red-middle), var(--gradient-red-end));
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 0.4rem 1.2rem rgba(157, 43, 69, 0.4);
     flex-shrink: 0;
     overflow: hidden;
 }
@@ -18,8 +16,7 @@
     border: none;
     outline: none;
     color: var(--primary-white, #fff);
-    font-size: 2rem;
-    font-weight: 800;
+    font-size: 3rem;
     text-align: center;
     font-family: inherit;
 }
@@ -28,4 +25,26 @@
 .score-circle-real-input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
+}
+
+.score-circle {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+}
+
+/* Variantes */
+.score-circle-input-wrapper.score-white {
+    background: linear-gradient(to bottom, var(--gradient-grey), var(--gradient-white));
+    box-shadow: inset 0 0.1rem 0.2rem rgba(157, 43, 69, 0.4);
+    color: var(--primary-red);
+}
+
+.score-circle-input-wrapper.score-red {
+    background: linear-gradient(to bottom, var(--gradient-red-start), var(--gradient-red-middle), var(--gradient-red-end));
+    box-shadow: 0 0.4rem 1.2rem rgba(157, 43, 69, 0.4);
+    color: var(--primary-white);
 }

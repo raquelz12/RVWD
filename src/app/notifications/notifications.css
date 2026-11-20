@@ -1,0 +1,235 @@
+.notifications-container {
+    display: flex;
+    flex-direction: column;
+    padding: 4rem 2rem;
+    width: 100%;
+    max-width: 120rem;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+.notifications-header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 4rem;
+}
+
+.notifications-title {
+    font-size: 3.6rem;
+    font-weight: 500;
+    margin: 0 0 .5rem 0;
+}
+
+.notifications-description {
+    font-size: 1.6rem;
+    margin: 0;
+}
+
+/* Columnas */
+.notifications-columns-wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 8rem;
+    width: 100%;
+    justify-content: space-between;
+    padding-bottom: 4rem;
+}
+
+.notifications-main-column {
+    flex: 1.2;
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+}
+
+.notifications-side-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.notifications-column-section {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+.notifications-column-title {
+    font-size: 2.4rem;
+    font-weight: 500;
+    margin: 0;
+}
+
+.notifications-list {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+}
+
+/* Notificaciones */
+.notif-item {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    align-items: flex-start;
+}
+
+.notif-cover {
+    width: 7rem;
+    height: 7rem;
+    object-fit: cover;
+    border-radius: 0.6rem;
+    flex-shrink: 0;
+}
+
+.notif-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    height: 100%;
+    justify-content: space-evenly;
+}
+
+.notif-item-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.notif-avatar {
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.notif-username {
+    font-size: 1.3rem;
+    color: var(--primary-white);
+}
+
+.notif-date {
+    font-size: 1.2rem;
+    color: var(--text-secondary, #a1a1aa);
+}
+
+.notif-text {
+    margin: 0;
+    font-size: 1.4rem;
+    line-height: 1.4;
+    color: var(--primary-white);
+}
+
+.notif-text strong {
+    font-weight: 600;
+}
+
+/* Solicitudes de Seguimiento */
+.follow-request-item {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-left: 2rem;
+}
+
+.follow-request-text {
+    margin: 0 0 0 3.4rem;
+    font-size: 1.6rem;
+}
+
+.follow-request-actions {
+    display: flex;
+    gap: 1.5rem;
+    margin-left: 3.4rem;
+    margin-top: 0.5rem;
+}
+
+.follow-request-actions .btn-small {
+    padding: 0.6rem 2rem;
+    font-size: 1.3rem;
+    min-width: auto;
+    width: auto;
+}
+
+/* Responsive */
+
+.mobile-follow-requests,
+.mobile-back-requests {
+    display: none;
+}
+
+@media (max-width: 900px) {
+    .notifications-columns-wrapper {
+        flex-direction: column;
+        gap: 5rem;
+    }
+    
+    .follow-request-item {
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .notifications-container {
+        padding: 2rem 1.5rem;
+    }
+    
+    .notifications-header {
+        margin-bottom: 2rem;
+        align-items: center;
+    }
+
+    .hide-on-mobile {
+        display: none !important;
+    }
+
+    .desktop-only-title {
+        display: none;
+    }
+
+    .mobile-follow-requests {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        margin-bottom: 3rem;
+        text-decoration: none;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 3rem;
+        padding: 1.2rem 2rem;
+        color: var(--primary-white);
+        font-size: 1.6rem;
+        font-family: inherit;
+        cursor: pointer;
+        width: 100%;
+    }
+
+    .mobile-back-requests {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        margin-bottom: 3rem;
+        text-decoration: none;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 3rem;
+        padding: 1.2rem 2rem;
+        color: var(--primary-white);
+        font-size: 1.6rem;
+        font-family: inherit;
+        cursor: pointer;
+        width: 100%;
+    }
+
+    .notifications-column-title {
+        text-align: center;
+        font-size: 2rem;
+    }
+
+    .notifications-list {
+        align-items: center;
+    }
+}

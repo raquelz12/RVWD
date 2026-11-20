@@ -4,12 +4,20 @@ import { useState } from 'react';
 import './Header.css';
 import SearchBar from '../SearchBar/SearchBar';
 import { useModal } from '@/context/ModalContext';
+import NotificationDropdown from '../NotificationDropdown/NotificationDropdown';
 
 export default function Header() {
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const isAdmin = false;
     const { openModal } = useModal();
+
+    const [isNotifOpen, setIsNotifOpen] = useState(false);
+
+    const toggleNotifMenu = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setIsNotifOpen(!isNotifOpen);
+    };
 
     return (
         <header className="header">
@@ -37,7 +45,7 @@ export default function Header() {
                     </>
                 ) : (
                     <>
-                        <a href="#" className="nav-link">Feed</a>
+                        <a href="/feed" className="nav-link">Feed</a>
                         <a href="#" className="nav-link">Explorar</a>
                         <a href="#" className="nav-link">Artistas</a>
                         <a href="#" className="nav-link">Álbumes</a>
@@ -48,10 +56,15 @@ export default function Header() {
                 <SearchBar placeholder="Busca canciones, usuarios, ..." value="" onChange={(): void => {}} />
                 
                 <div className="user-profile">
-                    <button className="nav-button" aria-label="Notificaciones">
-                        <span className="icon-bell"></span>
-                    </button>
-                    <button className="nav-button" aria-label="Perfil" onClick={() => openModal('login')}>
+                    <div style={{ position: 'relative' }}>
+                        <button className="nav-button" aria-label="Notificaciones" onClick={toggleNotifMenu}>
+                            <span className="icon-bell"></span>
+                        </button>
+                        {isNotifOpen && (
+                            <NotificationDropdown onClose={() => setIsNotifOpen(false)} />
+                        )}
+                    </div>
+                    <button className="nav-button" aria-label="Perfil" onClick={() => window.location.href = "/profile"}>
                         <span className="icon-user"></span>
                     </button>
                 </div>

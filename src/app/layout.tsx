@@ -3,7 +3,7 @@ import { Raleway } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import Header from "../../components/Header/Header";
-import BottomNav from "../../components/BottomNav/BotttomNav";
+import BottomNav from "../../components/BottomNav/BottomNav";
 import Footer from "../../components/Footer/Footer";
 import GlobalModals from "../../components/GlobalModal";
 import { ModalProvider } from "@/context/ModalContext";

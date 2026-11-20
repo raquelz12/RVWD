@@ -1,0 +1,315 @@
+/* escritorio */
+.mobile-artist-view {
+    display: none;
+}
+
+.artist-page-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 120rem;
+    margin: 0 auto;
+    padding: 6rem 2rem;
+    box-sizing: border-box;
+}
+
+/* cabecera escritorio */
+.artist-header-desktop {
+    display: flex;
+    gap: 4rem;
+    align-items: center;
+    padding-bottom: 4rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 4rem;
+}
+
+.artist-cover-desktop {
+    width: 23rem;
+    height: 23rem;
+    object-fit: cover;
+    border-radius: 2.4rem;
+    flex-shrink: 0;
+}
+
+.artist-info-desktop {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 1;
+    padding: 1rem 0;
+    gap: 3rem;
+}
+
+.artist-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.artist-title {
+    font-size: 3.6rem;
+    margin: 0 0 0.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-family: var(--font-heading);
+}
+
+.artist-subtitle {
+    font-size: 2rem;
+    margin: 0;
+}
+
+.star-icon {
+    width: 2.4rem;
+    height: 2.4rem;
+    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(103%) contrast(103%);
+}
+
+.bell-icon {
+    width: 2.4rem;
+    height: 2.4rem;
+    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(103%) contrast(103%);
+}
+
+.artist-score-action {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+}
+
+.score-block {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.score-label {
+    font-size: 2rem;
+    line-height: 1.2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.score-label span {
+    font-size: 3.2rem;
+}
+
+/* Estadísticas (Minutos, Canciones...) */
+.artist-stats-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Acciones */
+.artist-actions {
+    display: flex;
+    justify-content: flex-start;
+    gap: 2rem;
+    align-items: center;
+}
+
+.artist-follow-btn {
+    font-size: 2rem;
+    height: 4.8rem;
+}
+
+.rvw-action-btn {
+    height: 4.8rem;
+    display: flex;
+    align-items: center;
+}
+
+.rvw-action-btn span {
+    font-size: 3.2rem;
+}
+
+/* secciones y tarjetas */
+.artist-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 6rem;
+}
+
+.artist-section {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.artist-section-title {
+    font-size: 3.2rem;
+}
+
+.artist-section-title .RVWS {
+    font-size: 3.6rem;
+}
+
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 3rem;
+}
+
+.square-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border-radius: 1.2rem;
+    overflow: hidden;
+    background-color: var(--primary-red, #9d2b45);
+}
+
+.square-card-image-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+}
+
+.square-card-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.square-card-badge {
+    position: absolute;
+    top: -1rem;
+    right: -1rem;
+    background-color: rgba(255, 255, 255, 0.9);
+    color: var(--primary-red, #9d2b45);
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    font-weight: bold;
+    border: 3px solid #182226;
+}
+
+.square-card-user-overlay {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    padding: 0.4rem 1rem 0.4rem 0.4rem;
+    border-radius: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.square-card-user-overlay img {
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 50%;
+}
+
+.square-card-user-overlay span {
+    font-size: 1.2rem;
+    color: white;
+}
+
+.square-card-footer {
+    padding: 1.2rem;
+    font-size: 1.3rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    color: white;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* movil */
+@media (max-width: 768px) {
+    .desktop-artist-view {
+        display: none;
+    }
+    
+    .mobile-artist-view {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .artist-page-container {
+        padding: 0;
+        overflow-x: hidden;
+        padding-bottom: 10rem;
+    }
+
+    /* Hero Inmersivo */
+    .mobile-artist-hero {
+        position: relative;
+        width: 100vw;
+        height: 100vw;
+        max-height: 50vh;
+    }
+
+    .mobile-hero-bg {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .mobile-hero-gradient {
+        position: absolute;
+        bottom: 0; left: 0; width: 100%; height: 60%;
+        background: linear-gradient(to top, rgba(34, 46, 52, 1) 0%, rgba(34, 46, 52, 0.8) 50%, rgba(34, 46, 52, 0) 100%);
+    }
+
+    /* Contenido central Móvil */
+    .mobile-artist-content {
+        padding: 0 2rem;
+        margin-top: -3rem;
+        position: relative;
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+        gap: 3rem;
+    }
+
+    .mobile-artist-title .artist-title {
+        font-size: 3rem;
+        line-height: 1.1;
+        justify-content: space-between;
+    }
+
+    .mobile-stats {
+        justify-content: space-evenly;
+    }
+
+    .mobile-score-action {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 3rem;
+        padding-bottom: 2rem;
+        padding-top: 2rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Carrusel de tarjetas en móvil */
+    .artist-sections-mobile {
+        display: flex;
+        flex-direction: column;
+        gap: 5rem;
+        padding-bottom: 3rem;
+    }
+
+    .artist-section-title {
+        text-align: center;
+        display: block;
+        width: 100%;
+        font-size: 2.8rem;
+        margin-bottom: 2rem;
+    }
+}

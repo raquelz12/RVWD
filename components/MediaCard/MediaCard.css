@@ -1,4 +1,5 @@
 .media-card {
+  position: relative; 
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
@@ -8,6 +9,13 @@
   transition: transform 0.2s ease, opacity 0.2s ease;
   align-items: center;
   justify-content: center;
+}
+
+.media-score-position {
+  position: absolute;
+  top: -2rem;
+  right: -2rem;
+  z-index: 20;
 }
 
 .media-card:hover {
@@ -52,7 +60,7 @@
 .user-badge-pill {
   position: absolute;
   top: 1.2rem;
-  left: 1.2rem;
+  left: 1.5rem;
   z-index: 10;
   display: flex;
   align-items: center;
@@ -77,20 +85,21 @@
 
 .score-badge {
   position: absolute;
-  top: -1rem;
-  right: -1rem;
-  z-index: 10;
-  width: 4.8rem;
-  height: 4.8rem;
-  background-color: var(--primary-red, #94314F);
-  color: var(--primary-white, #E2F0F0);
+  width: 6.4rem;
+  height: 6.4rem;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  font-size: 2rem;
-  font-weight: 300;
-  border: 0.1rem solid rgba(255,255,255,0.2);
+  flex-shrink: 0;
+  overflow: hidden;
+  background: linear-gradient(to bottom, var(--gradient-red-start), var(--gradient-red-middle), var(--gradient-red-end));
+  box-shadow: 0 0.4rem 1.2rem rgba(157, 43, 69, 0.4);
+  color: var(--primary-white);
+  font-size: 3rem;
+  top: -3rem;
+  right: -3rem;
+  z-index: 10;
 }
 
 /*Texto hover*/
