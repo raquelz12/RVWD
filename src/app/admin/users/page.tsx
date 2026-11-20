@@ -139,7 +139,7 @@ export default function AdminUsersPage() {
 
                 <div className="users-table-body">
                     {filteredUsers.map((user) => (
-                        <Link href={`/admin/usuarios/${user.id}`} key={user.id} className="users-table-row">
+                        <Link href={`/admin/users/${user.id}`} key={user.id} className="users-table-row">
                             <div className="user-cell">
                                 <img src={user.avatar} alt={user.name} className="user-avatar" />
                                 <div className="user-names">
@@ -163,7 +163,7 @@ export default function AdminUsersPage() {
             </section>
             <section className="users-list-mobile">
                 {filteredUsers.map((user) => (
-                    <Link href={`/admin/usuarios/${user.id}`} key={user.id} className="user-mobile-row">
+                    <Link href={`/admin/users/${user.id}`} key={user.id} className="user-mobile-row">
                         <div className="user-mobile-left">
                             <img src={user.avatar} alt={user.name} className="user-avatar" />
                             <div className="user-names">

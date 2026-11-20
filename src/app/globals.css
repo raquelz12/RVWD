@@ -69,6 +69,10 @@ body {
   font-family: var(--font-heading);
 }
 
+input[type="checkbox"]:checked {
+  accent-color: var(--primary-red);
+}
+
 /*Responsive*/
 @media (max-width: 1024px) {
   
