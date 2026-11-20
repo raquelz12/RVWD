@@ -4,7 +4,6 @@ import Link from 'next/link';
 import './dashboard.css';
 
 export default function AdminDashboard() {
-    // Datos de prueba basados en tu diseño
     const stats = [
         { label: 'Usuarios nuevos', value: 67 },
         { label: 'Mensajes de contacto', value: 7 },
@@ -26,7 +25,6 @@ export default function AdminDashboard() {
         { id: 3, title: 'Filtro por etiquetas', user: '@quevedo', time: 'Hace 10 min', status: 'En desarrollo', highlighted: false },
     ];
 
-    // Alturas en porcentaje para el gráfico de los últimos 7 días
     const chartData = [
         { day: 'Lun', height: 48, isPeak: false },
         { day: 'Mar', height: 78, isPeak: false },
