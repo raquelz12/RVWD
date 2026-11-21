@@ -1,0 +1,135 @@
+/* =========================================
+   ESCRITORIO: el panel no existe, los filtros se ven en línea
+   ========================================= */
+@media (min-width: 851px) {
+    .filter-sheet,
+    .filter-sheet-body {
+        display: contents;
+    }
+
+    .filter-sheet-overlay,
+    .filter-sheet-handle,
+    .filter-sheet-header,
+    .filter-sheet-footer {
+        display: none;
+    }
+}
+
+/* =========================================
+   MÓVIL: panel que sube desde abajo
+   ========================================= */
+@media (max-width: 850px) {
+    .filter-sheet-overlay {
+        position: fixed;
+        inset: 0;
+        background-color: rgba(0, 0, 0, 0.55);
+        backdrop-filter: blur(3px);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+        z-index: 1100; /* por encima de la BottomNav */
+    }
+
+    .filter-sheet-overlay.open {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .filter-sheet {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        max-height: 85dvh;
+        display: flex;
+        flex-direction: column;
+        background: linear-gradient(180deg, rgba(44, 52, 56, 0.98) 0%, rgba(56, 68, 72, 0.98) 100%);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-bottom: none;
+        border-radius: 2.4rem 2.4rem 0 0;
+        box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.45);
+        color: var(--primary-white, #ffffff);
+        transform: translateY(100%);
+        visibility: hidden;
+        transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1), visibility 0s linear 0.35s;
+        z-index: 1101;
+    }
+
+    .filter-sheet.open {
+        transform: translateY(0);
+        visibility: visible;
+        transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1), visibility 0s;
+    }
+
+    .filter-sheet-handle {
+        width: 4.4rem;
+        height: 0.5rem;
+        border-radius: 1rem;
+        background-color: rgba(255, 255, 255, 0.3);
+        margin: 1rem auto 0 auto;
+        flex-shrink: 0;
+    }
+
+    .filter-sheet-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.4rem 2rem 0.6rem 2rem;
+        flex-shrink: 0;
+    }
+
+    .filter-sheet-header h3 {
+        font-size: 2rem;
+        font-weight: 500;
+        margin: 0;
+    }
+
+    .filter-sheet-close {
+        background: none;
+        border: none;
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 1.8rem;
+        cursor: pointer;
+        padding: 0.4rem;
+    }
+
+    /* Sin overflow para que el desplegable del Select flote por encima
+       del resto de filtros y del pie en vez de cortarse */
+    .filter-sheet-body {
+        flex: 1;
+        min-height: 0;
+        overflow: visible;
+        padding: 1.4rem 2rem 2rem 2rem;
+    }
+
+    /* El último campo abre hacia arriba para no salirse por abajo;
+       el penúltimo también si hay 4 campos o más (p. ej. denuncias) */
+    .filter-sheet-body > * > :last-child .custom-select-dropdown,
+    .filter-sheet-body > * > :nth-last-child(2):nth-child(n + 3) .custom-select-dropdown {
+        top: auto;
+        bottom: calc(100% + 0.8rem);
+        box-shadow: 0 -1rem 3rem rgba(0, 0, 0, 0.5);
+    }
+
+    .filter-sheet-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1.2rem;
+        padding: 1.4rem 2rem calc(1.4rem + env(safe-area-inset-bottom)) 2rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        flex-shrink: 0;
+    }
+
+    .filter-sheet-footer .custom-button.primary {
+        flex: 1;
+    }
+}
+
+/* Pantallas muy bajas (móvil en horizontal): si los filtros no caben,
+   se vuelve a permitir scroll dentro del panel */
+@media (max-width: 850px) and (max-height: 560px) {
+    .filter-sheet-body {
+        overflow-y: auto;
+    }
+}

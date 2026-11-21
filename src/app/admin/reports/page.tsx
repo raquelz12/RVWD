@@ -1,11 +1,13 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback, Suspense } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import SearchBar from '../../../../components/SearchBar/SearchBar';
 import Select from '../../../../components/Select/Select';
+import FilterSheet from '../../../../components/FilterSheet/FilterSheet';
 import Dot from '../../../../components/Dot/Dot';
+import '../admin-shared.css';
 import './reports.css';
 
 interface AdminReport {
@@ -69,10 +71,27 @@ const DATE_OPTIONS = [
     { value: 'month', label: 'Último mes' },
 ];
 
+// useSearchParams necesita un Suspense para que la build de producción no falle
 export default function AdminReportsPage() {
+    return (
+        <Suspense fallback={null}>
+            <AdminReportsWithQuery />
+        </Suspense>
+    );
+}
+
+// /admin/reports?q=@usuario (desde una denuncia o un perfil) precarga la búsqueda.
+// Con cacheComponents Next conserva el estado de las páginas ya visitadas, así que
+// la key fuerza a recrear el listado cuando cambia ?q= y se aplica la nueva búsqueda.
+function AdminReportsWithQuery() {
+    const query = useSearchParams().get('q') ?? '';
+    return <AdminReportsContent key={query} initialQuery={query} />;
+}
+
+function AdminReportsContent({ initialQuery }: { initialQuery: string }) {
     const router = useRouter();
     const [reports, setReports] = useState<AdminReport[]>(MOCK_REPORTS);
-    const [searchQuery, setSearchQuery] = useState('');
+    const [searchQuery, setSearchQuery] = useState(initialQuery);
     const [statusFilter, setStatusFilter] = useState('');
     const [reasonFilter, setReasonFilter] = useState('');
     const [sanctionFilter, setSanctionFilter] = useState('');
@@ -108,6 +127,16 @@ export default function AdminReportsPage() {
         return matchesSearch && matchesStatus && matchesReason && matchesSanction && matchesContent;
     });
 
+    const activeFiltersCount = [statusFilter, reasonFilter, sanctionFilter, contentFilter, dateFilter].filter(Boolean).length;
+    const closeFilters = useCallback(() => setShowMobileFilters(false), []);
+    const clearFilters = () => {
+        setStatusFilter('');
+        setReasonFilter('');
+        setSanctionFilter('');
+        setContentFilter('');
+        setDateFilter('');
+    };
+
     const handleQuickStatusChange = (id: string, newStatus: AdminReport['status']) => {
         setReports((prev) =>
             prev.map((r) => (r.id === id ? { ...r, status: newStatus } : r))
@@ -127,12 +156,12 @@ export default function AdminReportsPage() {
     );
 
     return (
-        <div className="admin-reports-container">
-            <header className="admin-reports-header">
+        <div className="admin-list-container">
+            <header className="admin-list-header">
                 <h1>Denuncias</h1>
                 <p>{filteredReports.length} en total</p>
             </header>
-            <section className="admin-reports-toolbar">
+            <section className="admin-list-toolbar">
                 <div className="search-and-mobile-filter">
                     <SearchBar
                         placeholder="Busca por usuario o nombre..."
@@ -140,64 +169,87 @@ export default function AdminReportsPage() {
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />
                     <button
-                        className={`mobile-filter-btn ${showMobileFilters ? 'active' : ''}`}
-                        onClick={() => setShowMobileFilters(!showMobileFilters)}
+                        className={`mobile-filter-btn ${activeFiltersCount > 0 ? 'active' : ''}`}
+                        onClick={() => setShowMobileFilters(true)}
                         aria-label="Mostrar filtros"
                     >
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M3 4a1 1 0 0 1 1-1h16a1 1 0 0 1 .8 1.6L14 13.33V20a1 1 0 0 1-1.45.89l-2-1A1 1 0 0 1 10 19v-5.67L3.2 4.6A1 1 0 0 1 3 4z" />
                         </svg>
+                        {activeFiltersCount > 0 && <span className="mobile-filter-badge">{activeFiltersCount}</span>}
                     </button>
                 </div>
-                <div className={`reports-filters-group ${showMobileFilters ? 'mobile-visible' : ''}`}>
-                    <Select
-                        options={STATUS_OPTIONS}
-                        value={statusFilter}
-                        onChange={(val) => setStatusFilter(val === 'all' ? '' : val)}
-                        placeholder="Estado"
-                    />
-                    <Select
-                        options={REASON_OPTIONS}
-                        value={reasonFilter}
-                        onChange={(val) => setReasonFilter(val === 'all' ? '' : val)}
-                        placeholder="Motivo"
-                    />
-                    <Select
-                        options={SANCTION_OPTIONS}
-                        value={sanctionFilter}
-                        onChange={(val) => setSanctionFilter(val === 'all' ? '' : val)}
-                        placeholder="Sanción"
-                    />
-                    <Select
-                        options={CONTENT_OPTIONS}
-                        value={contentFilter}
-                        onChange={(val) => setContentFilter(val === 'all' ? '' : val)}
-                        placeholder="Contenido"
-                    />
-                    <Select
-                        options={DATE_OPTIONS}
-                        value={dateFilter}
-                        onChange={(val) => setDateFilter(val === 'all' ? '' : val)}
-                        placeholder="Fecha"
-                    />
-                </div>
+                <FilterSheet
+                    open={showMobileFilters}
+                    onClose={closeFilters}
+                    onClear={clearFilters}
+                    resultCount={filteredReports.length}
+                >
+                    <div className="admin-filters-group">
+                        <div className="admin-filter-field">
+                            <span className="admin-filter-label">Estado</span>
+                            <Select
+                                options={STATUS_OPTIONS}
+                                value={statusFilter}
+                                onChange={(val) => setStatusFilter(val === 'all' ? '' : val)}
+                                placeholder="Estado"
+                            />
+                        </div>
+                        <div className="admin-filter-field">
+                            <span className="admin-filter-label">Motivo</span>
+                            <Select
+                                options={REASON_OPTIONS}
+                                value={reasonFilter}
+                                onChange={(val) => setReasonFilter(val === 'all' ? '' : val)}
+                                placeholder="Motivo"
+                            />
+                        </div>
+                        <div className="admin-filter-field">
+                            <span className="admin-filter-label">Sanción</span>
+                            <Select
+                                options={SANCTION_OPTIONS}
+                                value={sanctionFilter}
+                                onChange={(val) => setSanctionFilter(val === 'all' ? '' : val)}
+                                placeholder="Sanción"
+                            />
+                        </div>
+                        <div className="admin-filter-field">
+                            <span className="admin-filter-label">Contenido</span>
+                            <Select
+                                options={CONTENT_OPTIONS}
+                                value={contentFilter}
+                                onChange={(val) => setContentFilter(val === 'all' ? '' : val)}
+                                placeholder="Contenido"
+                            />
+                        </div>
+                        <div className="admin-filter-field">
+                            <span className="admin-filter-label">Fecha</span>
+                            <Select
+                                options={DATE_OPTIONS}
+                                value={dateFilter}
+                                onChange={(val) => setDateFilter(val === 'all' ? '' : val)}
+                                placeholder="Fecha"
+                            />
+                        </div>
+                    </div>
+                </FilterSheet>
             </section>
-            <section className="reports-table-desktop">
-                <div className="reports-table-header">
+            <section className="admin-table-desktop">
+                <div className="admin-table-header reports-grid">
                     <span>Usuario</span>
                     <span className="center-col">Estado</span>
                     <span className="center-col">Motivo</span>
                     <span className="center-col">Sanciones</span>
                     <span className="center-col">Contenido</span>
-                    <span className="center-col">Fecha</span>
+                    <span className="center-col col-date">Fecha</span>
                     <span></span>
                 </div>
-                <div className="reports-table-body">
+                <div className="admin-table-body">
                     {filteredReports.map((report) => (
                         <div
                             key={report.id}
-                            className="reports-table-row"
-                            onClick={() => router.push(`/admin/denuncias/${report.id}`)}
+                            className="admin-table-row reports-grid"
+                            onClick={() => router.push(`/admin/reports/${report.id}`)}
                         >
                             <div className="user-cell">
                                 <img src={report.avatar} alt={report.name} className="user-avatar" />
@@ -210,25 +262,25 @@ export default function AdminReportsPage() {
                             <span className="center-col cell-text">{report.reason}</span>
                             <div className="center-col">{renderSanctions(report.sanctions)}</div>
                             <span className="center-col cell-text">{report.contentType}</span>
-                            <span className="center-col cell-text">{report.createdAt}</span>
+                            <span className="center-col cell-text col-date">{report.createdAt}</span>
                             <div
                                 className="row-menu-wrapper"
                                 ref={openMenuId === report.id ? menuRef : null}
                                 onClick={(e) => e.stopPropagation()}
                             >
                                 <button
-                                    className="row-menu-btn"
+                                    className="more-menu-btn"
                                     onClick={() => setOpenMenuId(openMenuId === report.id ? null : report.id)}
                                     aria-label="Acciones de denuncia"
                                 >
                                     ⋮
                                 </button>
                                 {openMenuId === report.id && (
-                                    <div className="row-menu-dropdown">
+                                    <div className="more-menu-dropdown align-right">
                                         <Link href={`/admin/users/${report.userId}`} className="dropdown-item">
                                             Ver usuario
                                         </Link>
-                                        <Link href={`/admin/contenido/${report.contentId}`} className="dropdown-item">
+                                        <Link href={`/admin/content/${report.contentId}`} className="dropdown-item">
                                             Ver contenido
                                         </Link>
                                         <div className="dropdown-divider" />
@@ -250,16 +302,16 @@ export default function AdminReportsPage() {
                         </div>
                     ))}
                     {filteredReports.length === 0 && (
-                        <div className="no-reports-message">
+                        <div className="admin-empty-message">
                             <p>No se encontraron denuncias con los filtros aplicados.</p>
                         </div>
                     )}
                 </div>
             </section>
-            <section className="reports-list-mobile">
+            <section className="admin-list-mobile">
                 {filteredReports.map((report) => (
-                    <Link href={`/admin/denuncias/${report.id}`} key={report.id} className="report-mobile-row">
-                        <div className="report-mobile-left">
+                    <Link href={`/admin/reports/${report.id}`} key={report.id} className="admin-mobile-row">
+                        <div className="admin-mobile-left">
                             <img src={report.avatar} alt={report.name} className="user-avatar" />
                             <div className="user-names">
                                 <span className="user-fullname">{report.name}</span>
@@ -267,8 +319,8 @@ export default function AdminReportsPage() {
                             </div>
                         </div>
 
-                        <div className="report-mobile-right">
-                            <div className="report-mobile-status">
+                        <div className="admin-mobile-right">
+                            <div className="admin-mobile-status">
                                 <span className="mobile-status-text">{report.status}</span>
                                 {renderSanctions(report.sanctions)}
                             </div>
@@ -277,12 +329,12 @@ export default function AdminReportsPage() {
                     </Link>
                 ))}
                 {filteredReports.length === 0 && (
-                    <div className="no-reports-message">
+                    <div className="admin-empty-message">
                         <p>No se encontraron denuncias con los filtros aplicados.</p>
                     </div>
                 )}
             </section>
-            <nav className="reports-pagination" aria-label="Paginación de denuncias">
+            <nav className="admin-pagination" aria-label="Paginación de denuncias">
                 <button
                     className="page-btn"
                     onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}

@@ -1,10 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import Link from 'next/link';
 import SearchBar from '../../../../components/SearchBar/SearchBar';
 import Select from '../../../../components/Select/Select';
+import FilterSheet from '../../../../components/FilterSheet/FilterSheet';
 import Dot from '../../../../components/Dot/Dot';
+import '../admin-shared.css';
 import './users.css';
 
 interface AdminUser {
@@ -72,6 +74,14 @@ export default function AdminUsersPage() {
         return matchesSearch && matchesStatus && matchesRole && matchesSanction;
     });
 
+    const activeFiltersCount = [statusFilter, roleFilter, sanctionFilter].filter(Boolean).length;
+    const closeFilters = useCallback(() => setShowMobileFilters(false), []);
+    const clearFilters = () => {
+        setStatusFilter('');
+        setRoleFilter('');
+        setSanctionFilter('');
+    };
+
     const renderSanctions = (count: number) => (
         <div className="sanctions-wrapper">
             <div className="sanctions-dots">
@@ -84,12 +94,12 @@ export default function AdminUsersPage() {
     );
 
     return (
-        <div className="admin-users-container">
-            <header className="admin-users-header">
+        <div className="admin-list-container">
+            <header className="admin-list-header">
                 <h1>Usuarios</h1>
                 <p>1.234 usuarios en total</p>
             </header>
-            <section className="admin-users-toolbar">
+            <section className="admin-list-toolbar">
                 <div className="search-and-mobile-filter">
                     <SearchBar
                         placeholder="Busca por usuario, email o nombre..."
@@ -97,38 +107,55 @@ export default function AdminUsersPage() {
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />
                     <button
-                        className={`mobile-filter-btn ${showMobileFilters ? 'active' : ''}`}
-                        onClick={() => setShowMobileFilters(!showMobileFilters)}
+                        className={`mobile-filter-btn ${activeFiltersCount > 0 ? 'active' : ''}`}
+                        onClick={() => setShowMobileFilters(true)}
                         aria-label="Mostrar filtros"
                     >
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M3 4a1 1 0 0 1 1-1h16a1 1 0 0 1 .8 1.6L14 13.33V20a1 1 0 0 1-1.45.89l-2-1A1 1 0 0 1 10 19v-5.67L3.2 4.6A1 1 0 0 1 3 4z" />
                         </svg>
+                        {activeFiltersCount > 0 && <span className="mobile-filter-badge">{activeFiltersCount}</span>}
                     </button>
                 </div>
-                <div className={`users-filters-group ${showMobileFilters ? 'mobile-visible' : ''}`}>
-                    <Select
-                        options={STATUS_OPTIONS}
-                        value={statusFilter}
-                        onChange={(val) => setStatusFilter(val === 'all' ? '' : val)}
-                        placeholder="Estado"
-                    />
-                    <Select
-                        options={ROLE_OPTIONS}
-                        value={roleFilter}
-                        onChange={(val) => setRoleFilter(val === 'all' ? '' : val)}
-                        placeholder="Rol"
-                    />
-                    <Select
-                        options={SANCTION_OPTIONS}
-                        value={sanctionFilter}
-                        onChange={(val) => setSanctionFilter(val === 'all' ? '' : val)}
-                        placeholder="Sanción"
-                    />
-                </div>
+                <FilterSheet
+                    open={showMobileFilters}
+                    onClose={closeFilters}
+                    onClear={clearFilters}
+                    resultCount={filteredUsers.length}
+                >
+                    <div className="admin-filters-group">
+                        <div className="admin-filter-field">
+                            <span className="admin-filter-label">Estado</span>
+                            <Select
+                                options={STATUS_OPTIONS}
+                                value={statusFilter}
+                                onChange={(val) => setStatusFilter(val === 'all' ? '' : val)}
+                                placeholder="Estado"
+                            />
+                        </div>
+                        <div className="admin-filter-field">
+                            <span className="admin-filter-label">Rol</span>
+                            <Select
+                                options={ROLE_OPTIONS}
+                                value={roleFilter}
+                                onChange={(val) => setRoleFilter(val === 'all' ? '' : val)}
+                                placeholder="Rol"
+                            />
+                        </div>
+                        <div className="admin-filter-field">
+                            <span className="admin-filter-label">Sanción</span>
+                            <Select
+                                options={SANCTION_OPTIONS}
+                                value={sanctionFilter}
+                                onChange={(val) => setSanctionFilter(val === 'all' ? '' : val)}
+                                placeholder="Sanción"
+                            />
+                        </div>
+                    </div>
+                </FilterSheet>
             </section>
-            <section className="users-table-desktop">
-                <div className="users-table-header">
+            <section className="admin-table-desktop">
+                <div className="admin-table-header users-grid">
                     <span>Usuario</span>
                     <span className="center-col">Estado</span>
                     <span className="center-col">Rol</span>
@@ -137,9 +164,9 @@ export default function AdminUsersPage() {
                     <span className="center-col col-date">Fecha creación</span>
                 </div>
 
-                <div className="users-table-body">
+                <div className="admin-table-body">
                     {filteredUsers.map((user) => (
-                        <Link href={`/admin/users/${user.id}`} key={user.id} className="users-table-row">
+                        <Link href={`/admin/users/${user.id}`} key={user.id} className="admin-table-row users-grid">
                             <div className="user-cell">
                                 <img src={user.avatar} alt={user.name} className="user-avatar" />
                                 <div className="user-names">
@@ -155,16 +182,16 @@ export default function AdminUsersPage() {
                         </Link>
                     ))}
                     {filteredUsers.length === 0 && (
-                        <div className="no-users-message">
+                        <div className="admin-empty-message">
                             <p>No se encontraron usuarios con los filtros aplicados.</p>
                         </div>
                     )}
                 </div>
             </section>
-            <section className="users-list-mobile">
+            <section className="admin-list-mobile">
                 {filteredUsers.map((user) => (
-                    <Link href={`/admin/users/${user.id}`} key={user.id} className="user-mobile-row">
-                        <div className="user-mobile-left">
+                    <Link href={`/admin/users/${user.id}`} key={user.id} className="admin-mobile-row">
+                        <div className="admin-mobile-left">
                             <img src={user.avatar} alt={user.name} className="user-avatar" />
                             <div className="user-names">
                                 <span className="user-fullname">{user.name}</span>
@@ -172,8 +199,8 @@ export default function AdminUsersPage() {
                             </div>
                         </div>
 
-                        <div className="user-mobile-right">
-                            <div className="user-mobile-status">
+                        <div className="admin-mobile-right">
+                            <div className="admin-mobile-status">
                                 <span className="mobile-status-text">{user.status}</span>
                                 {renderSanctions(user.sanctions)}
                             </div>
@@ -182,12 +209,12 @@ export default function AdminUsersPage() {
                     </Link>
                 ))}
                 {filteredUsers.length === 0 && (
-                    <div className="no-users-message">
+                    <div className="admin-empty-message">
                         <p>No se encontraron usuarios con los filtros aplicados.</p>
                     </div>
                 )}
             </section>
-            <nav className="users-pagination" aria-label="Paginación de usuarios">
+            <nav className="admin-pagination" aria-label="Paginación de usuarios">
                 <button
                     className="page-btn"
                     onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}

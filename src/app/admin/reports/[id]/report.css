@@ -1,0 +1,290 @@
+/* Detalle de denuncia. Clases con prefijo report- para no chocar con otras páginas
+   (Next carga el CSS de forma global). Menú de 3 puntos, sanciones y modales
+   en ../../admin-shared.css */
+
+.report-detail-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 120rem;
+    margin: 0 auto;
+    padding: 6rem 2rem;
+    box-sizing: border-box;
+    gap: 4rem;
+}
+
+/* barra superior: volver + siguiente */
+.report-detail-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+}
+
+.report-next-link {
+    color: var(--primary-white, #ffffff);
+    text-decoration: none;
+    font-size: 1.5rem;
+    transition: color 0.2s ease;
+}
+
+.report-next-link:hover {
+    color: var(--primary-red, #9d2b45);
+}
+
+/* cabecera */
+.report-detail-header {
+    display: flex;
+    flex-direction: column;
+    gap: 2.4rem;
+}
+
+.report-detail-title {
+    font-size: 2.6rem;
+    font-weight: 500;
+    margin: 0;
+}
+
+.report-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 3rem;
+    flex-wrap: wrap;
+}
+
+.report-header-left {
+    display: flex;
+    align-items: center;
+    gap: 2.2rem;
+}
+
+.report-avatar-link {
+    display: block;
+    flex-shrink: 0;
+    border-radius: 50%;
+}
+
+.report-detail-avatar {
+    display: block;
+    width: 11rem;
+    height: 11rem;
+    border-radius: 50%;
+    object-fit: cover;
+    transition: opacity 0.2s ease;
+}
+
+.report-avatar-link:hover .report-detail-avatar {
+    opacity: 0.85;
+}
+
+.report-header-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.report-name-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.report-name-link {
+    color: inherit;
+    text-decoration: none;
+}
+
+.report-name-link h2 {
+    font-size: 3.6rem;
+    font-weight: 500;
+    margin: 0;
+    line-height: 1.1;
+    transition: color 0.2s ease;
+}
+
+.report-name-link:hover h2 {
+    color: var(--primary-red, #9d2b45);
+}
+
+.report-detail-handle {
+    font-size: 2rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.report-detail-status {
+    font-size: 1.6rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.report-detail-status.status-aplicada {
+    color: #4ade80;
+}
+
+.report-detail-status.status-descartada {
+    color: rgba(255, 255, 255, 0.45);
+}
+
+.report-user-status {
+    font-size: 1.4rem;
+}
+
+.report-user-status.status-suspendido {
+    color: #f59e0b;
+}
+
+.report-user-status.status-baneado {
+    color: var(--danger-red);
+}
+
+/* botones principales */
+.report-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.6rem;
+}
+
+.report-action-btn {
+    width: 20rem;
+}
+
+/* columnas */
+.report-detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.35fr;
+    gap: 6rem;
+    align-items: start;
+}
+
+.report-data-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+    font-size: 1.6rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* vista previa del contenido denunciado */
+.report-content-preview {
+    margin-top: 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.report-preview-label {
+    font-size: 1.4rem;
+    color: rgba(255, 255, 255, 0.65);
+}
+
+.report-content-preview blockquote {
+    margin: 0;
+    padding: 1.4rem 1.8rem;
+    border-left: 3px solid var(--primary-red, #9d2b45);
+    border-radius: 0 1.2rem 1.2rem 0;
+    background-color: rgba(255, 255, 255, 0.06);
+    font-size: 1.5rem;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.9);
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* responsive */
+@media (max-width: 850px) {
+    .report-detail-container {
+        padding: 3rem 0 6rem 0;
+        width: 90%;
+        gap: 3rem;
+    }
+
+    .report-detail-header {
+        gap: 1.8rem;
+    }
+
+    .report-detail-title {
+        font-size: 2.2rem;
+    }
+
+    .report-header-row {
+        gap: 2.2rem;
+    }
+
+    .report-header-left {
+        width: 100%;
+        gap: 1.6rem;
+    }
+
+    .report-header-info {
+        min-width: 0;
+        flex: 1;
+    }
+
+    .report-detail-avatar {
+        width: 8rem;
+        height: 8rem;
+    }
+
+    .report-name-row {
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .report-name-link h2 {
+        font-size: 2.6rem;
+        word-break: break-word;
+    }
+
+    .report-detail-handle {
+        font-size: 1.6rem;
+    }
+
+    .report-detail-status {
+        font-size: 1.4rem;
+    }
+
+    .report-header-actions {
+        width: 100%;
+        gap: 1.2rem;
+    }
+
+    .report-action-btn {
+        width: 100%;
+        flex: 1;
+    }
+
+    /* En móvil "Resolver denuncia" se queda en "Resolver" */
+    .report-btn-long {
+        display: none;
+    }
+
+    .report-detail-grid {
+        grid-template-columns: 1fr;
+        gap: 3.5rem;
+    }
+
+    .report-data-list {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .report-detail-avatar {
+        width: 6.8rem;
+        height: 6.8rem;
+    }
+
+    .report-name-link h2 {
+        font-size: 2.2rem;
+    }
+
+    .report-next-link {
+        font-size: 1.4rem;
+    }
+}

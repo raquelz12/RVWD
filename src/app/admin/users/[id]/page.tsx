@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Dot from '../../../../../components/Dot/Dot';
 import Select from '../../../../../components/Select/Select';
 import TextArea from '../../../../../components/TextArea/TextArea';
+import '../../admin-shared.css';
 import './user.css';
 import Button from '../../../../../components/Button/Button';
 
@@ -304,7 +305,12 @@ export default function AdminUserDetailPage() {
                         <li><span>Última conexión:</span> {user.lastLogin}</li>
                         <li><span>Rol:</span> {user.role}</li>
                         <li><span className="RVWS">RVWS:</span> {user.rvwsCount}</li>
-                        <li><span>Denuncias recibidas:</span> {user.reportsReceived}</li>
+                        <li>
+                            <Link href={`/admin/reports?q=${encodeURIComponent(user.username)}`} className="admin-data-link">
+                                <span>Denuncias recibidas:</span> {user.reportsReceived}
+                                <span className="admin-chevron" aria-hidden="true">›</span>
+                            </Link>
+                        </li>
                         <li><span>Denuncias realizadas:</span> {user.reportsMade}</li>
                     </ul>
                 </section>
@@ -337,7 +343,7 @@ export default function AdminUserDetailPage() {
                                         )}
                                     </div>
                                     <div className="sanction-actions">
-                                        <Link href={`/admin/contenido/${s.contentId}`} className="sanction-link">
+                                        <Link href={`/admin/content/${s.contentId}`} className="sanction-link">
                                             Ver contenido
                                         </Link>
                                         <Button
