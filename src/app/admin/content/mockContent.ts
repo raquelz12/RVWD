@@ -200,10 +200,7 @@ export const STATUS_CLASS: Record<ContentStatus, string> = {
     Eliminado: 'status-deleted',
 };
 
-export const formatDate = (iso: string) => {
-    const [y, m, d] = iso.split('-');
-    return `${d}/${m}/${y}`;
-};
+export { formatDate } from '@/app/lib/adminFilters';
 
 // Enlace público: la RVW, o la RVW donde está el comentario
 export const publicHref = (item: Pick<AdminContent, 'id' | 'type' | 'reviewId'>) =>

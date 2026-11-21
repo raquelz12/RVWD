@@ -8,12 +8,9 @@ import Select from '../../../../components/Select/Select';
 import FilterSheet from '../../../../components/FilterSheet/FilterSheet';
 import ModerateContentModal, { type ModerationAction, type ModerationResult } from './ModerateContentModal';
 import { MOCK_CONTENT, STATUS_CLASS, formatDate, publicHref, type AdminContent, type ContentStatus } from './mockContent';
+import { DATE_OPTIONS, matchesDate } from '@/app/lib/adminFilters';
 import '../admin-shared.css';
 import './content.css';
-
-// Fecha de referencia de los datos de ejemplo (con datos reales será la fecha actual)
-const MOCK_TODAY = new Date('2026-11-21T12:00:00');
-const DAY_MS = 24 * 60 * 60 * 1000;
 
 const STATUS_OPTIONS = [
     { value: 'all', label: 'Todos' },
@@ -33,13 +30,6 @@ const TYPE_OPTIONS = [
     { value: 'all', label: 'Todos' },
     { value: 'RVW', label: 'RVW' },
     { value: 'Comentario', label: 'Comentario' },
-];
-
-const DATE_OPTIONS = [
-    { value: 'all', label: 'Todas' },
-    { value: 'today', label: 'Hoy' },
-    { value: 'week', label: 'Últimos 7 días' },
-    { value: 'month', label: 'Último mes' },
 ];
 
 type SortKey = 'date' | 'likes' | 'reports';
@@ -65,16 +55,6 @@ const SORTABLE_COLUMNS: { key: SortKey; label: string; className?: string }[] = 
     { key: 'date', label: 'Fecha', className: 'col-date' },
 ];
 
-const daysAgo = (iso: string) => (MOCK_TODAY.getTime() - new Date(`${iso}T12:00:00`).getTime()) / DAY_MS;
-
-const matchesDate = (iso: string, filter: string) => {
-    if (!filter) return true;
-    const days = daysAgo(iso);
-    if (filter === 'today') return days < 1;
-    if (filter === 'week') return days < 7;
-    if (filter === 'month') return days < 30;
-    return true;
-};
 
 const matchesReports = (item: AdminContent, filter: string) => {
     if (filter === 'none') return item.reports === 0;
