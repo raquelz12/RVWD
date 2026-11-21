@@ -39,7 +39,7 @@ export default function AdminDashboard() {
         <div className="admin-dashboard-container">
             <header className="admin-greeting">
                 <h1>Buenos días, Raquel.</h1>
-                <p>¿Buen día para ser admin verdad?</p>
+                <p>¿Buen día para ser admin, verdad?</p>
             </header>
             <section className="admin-kpis-grid">
                 {stats.map((stat, index) => (

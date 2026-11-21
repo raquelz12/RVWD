@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import '@/styles/legal-text.css';
 import './legal.css';
 
 export default function LegalPage() {
@@ -6,7 +7,7 @@ export default function LegalPage() {
         <div className="legal-page-container">
             
             <div className="legal-header-section">
-                <h1 className="legal-main-title">Aviso legal y condiciones de uso</h1>
+                <h1 className="page-title">Aviso legal y condiciones de uso</h1>
                 <p className="legal-main-intro">
                     <span className="RVWS">ЯVWD</span> es un proyecto personal sin ánimo de lucro y sin actividad comercial. No incluye publicidad, ventas ni ningún tipo de ingreso.
                 </p>
@@ -23,7 +24,7 @@ export default function LegalPage() {
                 <div className="text-block">
                     <h3>Objetivo y aceptación</h3>
                     <p>
-                        <span className="RVWS">ЯVWD</span> es una red social en la que puedes crear un perfil, publicar contenido e interactuar con otras personas. Al acceder al sitio, crear una cuenta o usarlo, aceptas este documento, las <Link href="/normas" className="bold-link">Normas de la comunidad</Link> y la <Link href="/privacy" className="bold-link">Política de privacidad y cookies</Link>.
+                        <span className="RVWS">ЯVWD</span> es una red social en la que puedes crear un perfil, publicar contenido e interactuar con otras personas. Al acceder al sitio, crear una cuenta o usarlo, aceptas este documento, las <Link href="/rules" className="inline-link">Normas de la comunidad</Link> y la <Link href="/privacy" className="inline-link">Política de privacidad y cookies</Link>.
                     </p>
                 </div>
 
@@ -49,7 +50,7 @@ export default function LegalPage() {
 
                 <div className="text-block">
                     <h3>Moderación y sanciones</h3>
-                    <p>Podemos ocultar o eliminar contenido y aplicar avisos, suspensiones o baneos según el sistema de tres sanciones descrito en las normas de la comunidad. Si ves contenido ilegal o que incumple las normas, ve a la página de <Link href="/normas" className="bold-link">Normas de la comunidad</Link> y consulta cómo continuar.</p>
+                    <p>Podemos ocultar o eliminar contenido y aplicar avisos, suspensiones o baneos según el sistema de tres sanciones descrito en las normas de la comunidad. Si ves contenido ilegal o que incumple las normas, ve a la página de <Link href="/rules" className="inline-link">Normas de la comunidad</Link> y consulta cómo continuar.</p>
                 </div>
 
                 <div className="text-block">

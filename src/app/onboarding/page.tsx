@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import '@/styles/top-songs.css';
 import './onboarding.css';
 import SearchBar from '../../../components/SearchBar/SearchBar';
 import ArtistCard from '../../../components/ArtistCard/ArtistCard';
@@ -28,6 +30,7 @@ const SONGS_LIST: SongData[] = [
 ];
 
 export default function OnboardingPage() {
+  const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedArtists, setSelectedArtists] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -66,6 +69,22 @@ export default function OnboardingPage() {
   const nextStep = () => setCurrentStep((prev) => prev + 1);
   const prevStep = () => setCurrentStep((prev) => prev - 1);
 
+  // En el paso 3, si ya se está escribiendo la reseña, "Atrás" vuelve a elegir canción
+  const goBack = () => {
+    if (currentStep === 3 && reviewSubStep === 2) {
+      setReviewSubStep(1);
+      return;
+    }
+    prevStep();
+  };
+
+  const goToFeed = () => router.push('/feed');
+
+  // Una canción se identifica por título y artista (no por el objeto en memoria)
+  const songKey = (song: SongData) => `${song.title}|${song.artist}`;
+  const isInTopSongs = (song: SongData) =>
+    selectedSongs.some((s) => s !== null && songKey(s) === songKey(song));
+
   /* Del paso 1 */
   const toggleArtist = (artistName: string) => {
     setSelectedArtists((prev) =>
@@ -87,10 +106,8 @@ export default function OnboardingPage() {
     : [];
 
   const handleSelectSong = (song: SongData, slotIndex: number) => {
-    if (selectedSongs.includes(song)) {
-      alert("Esta canción ya está en tu top 4");
-      return;
-    }
+    // Las repetidas salen desactivadas en los resultados; esto es solo por seguridad
+    if (isInTopSongs(song)) return;
     
     const newSongs = [...selectedSongs];
     newSongs[slotIndex] = song;
@@ -134,8 +151,8 @@ export default function OnboardingPage() {
                 <Dot type="empty" />
                 <span className="step-text">1/3</span>
               </div>
-              <h2>¿Cuáles son tus imprescindibles?</h2>
-              <p>Selecciona al menos a 3 artistas para enterarte de sus novedades y ver qué opina la gente.</p>
+              <h2 className="section-title">¿Cuáles son tus imprescindibles?</h2>
+              <p>Selecciona al menos 3 artistas para enterarte de sus novedades y ver qué opina la gente.</p>
             </div>
               <div className="search-dropdown-wrapper">
                 <SearchBar 
@@ -196,7 +213,7 @@ export default function OnboardingPage() {
             <div className="button-group">
               <Button onClick={nextStep} variant="text">Omitir</Button>
               <Button onClick={nextStep} disabled={selectedArtists.length < 3}>
-                Siguiente ({selectedArtists.length}/3)
+                {selectedArtists.length < 3 ? `Siguiente (${selectedArtists.length}/3)` : 'Siguiente'}
               </Button>
             </div>
           </div>
@@ -211,7 +228,7 @@ export default function OnboardingPage() {
                 <Dot type="empty" />
                 <span className="step-text">2/3</span>
               </div>
-              <h2>Tu top 4 indiscutibles</h2>
+              <h2 className="section-title">Tus 4 indiscutibles</h2>
               <p>Busca y elige las 4 canciones que te definen. Aparecerán destacadas en tu perfil y las podrás cambiar desde ahí.</p>
             </div>
             <div className="top-songs-grid">
@@ -243,19 +260,23 @@ export default function OnboardingPage() {
                        {songSearchQuery.trim() !== '' && (
                          <div className="search-dropdown-results slot-search-dropdown">
                             {searchResultsSongs.length > 0 ? (
-                               searchResultsSongs.map((resultSong) => (
-                                 <div 
-                                    key={`search-song-${resultSong}`}
-                                    className="search-result-item"
-                                    onClick={() => handleSelectSong(resultSong, index)}
-                                 >
-                                    <img src={resultSong.imageUrl} alt={resultSong.title} />
-                                    <div>
-                                      <p className="result-title">{resultSong.title}</p>
-                                      <p className="result-sub">{resultSong.artist}</p>
-                                    </div>
-                                 </div>
-                               ))
+                               searchResultsSongs.map((resultSong) => {
+                                 const alreadyInTop = isInTopSongs(resultSong);
+                                 return (
+                                   <div
+                                      key={`search-song-${songKey(resultSong)}`}
+                                      className={`search-result-item ${alreadyInTop ? 'is-disabled' : ''}`}
+                                      aria-disabled={alreadyInTop}
+                                      onClick={alreadyInTop ? undefined : () => handleSelectSong(resultSong, index)}
+                                   >
+                                      <img src={resultSong.imageUrl} alt={resultSong.title} />
+                                      <div>
+                                        <p className="result-title">{resultSong.title}</p>
+                                        <p className="result-sub">{alreadyInTop ? 'Ya está en tu top 4' : resultSong.artist}</p>
+                                      </div>
+                                   </div>
+                                 );
+                               })
                             ) : (
                                <div className="search-result-item" style={{ pointerEvents: 'none' }}>
                                  <p className="result-sub">No se encontró "{songSearchQuery}"</p>
@@ -273,7 +294,7 @@ export default function OnboardingPage() {
                   )}
                   {song === null && activeSearchSlot !== index && (
                     <div 
-                       className="empty-slot" 
+                       className="empty-slot editable" 
                        onClick={() => {
                           setActiveSearchSlot(index);
                           setSongSearchQuery('');
@@ -289,13 +310,16 @@ export default function OnboardingPage() {
               ))}
             </div>
             <div className="button-group">
-              <Button onClick={nextStep} variant="text">Omitir</Button>
-              <Button 
-                onClick={nextStep} 
-                disabled={selectedSongs.filter(s => s !== null).length === 0}
-              >
-                Siguiente
-              </Button>
+              <Button onClick={goBack} variant="text">‹ Atrás</Button>
+              <div className="button-group-end">
+                <Button onClick={nextStep} variant="text">Omitir</Button>
+                <Button
+                  onClick={nextStep}
+                  disabled={selectedSongs.filter(s => s !== null).length === 0}
+                >
+                  Siguiente
+                </Button>
+              </div>
             </div>
           </div>
         );
@@ -309,8 +333,8 @@ export default function OnboardingPage() {
                 <Dot type="filled" />
                 <span className="step-text">3/3</span>
               </div>
-              <h2>Deja tu primera RVW</h2>
-              <p>Puntúa y cuéntale a la gente que piensas de esta canción que tienes en bucle.</p>
+              <h2 className="section-title">Deja tu primera <span className="RVWS">RVW</span></h2>
+              <p>Puntúa y cuéntale a la gente qué piensas de esta canción que tienes en bucle.</p>
             </div>
             <div className="review-selection-header">
               <span className="review-question">¿Quieres empezar reseñando uno de tus favoritos?</span>
@@ -403,21 +427,24 @@ export default function OnboardingPage() {
             )}
 
             <div className="button-group" style={{ marginTop: '2rem' }}>
-              <Button variant="text" onClick={() => {window.location.href="/feed";}}>
-                Omitir
-              </Button>
-              {reviewSubStep === 1 ? (
-                <Button 
-                  onClick={() => setReviewSubStep(2)} 
-                  disabled={!reviewSong}
-                >
-                  Siguiente
+              <Button variant="text" onClick={goBack}>‹ Atrás</Button>
+              <div className="button-group-end">
+                <Button variant="text" onClick={goToFeed}>
+                  Omitir
                 </Button>
-              ) : (
-                <Button onClick={() => {window.location.href="/feed";}} disabled={!reviewScore || !reviewTitle || !reviewText} >
-                  Publicar e ir al feed
-                </Button>
-              )}
+                {reviewSubStep === 1 ? (
+                  <Button
+                    onClick={() => setReviewSubStep(2)}
+                    disabled={!reviewSong}
+                  >
+                    Siguiente
+                  </Button>
+                ) : (
+                  <Button onClick={goToFeed} disabled={!reviewScore || !reviewTitle || !reviewText} >
+                    Publicar e ir al feed
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
         );

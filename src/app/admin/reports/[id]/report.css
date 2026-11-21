@@ -4,7 +4,7 @@
 
 /* estados de la denuncia */
 .admin-detail-status.status-aplicada {
-    color: #4ade80;
+    color: var(--success);
 }
 
 .admin-detail-status.status-descartada {
@@ -27,7 +27,7 @@
 .report-content-preview blockquote {
     margin: 0;
     padding: 1.4rem 1.8rem;
-    border-left: 3px solid var(--primary-red, #9d2b45);
+    border-left: 3px solid var(--primary-red);
     border-radius: 0 1.2rem 1.2rem 0;
     background-color: rgba(255, 255, 255, 0.06);
     font-size: 1.5rem;

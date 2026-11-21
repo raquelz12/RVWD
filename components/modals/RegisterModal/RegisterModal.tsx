@@ -74,7 +74,7 @@ export default function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
             </div>
             <div className="checkbox-group">
                 <input type="checkbox" id="terms" />
-                <label htmlFor="terms">He leído y acepto los <a href="/terms" target="_blank">Términos y Condiciones</a> y la <a href="/privacy" target="_blank">Política de Privacidad</a></label>
+                <label htmlFor="terms">He leído y acepto los <a href="/legal" target="_blank">Términos y Condiciones</a> y la <a href="/privacy" target="_blank">Política de Privacidad</a></label>
             </div>
             <div className="button-group">
                 <Button variant="primary" type="submit">

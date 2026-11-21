@@ -33,8 +33,8 @@
 
 .options button.active {
     filter: brightness(1.2);
-    box-shadow: 0 0 1.2rem rgba(157, 43, 69, 0.6);
-    background-color: var(--primary-red, #9d2b45);
+    box-shadow: 0 0 1.2rem color-mix(in srgb, var(--primary-red) 60%, transparent);
+    background-color: var(--primary-red);
 }
 
 .options img {
@@ -70,7 +70,7 @@
 
 .search-dropdown-results {
     width: 100%;
-    background-color: rgba(24, 34, 38, 0.95);
+    background-color: color-mix(in srgb, var(--bg-card) 95%, transparent);
     border: 0.15rem solid rgba(255, 255, 255, 0.15);
     border-radius: 1.4rem;
     overflow: hidden;
@@ -88,7 +88,7 @@
 }
 
 .search-result-item:hover {
-    background-color: rgba(157, 43, 69, 0.25);
+    background-color: color-mix(in srgb, var(--primary-red) 25%, transparent);
 }
 
 .search-result-item img {
@@ -101,13 +101,13 @@
 .result-title {
     font-size: 1.4rem;
     font-weight: 600;
-    color: var(--primary-white, #fff);
+    color: var(--primary-white);
     margin: 0;
 }
 
 .result-sub {
     font-size: 1.2rem;
-    color: var(--text-secondary, #a1a1aa);
+    color: var(--text-secondary);
     margin: 0;
 }
 

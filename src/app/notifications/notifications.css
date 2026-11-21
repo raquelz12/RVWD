@@ -16,9 +16,7 @@
 }
 
 .notifications-title {
-    font-size: 3.6rem;
-    font-weight: 500;
-    margin: 0 0 .5rem 0;
+    margin-bottom: 0.5rem;
 }
 
 .notifications-description {
@@ -55,27 +53,38 @@
     gap: 2.5rem;
 }
 
-.notifications-column-title {
-    font-size: 2.4rem;
-    font-weight: 500;
-    margin: 0;
-}
-
 .notifications-list {
     display: flex;
     flex-direction: column;
     gap: 3rem;
 }
 
-/* Notificaciones */
-.notif-item {
+/* Notificaciones: cada una es un enlace a su reseña.
+   El relleno da sitio al fondo del hover y el margen negativo mantiene el contenido
+   alineado con los títulos; por eso la lista separa 1rem (antes 3rem sin relleno). */
+.notifications-main-column .notifications-list {
+    gap: 1rem;
+}
+
+.notifications-container .notif-item {
     display: flex;
     flex-direction: row;
     gap: 2rem;
     align-items: flex-start;
+    padding: 1rem;
+    margin: 0 -1rem;
+    border-radius: 1.6rem;
+    text-decoration: none;
+    color: inherit;
+    transition: background-color 0.2s ease;
 }
 
-.notif-cover {
+/* Mismo fondo al pasar por encima que en el desplegable de la campana */
+.notifications-container .notif-item:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.notifications-container .notif-cover {
     width: 7rem;
     height: 7rem;
     object-fit: cover;
@@ -83,7 +92,7 @@
     flex-shrink: 0;
 }
 
-.notif-content-wrapper {
+.notifications-container .notif-content-wrapper {
     display: flex;
     flex-direction: column;
     gap: 0.8rem;
@@ -91,37 +100,37 @@
     justify-content: space-evenly;
 }
 
-.notif-item-header {
+.notifications-container .notif-item-header {
     display: flex;
     align-items: center;
     gap: 1rem;
 }
 
-.notif-avatar {
+.notifications-container .notif-avatar {
     width: 2.4rem;
     height: 2.4rem;
     border-radius: 50%;
     object-fit: cover;
 }
 
-.notif-username {
+.notifications-container .notif-username {
     font-size: 1.3rem;
     color: var(--primary-white);
 }
 
-.notif-date {
+.notifications-container .notif-date {
     font-size: 1.2rem;
-    color: var(--text-secondary, #a1a1aa);
+    color: var(--text-secondary);
 }
 
-.notif-text {
+.notifications-container .notif-text {
     margin: 0;
     font-size: 1.4rem;
     line-height: 1.4;
     color: var(--primary-white);
 }
 
-.notif-text strong {
+.notifications-container .notif-text strong {
     font-weight: 600;
 }
 
@@ -188,24 +197,7 @@
         display: none;
     }
 
-    .mobile-follow-requests {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 1rem;
-        margin-bottom: 3rem;
-        text-decoration: none;
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 3rem;
-        padding: 1.2rem 2rem;
-        color: var(--primary-white);
-        font-size: 1.6rem;
-        font-family: inherit;
-        cursor: pointer;
-        width: 100%;
-    }
-
+    .mobile-follow-requests,
     .mobile-back-requests {
         display: flex;
         align-items: center;
@@ -226,7 +218,6 @@
 
     .notifications-column-title {
         text-align: center;
-        font-size: 2rem;
     }
 
     .notifications-list {

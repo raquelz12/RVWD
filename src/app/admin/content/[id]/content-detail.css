@@ -21,7 +21,7 @@
 }
 
 .content-status-banner.status-hidden {
-    color: #f59e0b;
+    color: var(--warning);
     background-color: rgba(245, 158, 11, 0.08);
 }
 
@@ -239,7 +239,7 @@ a.content-context:hover {
 }
 
 .content-report-status.is-applied {
-    color: #4ade80;
+    color: var(--success);
 }
 
 .content-report-status.is-dismissed {

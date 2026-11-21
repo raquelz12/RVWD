@@ -12,11 +12,6 @@ export default function Footer() {
                 <Link href="/contact" className="footer-link">Contacto</Link>
                 <Link href="/suggestions" className="footer-link">Sugerencias</Link>
             </div>
-            <div className="footer-socials">
-                <a href="#" className="footer-social">Facebook</a>
-                <a href="#" className="footer-social">Twitter</a>
-                <a href="#" className="footer-social">Instagram</a>
-            </div>
             <span className="footer-copy">© 2026 RVWD. Made by Raquel.</span>
         </footer>
     );

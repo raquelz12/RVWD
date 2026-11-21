@@ -86,11 +86,11 @@
 }
 
 .inbox-status.is-progress {
-    color: #f59e0b;
+    color: var(--warning);
 }
 
 .inbox-status.is-done {
-    color: #4ade80;
+    color: var(--success);
 }
 
 .inbox-status.is-dismissed {
@@ -100,11 +100,11 @@
 /* fila seleccionada */
 .admin-table-row.is-selected,
 .admin-mobile-row.is-selected {
-    background-color: rgba(148, 49, 79, 0.18);
+    background-color: color-mix(in srgb, var(--primary-red) 18%, transparent);
 }
 
 .admin-table-row.is-selected:hover {
-    background-color: rgba(148, 49, 79, 0.26);
+    background-color: color-mix(in srgb, var(--primary-red) 26%, transparent);
 }
 
 /* menú: estados como sección dentro del ⋮ */
@@ -138,7 +138,7 @@
     margin: -1.5rem 0;
     padding: 1rem 1.2rem 1rem 1.8rem;
     border-radius: 1.2rem;
-    background-color: #243035;
+    background-color: var(--bg-elevated);
     border: 1px solid rgba(255, 255, 255, 0.15);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
 }
@@ -287,10 +287,5 @@
 
     .inbox-bulk-actions .inbox-bulk-status {
         width: 100%;
-    }
-
-    .admin-tab {
-        font-size: 1.5rem;
-        padding: 0.9rem 1.1rem;
     }
 }

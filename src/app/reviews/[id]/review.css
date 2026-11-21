@@ -21,15 +21,6 @@
     padding: 0 3rem;
 }
 
-.single-review-title {
-    font-size: 3.6rem;
-    font-weight: 500;
-}
-
-.single-review-title .RVWS {
-    font-size: 4rem;
-}
-
 .single-review-user {
     display: flex;
     align-items: center;
@@ -102,8 +93,6 @@
 }
 
 .single-review-comments-title {
-    font-size: 2.4rem;
-    font-weight: 500;
     margin-top: 1rem;
     margin-bottom: 1rem;
 }
@@ -175,11 +164,10 @@
     transition: color 0.3s ease;
 }
 
-.review-comment-like-button img {
-    padding-left: 0.5rem;
+/* La estrella es FavButton: toma el color del texto */
+.review-comment-like-button .fav-icon {
     width: 2rem;
     height: 2rem;
-    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(103%) contrast(103%);
 }
 
 .review-comment-like-button:hover {
@@ -257,21 +245,6 @@
         justify-content: space-between;
     }
 
-    .mobile-hero-bg {
-        position: absolute;
-        top: 0; left: 0; width: 100%; height: 100%;
-        object-fit: cover;
-        z-index: 0;
-    }
-
-    .mobile-hero-gradient {
-        position: absolute;
-        bottom: 0; left: 0; width: 100%; height: 60%;
-        background: linear-gradient(to top, rgba(34, 46, 52, 1) 0%, rgba(34, 46, 52, 0) 100%);
-        z-index: 1;
-        pointer-events: none;
-    }
-
     .mobile-hero-top-bar {
         position: relative;
         z-index: 10;
@@ -282,7 +255,7 @@
         justify-content: space-between;
     }
 
-    .mobile-back-btn {
+    .review-back-btn {
         background: none;
         border: none;
         color: white;
@@ -321,9 +294,12 @@
         align-items: flex-end;
     }
 
+    /* Mismo tamaño que el nombre en las fichas de álbum, artista y canción en móvil */
     .mobile-hero-title-group h1 {
-        font-size: 2.4rem;
+        font-size: 3rem;
+        line-height: 1.1;
         font-family: var(--font-heading);
+        font-weight: 400;
         margin: 0 0 0.5rem 0;
     }
 
@@ -372,7 +348,7 @@
     }
 
     .mobile-stars {
-        color: var(--primary-red, #9d2b45);
+        color: var(--primary-red);
         font-size: 1.6rem;
         font-weight: bold;
     }
@@ -405,10 +381,9 @@
         display: flex;
         align-items: flex-end;
         gap: 0.5rem;
-        color: var(--green);
     }
 
-    .review-comment-like-button img {
+    .review-comment-like-button .fav-icon {
         width: 2.4rem;
         height: 2.4rem;
     }
@@ -445,7 +420,7 @@
     .sheet-content {
         position: relative;
         background-color: #bcc9c9; 
-        color: #182226; 
+        color: var(--bg-card); 
         height: 75vh;
         border-radius: 2rem 2rem 0 0;
         transform: translateY(100%);
@@ -515,9 +490,19 @@
         font-size: 1.4rem;
     }
 
-    .sheet-comment-user span button img {
-        width: 1.6rem; 
+    .sheet-comment-user .fav-icon {
+        width: 1.6rem;
         height: 1.6rem;
+    }
+
+    /* El panel es claro: número y estrella en el verde del panel
+       (en el resto de la página van en blanco sobre fondo oscuro) */
+    .sheet-content .review-comment-like-button {
+        color: var(--green);
+    }
+
+    .sheet-content .review-comment-like-button:hover {
+        color: var(--primary-red);
     }
 
     .sheet-comment-text {

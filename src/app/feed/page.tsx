@@ -17,7 +17,13 @@ export default async function Feed({ searchParams }: { searchParams: Promise<{ t
 
     return (
         <div className="feed-container">
-            <Suspense fallback={<div className="feed-buttons-skeleton">Cargando...</div>}>
+            {/* Mientras cargan las pestañas se ven ya con su forma (y la activa marcada), sin poder pulsarlas */}
+            <Suspense fallback={
+                <div className="feed-buttons">
+                    <button className={currentTab === 'para-ti' ? 'feed-button active' : 'feed-button'} disabled>Para ti</button>
+                    <button className={currentTab === 'descubrir' ? 'feed-button active' : 'feed-button'} disabled>Descubrir</button>
+                </div>
+            }>
                 <FeedTabs />
             </Suspense>
             {currentTab === 'para-ti' ? (
@@ -27,7 +33,7 @@ export default async function Feed({ searchParams }: { searchParams: Promise<{ t
                             <img src="/arrow-up-long-solid-full.svg" alt="Flecha" />
                             <span className="RVWS">RVWS</span> nuevas
                         </div>
-                        <Link href="/reviews/123" style={{ textDecoration: 'none', color: 'inherit', width: '100%' }}>
+                        <Link href="/reviews/123" className="feed-review-link">
                             <ReviewBigCard
                                 username="@raquelz.12204"
                                 userImageUrl="/placeholderCards.png"
@@ -46,7 +52,7 @@ export default async function Feed({ searchParams }: { searchParams: Promise<{ t
                         </Link>
                         <div className="might-like-section">
                             <div className="section-header">
-                                <h3 className="title">Artistas que te podrían gustar</h3>
+                                <h3 className="title block-title">Artistas que te podrían gustar</h3>
                                 <Button variant="text">Ver más</Button>
                             </div>
                             <div className="might-like-cards">
@@ -58,7 +64,7 @@ export default async function Feed({ searchParams }: { searchParams: Promise<{ t
                         </div>
                         <div className="fav-reviews-for-you-section">
                             <div className="section-header">
-                                <h3 className="title">Reseñas favoritas para ti</h3>
+                                <h3 className="title block-title"><span className="RVWS">RVWS</span> favoritas para ti</h3>
                                 <Button variant="text">Ver más</Button>
                             </div>
                             <div className="fav-reviews-for-you-cards">
@@ -67,21 +73,23 @@ export default async function Feed({ searchParams }: { searchParams: Promise<{ t
                                 <MediaCard type="album" title="No pasa nada hombre" artist="Clarent" imageUrl="/placeholderCards.png" score={8.5} />
                             </div>
                         </div>
-                        <ReviewBigCard
-                            username="@raquelz.12204"
-                            userImageUrl="/placeholderCards.png"
-                            followed={true}
-                            type="Álbum"
-                            title="No pasa nada hombre"
-                            artist="Clarent"
-                            imageUrl="/placeholderCards.png"
-                            score={8.5}
-                            titleReview="Mi opinión sobre este álbum"
-                            reviewText="Este álbum es increíble. Toda la música es genial y los arreglos son perfectos."
-                            reviewDate="2023-01-01"
-                            commentsCount={10}
-                            favoritesCount={5}
-                        />
+                        <Link href="/reviews/123" className="feed-review-link">
+                            <ReviewBigCard
+                                username="@raquelz.12204"
+                                userImageUrl="/placeholderCards.png"
+                                followed={true}
+                                type="Álbum"
+                                title="No pasa nada hombre"
+                                artist="Clarent"
+                                imageUrl="/placeholderCards.png"
+                                score={8.5}
+                                titleReview="Mi opinión sobre este álbum"
+                                reviewText="Este álbum es increíble. Toda la música es genial y los arreglos son perfectos."
+                                reviewDate="2023-01-01"
+                                commentsCount={10}
+                                favoritesCount={5}
+                            />
+                        </Link>
                     </div>
                     <div className="feed-side-column">
                         <input type="checkbox" id="releases-toggle" className="releases-toggle-checkbox" />
@@ -91,7 +99,7 @@ export default async function Feed({ searchParams }: { searchParams: Promise<{ t
                         </label>
                         <div className="mobile-releases-drawer">
                             <div className="drawer-header">
-                                <h3 className="feed-side-title">Nuevos lanzamientos</h3>
+                                <h3 className="block-title feed-side-title">Nuevos lanzamientos</h3>
                                 <label htmlFor="releases-toggle" className="close-drawer-btn">
                                     ✕
                                 </label>
@@ -128,25 +136,25 @@ export default async function Feed({ searchParams }: { searchParams: Promise<{ t
                             </div>
                             <div className="weekly-top-cards">
                                 <div className="section-header">
-                                    <h3 className="title">Top de la semana</h3>
+                                    <h3 className="title block-title">Top de la semana</h3>
                                     <Button variant="text">Ver más</Button>
                                 </div>
                                 <div className="weekly-top-cards-list">
                                     <span className="weekly-top-card">
                                         <span className="weekly-top-card-number">1</span>
-                                        <Link href="/album/123" style={{ textDecoration: 'none', color: 'inherit', flex: 1 }}>
+                                        <Link href="/album/123" className="weekly-top-link">
                                             <SmallCard variant="large" type="album" title="No pasa nada hombre" artist="Clarent" imageUrl="/placeholderCards.png" score={8.5} />
                                         </Link>
                                     </span>
                                     <span className="weekly-top-card">
                                         <span className="weekly-top-card-number">2</span>
-                                        <Link href="/album/123" style={{ textDecoration: 'none', color: 'inherit', flex: 1 }}>
+                                        <Link href="/album/123" className="weekly-top-link">
                                             <SmallCard variant="large" type="album" title="No pasa nada hombre" artist="Clarent" imageUrl="/placeholderCards.png" score={8.5} />
                                         </Link>
                                     </span>
                                     <span className="weekly-top-card">
                                         <span className="weekly-top-card-number">3</span>
-                                        <Link href="/album/123" style={{ textDecoration: 'none', color: 'inherit', flex: 1 }}>
+                                        <Link href="/album/123" className="weekly-top-link">
                                             <SmallCard variant="large" type="album" title="No pasa nada hombre" artist="Clarent" imageUrl="/placeholderCards.png" score={8.5} />
                                         </Link>
                                     </span>
@@ -154,7 +162,7 @@ export default async function Feed({ searchParams }: { searchParams: Promise<{ t
                             </div>
                             <div className="favorite-weekly-rvws-section">
                                 <div className="section-header">
-                                    <h3 className="title">Reseñas favoritas de la semana</h3>
+                                    <h3 className="title block-title"><span className="RVWS">RVWS</span> favoritas de la semana</h3>
                                     <Button variant="text">Ver más</Button>
                                 </div>
                                 <div className="favorite-weekly-rvws-cards">
@@ -165,50 +173,58 @@ export default async function Feed({ searchParams }: { searchParams: Promise<{ t
                             </div>
                             <div className="users-section">
                                 <div className="section-header">
-                                    <h3 className="title">Tienes mucho en común con...</h3>
+                                    <h3 className="title block-title">Tienes mucho en común con...</h3>
                                     <Button variant="text">Ver más</Button>
                                 </div>
                                 <div className="users-cards">
                                     {/* Múltiples User Cards... */}
                                     <div className="user-card">
-                                        <img src="/placeholderCards.png" alt="Usuario" className="user-image" />
-                                        <div className="user-info">
-                                            <span className="username">@raquelz.12204</span>
-                                            <span className="name">Raquel Z.</span>
-                                        </div>
+                                        {/* De momento al perfil propio: aún no hay página de perfil de otros usuarios */}
+                                        <Link href="/profile" className="user-card-link">
+                                            <img src="/placeholderCards.png" alt="Usuario" className="user-image" />
+                                            <div className="user-info">
+                                                <span className="username">@raquelz.12204</span>
+                                                <span className="name">Raquel Z.</span>
+                                            </div>
+                                        </Link>
                                         <Button variant="primary">Seguir</Button>
                                     </div>
                                     <div className="user-card">
-                                        <img src="/placeholderCards.png" alt="Usuario" className="user-image" />
-                                        <div className="user-info">
-                                            <span className="username">@raquelz.12204</span>
-                                            <span className="name">Raquel Z.</span>
-                                        </div>
+                                        {/* De momento al perfil propio: aún no hay página de perfil de otros usuarios */}
+                                        <Link href="/profile" className="user-card-link">
+                                            <img src="/placeholderCards.png" alt="Usuario" className="user-image" />
+                                            <div className="user-info">
+                                                <span className="username">@raquelz.12204</span>
+                                                <span className="name">Raquel Z.</span>
+                                            </div>
+                                        </Link>
                                         <Button variant="primary">Seguir</Button>
                                     </div>
                                 </div>
                             </div>
                             <div className="rvws-discover-section">
                                 <div className="section-header">
-                                    <h3 className="title">RVWS que podrían gustarte</h3>
+                                    <h3 className="title block-title"><span className="RVWS">RVWS</span> que podrían gustarte</h3>
                                     <Button variant="text">Ver más</Button>
                                 </div>
                                 <div className="rvws-discover-cards">
-                                    <ReviewBigCard
-                                        username="@raquelz.12204"
-                                        userImageUrl="/placeholderCards.png"
-                                        followed={false}
-                                        type="Álbum"
-                                        title="No pasa nada hombre"
-                                        artist="Clarent"
-                                        imageUrl="/placeholderCards.png"
-                                        score={8.5}
-                                        titleReview="Mi opinión sobre este álbum"
-                                        reviewText="Este álbum es increíble. Toda la música es genial y los arreglos son perfectos."
-                                        reviewDate="2023-01-01"
-                                        commentsCount={10}
-                                        favoritesCount={5}
-                                    />
+                                    <Link href="/reviews/123" className="feed-review-link">
+                                        <ReviewBigCard
+                                            username="@raquelz.12204"
+                                            userImageUrl="/placeholderCards.png"
+                                            followed={false}
+                                            type="Álbum"
+                                            title="No pasa nada hombre"
+                                            artist="Clarent"
+                                            imageUrl="/placeholderCards.png"
+                                            score={8.5}
+                                            titleReview="Mi opinión sobre este álbum"
+                                            reviewText="Este álbum es increíble. Toda la música es genial y los arreglos son perfectos."
+                                            reviewDate="2023-01-01"
+                                            commentsCount={10}
+                                            favoritesCount={5}
+                                        />
+                                    </Link>
                                 </div>
                             </div>
                         </div>
@@ -222,7 +238,7 @@ export default async function Feed({ searchParams }: { searchParams: Promise<{ t
                         </label>
                         <div className="mobile-releases-drawer">
                             <div className="drawer-header">
-                                <h3 className="feed-side-title">Novedades</h3>
+                                <h3 className="block-title feed-side-title">Novedades</h3>
                                 <label htmlFor="releases-toggle" className="close-drawer-btn">
                                     ✕
                                 </label>
@@ -230,9 +246,9 @@ export default async function Feed({ searchParams }: { searchParams: Promise<{ t
                             <div className="new-releases-cards">
                                 <div className="discovery-card">
                                     <p>Gracias a vuestras sugerencias, ya se pueden guardar reseñas.</p>
-                                    <a href="/sugerencias" className="discovery-link">
+                                    <Link href="/suggestions" className="discovery-link">
                                         Ver sugerencias hechas
-                                    </a>
+                                    </Link>
                                 </div>
                             </div>
                         </div>

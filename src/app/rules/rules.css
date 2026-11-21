@@ -15,9 +15,7 @@
 }
 
 .rules-main-title {
-    font-size: 3.6rem;
-    font-weight: 500;
-    margin: 0 0 2rem 0;
+    margin-bottom: 1.5rem;
 }
 
 .rules-main-intro {
@@ -34,9 +32,7 @@
 }
 
 .rules-col-title {
-    font-size: 2.2rem;
-    font-weight: 400;
-    margin: 0 0 3rem 0;
+    margin-bottom: 3rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     padding-bottom: 1rem;
 }
@@ -137,7 +133,6 @@
 }
 
 .sancion-card {
-  counter-increment: info-counter;
   position: relative;
   overflow: hidden;
   background: linear-gradient(
@@ -158,9 +153,14 @@
   transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
 }
 
+/* Cada tarjeta toma el color de su sanción (el de su distintivo) */
+.sancion-card:has(.badge-aviso) { --sancion-color: var(--text-secondary); }
+.sancion-card:has(.badge-mute) { --sancion-color: var(--warning); }
+.sancion-card:has(.badge-ban) { --sancion-color: var(--danger-red); }
+
 .sancion-card:hover {
   transform: translateY(-0.6rem);
-  border-color: var(--color-primary, #9d2b45);
+  border-color: var(--sancion-color, var(--primary-red));
   box-shadow: 0 1.2rem 2.8rem rgba(0, 0, 0, 0.15);
 }
 
@@ -170,18 +170,21 @@
     line-height: 1.5;
 }
 
-/* Badges visuales */
+/* Distintivos: gris → ámbar → rojo, la misma escala que admin
+   (suspendido = --warning, baneado = --danger-red) */
 .sancion-badge {
     display: inline-block;
     padding: 0.4rem 1.2rem;
     border-radius: 2rem;
     font-size: 1.3rem;
     font-weight: 600;
+    color: var(--sancion-color);
+    background: color-mix(in srgb, var(--sancion-color) 18%, transparent);
 }
 
-.badge-aviso { background: rgba(161, 161, 170, 0.2); color: var(--text-secondary); }
-.badge-mute { background: rgba(255, 120, 117, 0.2); color: var(--danger-red) }
-.badge-ban { background: rgba(77, 7, 7, 0.2); color: var(--primary-red, #9d2b45); }
+.badge-aviso { --sancion-color: var(--text-secondary); }
+.badge-mute { --sancion-color: var(--warning); }
+.badge-ban { --sancion-color: var(--danger-red); }
 
 /* Alerta de caducidad */
 .info-alert {
@@ -214,25 +217,16 @@
     font-size: 1.4rem;
 }
 
-.inline-link {
-    text-decoration: none;
-    font-weight: 600;
-    color: var(--primary-white);
-    transition: color 0.2s;
-}
-
-.inline-link:hover {
-    color: var(--primary-red);
-}
-
 /* responsive */
 @media (max-width: 900px) {
     .rules-columns-layout {
         grid-template-columns: 1fr;
         gap: 5rem;
     }
-    
-    .rules-main-title {
-        font-size: 3.2rem;
+}
+
+@media (max-width: 768px) {
+    .rules-header-section {
+        margin-bottom: 2rem;
     }
 }

@@ -64,7 +64,7 @@
 }
 
 .user-detail-status.status-suspendido {
-    color: #f59e0b;
+    color: var(--warning);
 }
 
 .user-detail-status.status-baneado {

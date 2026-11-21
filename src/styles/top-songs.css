@@ -1,0 +1,280 @@
+/* =========================================
+   TOP 4 CANCIONES
+   Huecos editables del top 4: onboarding (paso 2) y perfil
+   ========================================= */
+
+.top-songs-grid {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+}
+
+.song-slot-container {
+  width: 26rem;
+  height: 26rem;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Hueco vacío: solo es clicable cuando se puede editar (clase .editable) */
+.empty-slot {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.empty-slot.editable {
+  cursor: pointer;
+}
+
+.empty-slot.editable:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  transform: scale(1.02);
+}
+
+.add-circle-btn {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  background-color: var(--primary-red);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.plus-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--white);
+  font-size: 5rem;
+  font-weight: 300;
+}
+
+/* Hueco en modo búsqueda: se encoge hasta ser una barra */
+.search-slot-active {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1.6rem;
+  box-sizing: border-box;
+  animation: shrinkToSearchBar 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.search-slot-active.closing {
+  animation: expandToSquare 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.search-slot-active.closing > * {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.cancel-search-btn {
+  position: absolute;
+  font-family: inherit;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: none;
+  border: none;
+  color: var(--primary-white);
+  margin-top: 0.8rem;
+  font-size: 1.4rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancel-search-btn:hover {
+  color: var(--primary-red);
+  font-weight: 600;
+}
+
+/* Hueco con canción */
+.filled-slot {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: morphToSquare 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.filled-slot > *:first-child {
+  animation: flyFromDropdown 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.filled-slot > .remove-overlay {
+  animation: none;
+}
+
+.filled-slot.removing .remove-overlay {
+  opacity: 1 !important;
+  background-color: rgba(255, 255, 255, 0.05);
+  transition: background-color 0.4s ease;
+  pointer-events: none;
+}
+
+.filled-slot.removing .remove-btn-circle {
+  animation: spinToPlus 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.remove-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  cursor: pointer;
+  z-index: 10;
+  border-radius: 2.4rem;
+}
+
+.filled-slot:hover .remove-overlay {
+  opacity: 1;
+}
+
+.remove-btn-circle {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  background-color: var(--primary-red);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0.4rem 1.2rem rgba(0, 0, 0, 0.5);
+}
+
+.close-icon {
+  display: flex;
+  align-items: flex-end;
+  height: 100%;
+  color: var(--white);
+  font-size: 4rem;
+  font-weight: 300;
+}
+
+/* =========================================
+   BUSCADOR FLOTANTE (onboarding y perfil)
+   La base de .search-dropdown-results está en AddModal.css, que se carga
+   siempre. Aquí solo se ajusta dentro de estas dos páginas para no
+   cambiar el desplegable del modal.
+   ========================================= */
+
+.onboarding-container .search-dropdown-results,
+.profile-container .search-dropdown-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  max-width: 40rem;
+  margin-top: 0.8rem;
+  background-color: color-mix(in srgb, var(--bg-card) 98%, transparent);
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.6);
+  z-index: 50;
+}
+
+.onboarding-container .search-result-item img,
+.profile-container .search-result-item img {
+  width: 4.4rem;
+  height: 4.4rem;
+  border-radius: 50%;
+  border: 0.1rem solid rgba(255, 255, 255, 0.1);
+}
+
+/* Desplegable de búsqueda dentro de un hueco del top 4 */
+.song-slot-container .slot-search-dropdown {
+  top: 60%;
+  width: 25rem;
+  z-index: 100;
+}
+
+@media (max-width: 768px) {
+  .onboarding-container .search-dropdown-results {
+    max-width: 100%;
+  }
+}
+
+/* =========================================
+   ANIMACIONES
+   ========================================= */
+
+@keyframes shrinkToSearchBar {
+  0% {
+    height: 100%;
+    padding: 1rem;
+  }
+  100% {
+    height: 6rem;
+    padding: 0.5rem 1rem;
+    border-radius: 24rem;
+  }
+}
+
+@keyframes expandToSquare {
+  0% {
+    height: 6rem;
+    padding: 0.5rem 1rem;
+  }
+  100% {
+    height: 100%;
+    padding: 1rem;
+  }
+}
+
+@keyframes morphToSquare {
+  0% {
+    clip-path: inset(10rem 0 10rem 0 round 24rem);
+  }
+  99% {
+    clip-path: inset(0 0 0 0 round 1.6rem);
+  }
+  100% {
+    clip-path: none;
+  }
+}
+
+@keyframes flyFromDropdown {
+  0% {
+    opacity: 0;
+    transform: translateY(6rem) scale(0.5);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes spinToPlus {
+  0% {
+    transform: rotate(0deg);
+    box-shadow: 0 0.4rem 1.2rem rgba(0, 0, 0, 0.5);
+  }
+  100% {
+    transform: rotate(-405deg);
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+  }
+}

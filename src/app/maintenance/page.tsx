@@ -4,7 +4,7 @@ import Link from 'next/link';
 export default function MaintenancePage() {
   return (
         <div className="maintenance-container">
-            <span className="maintenance-title">Estamos haciendo mejoras</span>
+            <h1 className="maintenance-title">Estamos haciendo mejoras</h1>
             <p className="maintenance-description">
                 Volvemos enseguida.
             </p>

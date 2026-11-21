@@ -438,7 +438,7 @@ function AdminReportDetailContent({ reportId }: { reportId: string }) {
 
             <div className="admin-detail-grid">
                 <section className="report-data-section">
-                    <h2 className="section-heading">Datos de la Denuncia</h2>
+                    <h2 className="section-heading">Datos de la denuncia</h2>
                     <ul className="admin-data-list">
                         <li>
                             <Link href={`/admin/users/${report.reporter.id}`} className="admin-data-link">

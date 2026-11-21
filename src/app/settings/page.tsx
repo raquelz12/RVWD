@@ -1,238 +1,159 @@
 'use client';
 
 import { useState } from 'react';
-import './settings.css';
-import Button from '../../../components/Button/Button';
+import { useRouter } from 'next/navigation';
 import Toggle from '../../../components/Toggle/Toggle';
+import OptionRow from './OptionRow';
+import './settings.css';
+
+type SectionId = 'account' | 'privacy' | 'notifications' | 'help' | 'session';
+
+const SECTIONS: { id: SectionId; title: string; desc: string; icon: string }[] = [
+    { id: 'account', title: 'Cuenta', desc: 'Nombre de usuario · Email · Datos', icon: '/user-regular-full.svg' },
+    { id: 'privacy', title: 'Privacidad', desc: 'Visibilidad · Bloqueos', icon: '/lock-solid-full.svg' },
+    { id: 'notifications', title: 'Notificaciones', desc: 'Email · Preferencias', icon: '/bell-regular-full.svg' },
+    { id: 'help', title: 'Ayuda y soporte', desc: 'Reportes · Denuncias · Sugerencias', icon: '/info-solid-full.svg' },
+    { id: 'session', title: 'Sesión', desc: 'Cerrar sesión · Eliminar perfil', icon: '/arrow-right-from-bracket-solid-full.svg' },
+];
+
+// Acciones que todavía no tienen pantalla ni backend: la fila responde, pero no abre nada aún
+const pending = () => {};
 
 export default function SettingsPage() {
+    const router = useRouter();
 
-    const [activeMobileTab, setActiveMobileTab] = useState('menu');
+    // En móvil se ve el menú o una sección; en escritorio, todas seguidas
+    const [activeSection, setActiveSection] = useState<SectionId | null>(null);
+    const activeTitle = SECTIONS.find((s) => s.id === activeSection)?.title;
+
+    const sectionClass = (id: SectionId) => `settings-section ${activeSection === id ? 'active-mobile' : ''}`;
 
     return (
         <div className="settings-page-container">
             <div className="settings-header">
-                {activeMobileTab !== 'menu' && (
-                    <button className="mobile-back-btn" onClick={() => setActiveMobileTab('menu')}>
+                {activeSection && (
+                    <button className="mobile-back-btn" onClick={() => setActiveSection(null)} aria-label="Volver a ajustes">
                         ‹
                     </button>
                 )}
-                <span className="settings-title">
+                <h1 className="page-title">
                     <span className="desktop-title-text">Ajustes</span>
-                    <span className="mobile-title-text">
-                        {activeMobileTab === 'menu' ? 'Ajustes' : activeMobileTab}
-                    </span>
-                </span>
+                    <span className="mobile-title-text">{activeTitle ?? 'Ajustes'}</span>
+                </h1>
             </div>
             <div className="settings-content">
-                {/* =========================================
-                    MENÚ PRINCIPAL MÓVIL (Oculto en PC)
-                    ========================================= */}
-                <div className={`mobile-settings-menu ${activeMobileTab !== 'menu' ? 'hidden' : ''}`}>
-                    <div className="mobile-menu-item" onClick={() => setActiveMobileTab('Cuenta')}>
-                        <div className="menu-icon"><img src="/user-regular-full.svg" alt="User" /></div>
-                        <div className="menu-text">
-                            <span className="menu-title">Cuenta</span>
-                            <span className="menu-desc">Nombre de usuario . Email . Datos</span>
-                        </div>
-                        <span className="menu-chevron">›</span>
-                    </div>
-                    <div className="mobile-menu-item" onClick={() => setActiveMobileTab('Privacidad')}>
-                        <div className="menu-icon"><img src="/lock-solid-full.svg" alt="Privacy" /></div>
-                        <div className="menu-text">
-                            <span className="menu-title">Privacidad</span>
-                            <span className="menu-desc">Visibilidad . Bloqueos</span>
-                        </div>
-                        <span className="menu-chevron">›</span>
-                    </div>
-                    <div className="mobile-menu-item" onClick={() => setActiveMobileTab('Notificaciones')}>
-                        <div className="menu-icon"><img src="/bell-regular-full.svg" alt="Notifications" /></div>
-                        <div className="menu-text">
-                            <span className="menu-title">Notificaciones</span>
-                            <span className="menu-desc">Email . Preferencias</span>
-                        </div>
-                        <span className="menu-chevron">›</span>
-                    </div>
-                    <div className="mobile-menu-item" onClick={() => setActiveMobileTab('Ayuda')}>
-                        <div className="menu-icon"><img src="/info-solid-full.svg" alt="Help" /></div>
-                        <div className="menu-text">
-                            <span className="menu-title">Ayuda y soporte</span>
-                            <span className="menu-desc">Reportes . Denuncias . Sugerencias</span>
-                        </div>
-                        <span className="menu-chevron">›</span>
-                    </div>
-                    <div className="mobile-menu-item" onClick={() => setActiveMobileTab('Sesión')}>
-                        <div className="menu-icon"><img src="/arrow-right-from-bracket-solid-full.svg" alt="Session" /></div>
-                        <div className="menu-text">
-                            <span className="menu-title">Sesión</span>
-                            <span className="menu-desc">Cerrar sesión . Eliminar perfil</span>
-                        </div>
-                        <span className="menu-chevron">›</span>
-                    </div>
-                </div>
+                <nav className={`mobile-settings-menu ${activeSection ? 'hidden' : ''}`} aria-label="Secciones de ajustes">
+                    {SECTIONS.map((s) => (
+                        <button key={s.id} type="button" className="mobile-menu-item settings-menu-button" onClick={() => setActiveSection(s.id)}>
+                            <span className="menu-icon">
+                                <img src={s.icon} alt="" />
+                            </span>
+                            <span className="menu-text">
+                                <span className="menu-title">{s.title}</span>
+                                <span className="menu-desc">{s.desc}</span>
+                            </span>
+                            <span className="menu-chevron" aria-hidden="true">›</span>
+                        </button>
+                    ))}
+                </nav>
 
-                {/* =========================================
-                    SECCIONES DE AJUSTES
-                    ========================================= */}
-                <div className={`settings-sections-wrapper ${activeMobileTab !== 'menu' ? 'show-section' : ''}`}>
-                    
-                    {/* --- CUENTA --- */}
-                    <section className={`settings-section ${activeMobileTab === 'Cuenta' ? 'active-mobile' : ''}`}>
-                        <span className="settings-subtitle">Cuenta</span>
-                        
-                        <div className="settings-option">
-                            <div className="settings-options-text">
-                                <span className="settings-option-label">Nombre usuario</span>
-                                <span className="settings-option-value">@raquelz.12204</span>
-                                <span className="settings-option-description">Puedes cambiar tu nombre de usuario cada 30 días.</span>
-                            </div>
-                            <div className="settings-option-actions">
-                                <Button variant="outline" className="desktop-btn settings-option-btn">Cambiar</Button>
-                                <span className="mobile-action-icon">›</span>
-                            </div>
-                        </div>
-                        
-                        <div className="settings-option">
-                            <div className="settings-options-text">
-                                <span className="settings-option-label">Email</span>
-                                <span className="settings-option-value">email@email.com</span>
-                                <span className="settings-option-description">Lo usamos para avisos y para recuperar tu cuenta.</span>
-                            </div>
-                            <div className="settings-option-actions">
-                                <Button variant="outline" className="desktop-btn settings-option-btn">Cambiar</Button>
-                                <span className="mobile-action-icon">›</span>
-                            </div>
-                        </div>
-
-                        <div className="settings-option">
-                            <div className="settings-options-text">
-                                <span className="settings-option-label">Descargar mis datos</span>
-                                <span className="settings-option-description">Recibe una copia de tu perfil, reseñas y actividad.</span>
-                            </div>
-                            <div className="settings-option-actions">
-                                <Button variant="outline" className="desktop-btn settings-option-btn">Cambiar</Button>
-                                <span className="mobile-action-icon">›</span>
-                            </div>
-                        </div>
+                <div className={`settings-sections-wrapper ${activeSection ? 'show-section' : ''}`}>
+                    <section className={sectionClass('account')} aria-labelledby="settings-account">
+                        <h2 className="section-title settings-subtitle" id="settings-account">Cuenta</h2>
+                        <OptionRow
+                            label="Nombre de usuario"
+                            value="@raquelz.12204"
+                            description="Puedes cambiar tu nombre de usuario cada 30 días."
+                            onClick={pending}
+                        />
+                        <OptionRow
+                            label="Email"
+                            value="email@email.com"
+                            description="Lo usamos para avisos y para recuperar tu cuenta."
+                            onClick={pending}
+                        />
+                        <OptionRow
+                            label="Descargar mis datos"
+                            description="Recibe una copia de tu perfil, reseñas y actividad."
+                            actionLabel="Descargar"
+                            onClick={pending}
+                        />
                     </section>
 
-                    {/* --- PRIVACIDAD --- */}
-                    <section className={`settings-section ${activeMobileTab === 'Privacidad' ? 'active-mobile' : ''}`}>
-                        <span className="settings-subtitle">Privacidad</span>
-                        <div className="settings-option">
-                            <div className="settings-options-text">
-                                <span className="settings-option-label">Privacidad de la cuenta</span>
-                                <span className="settings-option-description">Pública: cualquiera ve tu perfil y actividad. Privada: solo tus seguidores aprobados.</span>
-                            </div>
-                            <div className="settings-option-actions">
-                                <Button variant="outline" className="desktop-btn settings-option-btn">Pública</Button>
-                                <span className="mobile-action-icon">›</span>
-                            </div>
-                        </div>
-                        <div className="settings-option">
-                            <div className="settings-options-text">
-                                <span className="settings-option-label">Mostrar nombre completo</span>
-                                <span className="settings-option-description">Si lo desactivas, los demás solo verán tu nombre de usuario.</span>
-                            </div>
-                            <div className="settings-option-actions">
-                                <Toggle />
-                            </div>
-                        </div>
-                        <div className="settings-option">
-                            <div className="settings-options-text">
-                                <span className="settings-option-label">Usuarios bloqueados</span>
-                                <span className="settings-option-description">No pueden ver tu perfil ni interactuar contigo.</span>
-                            </div>
-                            <div className="settings-option-actions">
-                                <Button variant="outline" className="desktop-btn settings-option-btn">Ver usuarios</Button>
-                                <span className="mobile-action-icon">›</span>
-                            </div>
-                        </div>
+                    <section className={sectionClass('privacy')} aria-labelledby="settings-privacy">
+                        <h2 className="section-title settings-subtitle" id="settings-privacy">Privacidad</h2>
+                        <OptionRow
+                            label="Privacidad de la cuenta"
+                            value="Pública"
+                            description="Pública: cualquiera ve tu perfil y actividad. Privada: solo tus seguidores aprobados."
+                            onClick={pending}
+                        />
+                        <OptionRow
+                            label="Mostrar nombre completo"
+                            description="Si lo desactivas, los demás solo verán tu nombre de usuario."
+                            control={<Toggle label="Mostrar nombre completo" />}
+                        />
+                        <OptionRow
+                            label="Usuarios bloqueados"
+                            description="No pueden ver tu perfil ni interactuar contigo."
+                            actionLabel="Ver usuarios"
+                            onClick={pending}
+                        />
                     </section>
 
-                    {/* --- NOTIFICACIONES --- */}
-                    <section className={`settings-section ${activeMobileTab === 'Notificaciones' ? 'active-mobile' : ''}`}>
-                        <span className="settings-subtitle">Notificaciones</span>
-                        <div className="settings-option">
-                            <div className="settings-options-text">
-                                <span className="settings-option-label">Notificaciones por email</span>
-                                <span className="settings-option-description">Elige lo que quieres recibir por email.</span>
-                            </div>
-                            <div className="settings-option-actions">
-                                <Button variant="outline" className="desktop-btn settings-option-btn">Ver</Button>
-                                <span className="mobile-action-icon">›</span>
-                            </div>
-                        </div>
-                        <div className="settings-option">
-                            <div className="settings-options-text">
-                                <span className="settings-option-label">Preferencias de notificaciones</span>
-                                <span className="settings-option-description">Elige qué avisos recibes: comentarios, menciones, nuevos seguidores…</span>
-                            </div>
-                            <div className="settings-option-actions">
-                                <Button variant="outline" className="desktop-btn settings-option-btn">Ver</Button>
-                                <span className="mobile-action-icon">›</span>
-                            </div>
-                        </div>
+                    <section className={sectionClass('notifications')} aria-labelledby="settings-notifications">
+                        <h2 className="section-title settings-subtitle" id="settings-notifications">Notificaciones</h2>
+                        <OptionRow
+                            label="Notificaciones por email"
+                            description="Elige lo que quieres recibir por email."
+                            actionLabel="Ver"
+                            onClick={pending}
+                        />
+                        <OptionRow
+                            label="Preferencias de notificaciones"
+                            description="Elige qué avisos recibes: comentarios, menciones, nuevos seguidores…"
+                            actionLabel="Ver"
+                            onClick={pending}
+                        />
                     </section>
 
-                    {/* --- AYUDA --- */}
-                    <section className={`settings-section ${activeMobileTab === 'Ayuda' ? 'active-mobile' : ''}`}>
-                        <span className="settings-subtitle">Ayuda y soporte</span>
-                        <div className="settings-option">
-                            <div className="settings-options-text">
-                                <span className="settings-option-label">Reportar un problema</span>
-                                <span className="settings-option-description">Cuéntanos si algo no funciona bien en la app.</span>
-                            </div>
-                            <div className="settings-option-actions">
-                                <Button variant="outline" className="desktop-btn settings-option-btn" onClick={() => { window.location.href = '/contact';}}>Reportar</Button>
-                                <span className="mobile-action-icon">›</span>
-                            </div>
-                        </div>
-                        <div className="settings-option">
-                            <div className="settings-options-text">
-                                <span className="settings-option-label">Mis denuncias</span>
-                                <span className="settings-option-description">Consulta las denuncias que has enviado y en qué estado están.</span>
-                            </div>
-                            <div className="settings-option-actions">
-                                <Button variant="outline" className="desktop-btn settings-option-btn">Ver denuncias</Button>
-                                <span className="mobile-action-icon">›</span>
-                            </div>
-                        </div>
-                        <div className="settings-option">
-                            <div className="settings-options-text">
-                                <span className="settings-option-label">Sugerencias</span>
-                                <span className="settings-option-description">Envía una sugerencia al buzón y la leeremos lo antes posible.</span>
-                            </div>
-                            <div className="settings-option-actions">
-                                <Button variant="outline" className="desktop-btn settings-option-btn">Enviar sugerencia</Button>
-                                <span className="mobile-action-icon">›</span>
-                            </div>
-                        </div>
+                    <section className={sectionClass('help')} aria-labelledby="settings-help">
+                        <h2 className="section-title settings-subtitle" id="settings-help">Ayuda y soporte</h2>
+                        <OptionRow
+                            label="Reportar un problema"
+                            description="Cuéntanos si algo no funciona bien en la app."
+                            actionLabel="Reportar"
+                            onClick={() => router.push('/contact')}
+                        />
+                        <OptionRow
+                            label="Mis denuncias"
+                            description="Consulta las denuncias que has enviado y en qué estado están."
+                            actionLabel="Ver denuncias"
+                            onClick={pending}
+                        />
+                        <OptionRow
+                            label="Sugerencias"
+                            description="Envía una sugerencia al buzón y la leeremos lo antes posible."
+                            actionLabel="Enviar sugerencia"
+                            onClick={() => router.push('/suggestions')}
+                        />
                     </section>
 
-                    {/* --- SESIÓN --- */}
-                    <section className={`settings-section ${activeMobileTab === 'Sesión' ? 'active-mobile' : ''}`}>
-                        <span className="settings-subtitle">Sesión</span>
-                        <div className="settings-option">
-                            <div className="settings-options-text">
-                                <span className="settings-option-label">Cerrar sesión</span>
-                                <span className="settings-option-description">Saldrás de tu cuenta en este dispositivo.</span>
-                            </div>
-                            <div className="settings-option-actions">
-                                <Button variant="outline" className="desktop-btn settings-option-btn">Cerrar sesión</Button>
-                                <span className="mobile-action-icon">›</span>
-                            </div>
-                        </div>
-                        <div className="settings-option">
-                            <div className="settings-options-text">
-                                <span className="settings-option-label">Eliminar perfil</span>
-                                <span className="settings-option-description">Se borrarán tu perfil, reseñas y datos de forma permanente. No se puede deshacer.</span>
-                            </div>
-                            <div className="settings-option-actions">
-                                <Button variant="danger" className="desktop-btn settings-option-btn">Eliminar perfil</Button>
-                                <span className="mobile-action-icon">›</span>
-                            </div>
-                        </div>
+                    <section className={sectionClass('session')} aria-labelledby="settings-session">
+                        <h2 className="section-title settings-subtitle" id="settings-session">Sesión</h2>
+                        <OptionRow
+                            label="Cerrar sesión"
+                            description="Saldrás de tu cuenta en este dispositivo."
+                            actionLabel="Cerrar sesión"
+                            onClick={pending}
+                        />
+                        <OptionRow
+                            label="Eliminar perfil"
+                            description="Se borrarán tu perfil, reseñas y datos de forma permanente. No se puede deshacer."
+                            actionLabel="Eliminar perfil"
+                            danger
+                            onClick={pending}
+                        />
                     </section>
                 </div>
             </div>

@@ -65,30 +65,51 @@
 .user-profile {
   display: flex;
   align-items: center;
-  gap: 1.6rem;
+  gap: 1.2rem;
 }
 
 .nav-button {
   background: transparent;
   border: none;
+  border-radius: 50%;
   cursor: pointer;
   padding: 0.8rem;
   display: flex;
   align-items: center;
   justify-content: center;
+  text-decoration: none;
 }
 
+.nav-button:focus-visible {
+  outline: 2px solid var(--primary-white);
+  outline-offset: 2px;
+}
+
+.icon-home,
 .icon-bell, 
 .icon-user {
   width: 2.4rem;
   height: 2.4rem;
-  background-color: var(--text-primary, #ffffff);
+  background-color: var(--primary-white);
   transition: background-color 0.2s ease;
 }
 
-.nav-button:hover .icon-bell,
-.nav-button:hover .icon-user {
+/* Al pasar por encima y en la página en la que estás (o con el desplegable abierto): icono en rojo */
+.nav-button:hover span[class^="icon-"],
+.nav-button.active span[class^="icon-"] {
   background-color: var(--primary-red); 
+}
+
+.icon-home {
+  -webkit-mask-image: url('/house-regular-full.svg');
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+
+  mask-image: url('/house-regular-full.svg');
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
 }
 
 .icon-bell {
@@ -115,54 +136,10 @@
   mask-position: center;
 }
 
-.hamburger-btn {
-  display: none; 
-}
-
-@media (max-width: 1124px) {
-  
-  .hamburger-btn {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 2.4rem;
-    height: 1.8rem;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    z-index: 100;
-  }
-
-  .hamburger-line {
-    width: 100%;
-    height: 0.2rem;
-    background-color: var(--text-primary, #ffffff);
-    border-radius: 0.2rem;
-    transition: all 0.3s ease;
-  }
-  .hamburger-line.open:nth-child(1) { transform: translateY(0.8rem) rotate(45deg); }
-  .hamburger-line.open:nth-child(2) { opacity: 0; }
-  .hamburger-line.open:nth-child(3) { transform: translateY(-0.8rem) rotate(-45deg); }
-
+/* Hasta 1024px se ve la barra inferior, que ya tiene feed, buscar, perfil y notificaciones:
+   la cabecera se queda solo con el logo */
+@media (max-width: 1024px) {
   .nav-links {
-    display: none;
-    flex-direction: column;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    background-color: var(--bg-card, #1a1a1a);
-    padding: 2rem;
-    gap: 1.5rem;
-    border-bottom: 0.1rem solid var(--color-border, #333);
-    box-shadow: 0 1rem 2rem rgba(0,0,0,0.5);
-  }
-
-  .nav-links.mobile-open {
-    display: flex;
-  }
-
-  .user-profile {
     display: none;
   }
 }
@@ -251,7 +228,7 @@
     padding: 0.6rem;
     display: flex;
     flex-direction: column;
-    background-color: #243035;
+    background-color: var(--bg-elevated);
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 1.2rem;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
@@ -277,7 +254,7 @@
 }
 
 .admin-account-item.danger {
-    color: var(--danger-red, #e05263);
+    color: var(--danger-red);
 }
 
 /* Escritorio estrecho: menos aire entre enlaces para que quepan todos */

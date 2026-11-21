@@ -7,6 +7,8 @@ import Button from '../../../../components/Button/Button';
 import Textarea from '../../../../components/TextArea/TextArea';
 import Score from '../../../../components/Score/Score';
 import Input from '../../../../components/Input/Input';
+import FavButton from '../../../../components/FavButton/FavButton';
+import '@/styles/media-detail.css';
 import './review.css';
 
 function ReviewContent() {
@@ -14,6 +16,9 @@ function ReviewContent() {
     const router = useRouter();
 
     const yourReview = true;
+    // Puntuaciones de la reseña: las mismas en escritorio y en móvil
+    const rvwdScore = 9.8;
+    const reviewScore = 8.5;
     const reviewId = params?.id;
 
     // ESTADOS
@@ -42,9 +47,9 @@ function ReviewContent() {
                 </div>
                 <div className="single-review-content">
                     <div className="single-review-head">
-                        <span className="single-review-title">
+                        <h1 className="page-title">
                             {yourReview ? 'Tu ' : 'La '} <span className="RVWS">RVW</span> {yourReview ? '' : 'de'}
-                        </span>
+                        </h1>
                     </div>      
                     <div className="single-review-user-avatar-container">
                         <img className="single-review-user-avatar" src="/placeholder.png" alt="Avatar del usuario" />
@@ -55,8 +60,8 @@ function ReviewContent() {
                         title="No pasa nada hombre"
                         artist="Clarent"
                         imageUrl="/placeholderCards.png"
-                        score={8.5}
-                        pageScore={8.5}
+                        score={reviewScore}
+                        pageScore={rvwdScore}
                         titleReview="Una obra maestra"
                         reviewText="Curabitur quis turpis quis sapien luctus iaculis. Aenean venenatis eros suscipit urna tristique congue ac non metus. Proin euismod ipsum augue, finibus egestas nisi pretium vehicula. Maecenas ornare venenatis sollicitudin. Suspendisse non laoreet dui, at dignissim eros. Integer venenatis maximus turpis. Nulla sit amet purus elit. Ut tincidunt massa quis cursus iaculis. Vestibulum tristique lectus ac tortor luctus hendrerit. Duis commodo neque a lectus pretium facilisis. Praesent vel quam porttitor, dignissim velit eget, pretium ipsum. Praesent tempus faucibus laoreet. Nunc eu dui at mauris pulvinar sodales quis auctor lorem. Nulla turpis ligula, dapibus at sapien sed, eleifend ultrices nisl."
                         reviewDate="2023-10-15"
@@ -81,7 +86,7 @@ function ReviewContent() {
                 </div>
 
                 <div className="single-review-comments">
-                    <span className="single-review-comments-title">12 Comentarios</span>
+                    <h2 className="section-title single-review-comments-title">12 comentarios</h2>
                     <div className="single-review-comments-list">
                         
                         {/* COMENTARIO 1 ESCRITORIO */}
@@ -96,9 +101,7 @@ function ReviewContent() {
                                     </div>
                                 </div>
                                 <div className="single-review-comment-actions">
-                                    <button className="review-comment-like-button" onClick={() => {}}>
-                                        15 <img src="/star-regular-full.svg" alt="Favoritos" />
-                                    </button>
+                                    <FavButton count={15} itemLabel="este comentario" className="review-comment-like-button" />
                                     <button className="review-comment-extra-button" onClick={() => {}}>...</button>
                                 </div>
                             </div>
@@ -135,7 +138,7 @@ function ReviewContent() {
                             <img src="/placeholder.png" alt="Avatar" />
                             <span>@raquelz.12204</span>
                         </div>
-                        <button className="mobile-back-btn" onClick={() => router.back()}>‹</button>
+                        <button className="review-back-btn" onClick={() => router.back()}>‹</button>
                     </div>
 
                     <div className="mobile-hero-info">
@@ -148,11 +151,11 @@ function ReviewContent() {
 
                 <div className="mobile-scores-section">
                     <div className="mobile-score-item">
-                        <Score score={9.8} variant="white" input={false} />
+                        <Score score={rvwdScore} variant="white" input={false} />
                         <span><span className="RVWS">RVWD</span> score</span>
                     </div>
                     <div className="mobile-score-item">
-                        <Score score={8.5} variant="red" input={false} />
+                        <Score score={reviewScore} variant="red" input={false} />
                         <span>Tu <span className="RVWS">RVW</span> score</span>
                     </div>
                 </div>
@@ -160,9 +163,7 @@ function ReviewContent() {
                 <div className="mobile-review-body">
                     <div className="mobile-review-body-head">
                         <h2>Una obra maestra</h2>
-                        <button className="review-comment-like-button" onClick={() => {}}>
-                            15 <img src="/star-regular-full.svg" alt="Favoritos" />
-                        </button>
+                        <FavButton count={15} itemLabel="esta RVW" className="review-comment-like-button" />
                     </div>
                     <p className="mobile-review-text">
                         Curabitur quis turpis quis sapien luctus iaculis. Aenean venenatis eros suscipit urna tristique congue ac non metus. Proin euismod ipsum augue, finibus egestas nisi pretium vehicula. Maecenas ornare venenatis sollicitudin. Suspendisse non laoreet dui, at dignissim eros.
@@ -184,9 +185,7 @@ function ReviewContent() {
                         <div className="sheet-comment">
                             <div className="sheet-comment-user">
                                 <img src="/placeholder.png" alt="Avatar" />
-                                <span>@raquelz.12204 <button className="review-comment-like-button" onClick={() => {}}>
-                                    15 <img src="/star-regular-full.svg" alt="Favoritos" />
-                                </button></span>
+                                <span>@raquelz.12204 <FavButton count={15} itemLabel="este comentario" className="review-comment-like-button" /></span>
                             </div>
                             <p className="sheet-comment-text">
                                 Curabitur quis turpis quis sapien luctus iaculis. Aenean venenatis eros suscipit urna tristique congue ac non metus.

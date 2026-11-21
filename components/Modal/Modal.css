@@ -47,12 +47,12 @@
     border: none;
     font-size: 2rem;
     cursor: pointer;
-    color: var(--primary-white, #E2F0F0);
+    color: var(--primary-white);
     transition: color 0.3s ease;
 }
 
 .modal-close:hover {
-    color: var(--primary-red, #94314F);
+    color: var(--primary-red);
 }
 
 /*transiciones*/

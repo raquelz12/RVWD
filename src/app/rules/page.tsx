@@ -57,7 +57,7 @@ export default function NormasPage() {
     return (
         <div className="rules-container">
             <div className="rules-header-section">
-                <h1 className="rules-main-title">Normas de la comunidad</h1>
+                <h1 className="page-title rules-main-title">Normas de la comunidad</h1>
                 <p className="rules-main-intro">
                     En <span className="RVWS">ЯVWD</span> queremos que cualquiera pueda compartir, comentar y conocer gente sin sentirse incómodo. Estas normas explican qué esperamos de ti y qué puedes esperar de nosotros. Son pocas y sencillas: si las sigues, no tendrás ningún problema.
                 </p>
@@ -65,7 +65,7 @@ export default function NormasPage() {
             <div className="rules-columns-layout">
                 {/* Normas */}
                 <div className="rules-column left-column">
-                    <h2 className="rules-col-title">¿Cuáles son las normas?</h2>
+                    <h2 className="section-title rules-col-title">¿Cuáles son las normas?</h2>
                     <div className="accordion-list">
                         {rules.map((rule) => (
                             <div 
@@ -93,7 +93,7 @@ export default function NormasPage() {
                 </div>
                 {/* Sanciones */}
                 <div className="rules-column right-column">
-                    <h2 className="rules-col-title">¿Qué pasa si alguien no cumple las normas?</h2>
+                    <h2 className="section-title rules-col-title">¿Qué pasa si alguien no cumple las normas?</h2>
                     <p className="sanciones-intro">
                         Revisamos cada denuncia y actuamos de forma proporcional. Usamos un sistema de tres sanciones:
                     </p>
@@ -125,7 +125,7 @@ export default function NormasPage() {
                         </div>
                         <div className="extra-block">
                             <h3>Cómo reclamar una sanción</h3>
-                            <p>Si crees que nos hemos equivocado, puedes pedirnos que lo revisemos desde la <Link href="/contacto" className="inline-link">página de contacto</Link>, eligiendo el asunto Problema con mi cuenta e indicando tu usuario y por qué no estás de acuerdo. Se volverá a revisar el caso y se te informará de la decisión final.</p>
+                            <p>Si crees que nos hemos equivocado, puedes pedirnos que lo revisemos desde la <Link href="/contact" className="inline-link">página de contacto</Link>, eligiendo el asunto Problema con mi cuenta e indicando tu usuario y por qué no estás de acuerdo. Se volverá a revisar el caso y se te informará de la decisión final.</p>
                         </div>
                     </div>
                 </div>

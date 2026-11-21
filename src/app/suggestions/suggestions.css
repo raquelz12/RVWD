@@ -16,12 +16,6 @@
     padding-bottom: 4rem;
 }
 
-.suggestions-title {
-    font-size: 3.6rem;
-    margin: 0;
-    font-weight: 500;
-}
-
 .suggestions-description {
     font-size: 2rem;
     margin: 0;
@@ -37,7 +31,7 @@
 .suggestions-column {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 2rem;
     flex: 1;
     padding: 1rem;
 }
@@ -49,48 +43,11 @@
     gap: 1.6rem;
 }
 
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.form-label {
-    font-weight: 500;
-}
-
-.required-fields-note {
-    font-size: 1.4rem;
-    color: var(--text-secondary);
-    margin: 0;
-}
-
-.terms-conditions {
-    font-size: 1.4rem;
-}
-
-.terms-conditions a {
-    color: var(--primary);
-    text-decoration: none;
-    font-weight: 600;
-    transition: color 0.3s;
-}
-
-.terms-conditions a:hover {
-    color: var(--primary-red);
-}
-
 /* Ultimas sugerencias */
 .suggestions-list {
     display: flex;
     flex-direction: column;
     gap: 1.6rem;
-}
-
-.suggestions-column-title {
-    font-size: 2rem;
-    font-weight: 500;
-    padding-left: 2rem;
 }
 
 .suggestions-list-item {
@@ -101,12 +58,6 @@
     border-bottom: 1px solid color-mix(in srgb, var(--text-secondary) 20%, transparent);
 }
 
-.suggestions-list-item-title {
-    font-size: 2rem;
-    margin: 0;
-    font-weight: 500;
-}
-
 .suggestions-list-item-description {
     font-size: 1.6rem;
     margin: 0;
@@ -115,6 +66,10 @@
 /* Responsive */
 
 @media (max-width: 768px) {
+    .suggestions-header {
+        padding-bottom: 2rem;
+    }
+
     .suggestions-column-wrapper {
         flex-direction: column;
         padding: 0 1.6rem;
@@ -127,10 +82,6 @@
     .suggestions-column {
         padding: 0;
         padding-bottom: 4rem;
-    }
-
-    .suggestions-column-title {
-        padding-left: 0;
     }
 
     .suggestions-list {

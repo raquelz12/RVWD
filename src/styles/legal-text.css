@@ -1,0 +1,26 @@
+/* =========================================
+   TEXTOS LEGALES
+   Bloques de texto de aviso legal y privacidad
+   ========================================= */
+
+.text-block h3 {
+    font-size: 1.6rem;
+    font-weight: 500;
+    margin: 0 0 1rem 0;
+    color: var(--primary-white);
+}
+
+.text-block p {
+    font-size: 1.4rem;
+    line-height: 1.6;
+    margin: 0 0 0.8rem 0;
+}
+
+.text-block p:last-child {
+    margin-bottom: 0;
+}
+
+.text-block strong {
+    color: var(--primary-white);
+    font-weight: 600;
+}

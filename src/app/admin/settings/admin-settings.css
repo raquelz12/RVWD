@@ -1,77 +1,12 @@
 /* Ajustes de admin: se apoya en ../../settings/settings.css (mismo diseño que los
    ajustes de usuario) y en ../admin-shared.css (modales, aviso). Aquí solo lo propio. */
 
-.admin-settings .settings-title {
-    margin: 0;
-    font-weight: 500;
-}
-
-.admin-settings .settings-subtitle {
-    margin: 0;
-    font-weight: 400;
-}
-
-/* En el diseño de usuario las filas son <div>; aquí las que abren algo son <button> */
-.admin-option-btn,
-.admin-menu-item {
-    width: 100%;
-    background: none;
-    border: none;
-    color: inherit;
-    font: inherit;
-    text-align: left;
-    cursor: pointer;
-}
-
-.admin-option-btn {
-    border-radius: 1.6rem;
-    transition: background-color 0.2s ease;
-}
-
-.admin-option-btn:hover {
-    background-color: rgba(255, 255, 255, 0.04);
-}
-
-.admin-option-btn:hover .custom-button.outline {
-    background-color: rgba(255, 255, 255, 0.08);
-}
-
-.admin-option-btn:focus-visible,
-.admin-menu-item:focus-visible {
-    outline: 2px solid var(--primary-red-hover);
-    outline-offset: 2px;
-}
-
-.admin-option-btn .settings-option-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
-}
-
-.mobile-action-icon {
-    display: none;
-    font-size: 2.4rem;
-}
-
-/* filas con control en línea: sin efecto de pulsar */
-.settings-option.is-static {
-    cursor: default;
-}
-
-.admin-option-control {
-    display: flex;
-    align-items: center;
-    gap: 1.4rem;
-    flex-shrink: 0;
-}
-
 .admin-inline-select {
     width: 17rem;
 }
 
 .admin-value-alert {
-    color: #f59e0b;
+    color: var(--warning);
 }
 
 .admin-signature-preview {
@@ -174,8 +109,8 @@
     font-weight: 600;
     padding: 0.2rem 0.8rem;
     border-radius: 1rem;
-    background-color: rgba(74, 222, 128, 0.15);
-    color: #4ade80;
+    background-color: color-mix(in srgb, var(--success) 15%, transparent);
+    color: var(--success);
 }
 
 .admin-session-meta {
@@ -496,25 +431,9 @@
    MÓVIL
    ========================================= */
 @media (max-width: 768px) {
-    .admin-option-btn .mobile-action-icon {
-        display: block;
-    }
-
-    .settings-option.is-static:hover {
-        background-color: transparent;
-    }
-
-    .admin-option-control {
-        gap: 1rem;
-    }
 
     .admin-inline-select {
         width: 13rem;
-    }
-
-    /* fila con control: el texto encima y el control debajo si no cabe */
-    .settings-option.is-static {
-        flex-wrap: wrap;
     }
 
     .admin-block-head {

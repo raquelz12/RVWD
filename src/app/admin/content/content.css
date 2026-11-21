@@ -23,7 +23,7 @@
 
 /* estados */
 .admin-list-container .content-status.status-hidden {
-    color: #f59e0b;
+    color: var(--warning);
 }
 
 .admin-list-container .content-status.status-deleted {

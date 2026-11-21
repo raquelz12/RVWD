@@ -204,7 +204,7 @@
     padding: 1rem 1.2rem;
     border-radius: 1rem;
     background-color: rgba(245, 158, 11, 0.08);
-    border-left: 3px solid #f59e0b;
+    border-left: 3px solid var(--warning);
 }
 
 .inbox-activity-note {

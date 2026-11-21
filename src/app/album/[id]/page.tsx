@@ -4,6 +4,7 @@ import { Suspense, useState, useEffect, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Button from '../../../../components/Button/Button';
 import Score from '../../../../components/Score/Score';
+import '@/styles/media-detail.css';
 import './album.css';
 import MediaCard from '../../../../components/MediaCard/MediaCard';
 import Carousel from '../../../../components/Carousel/Carousel';
@@ -13,6 +14,7 @@ import { generateBreadcrumbs } from '@/utils/breadcrumbs';
 import { getAlbumDetails } from '@/lib/api';
 import { Album } from '@/types/music';
 import SearchBar from '../../../../components/SearchBar/SearchBar';
+import FavButton from '../../../../components/FavButton/FavButton';
 import Link from 'next/link';
 
 function AlbumContent() {
@@ -35,7 +37,7 @@ function AlbumContent() {
 
     if (isLoading) {
         return <div className="helper-wrapper">
-                    <span className="helper-text">Cargando album...</span>{/*Ya hare un skeleton para esto*/}
+                    <span className="helper-text">Cargando álbum...</span>{/*Ya hare un skeleton para esto*/}
                 </div>;
     }
 
@@ -49,7 +51,6 @@ function AlbumContent() {
     const breadcrumbs = generateBreadcrumbs('album', album);
 
     const topRvws = [1, 2, 3, 4];
-    const topSongs = [1, 2, 3, 4];
 
     return (
         <div className="album-page-container">
@@ -61,12 +62,12 @@ function AlbumContent() {
                     <div className="album-info-desktop">
                         <div className="album-title-row">
                             <div>
-                                <span className="album-title">{album.name} <img src="/star-regular-full.svg" alt="Estrella" className="star-icon" /></span>
+                                <h1 className="album-title">{album.name} <FavButton itemLabel={album.name} className="title-fav-btn" /></h1>
                                 <a href={`/artist/${album.artist.id}`} className="album-artist">{album.artist.name}</a>
                             </div>
                             <div className="album-score-action">
                                 <div className="score-block">
-                                    <span className="score-label"><span className="RVWS">RVWD</span>score</span>
+                                    <span className="score-label"><span className="RVWS">RVWD</span> score</span>
                                     <Score score={album.score} variant="white" input={false} />
                                 </div>
                             </div>
@@ -85,7 +86,7 @@ function AlbumContent() {
                 {/* Listados PC */}
                 <div className="album-sections">
                     <div className="album-section">
-                        <span className="album-section-title">Top <span className="RVWS">RVWS</span></span>
+                        <h2 className="section-title album-section-title">Top <span className="RVWS">RVWS</span></h2>
                         <div className="cards-grid">
                             {topRvws.map((item, index) => (
                                 <MediaCard
@@ -103,7 +104,7 @@ function AlbumContent() {
                         </div>
                     </div>
                     <div className="album-section">
-                        <span className="album-section-title">Top canciones</span>
+                        <h2 className="section-title album-section-title">Top canciones</h2>
                         <div className="cards-grid">
                             {album.songs.map((song) => (
                                 <Link href={`/song/${song.id}`} key={song.id} className="media-card-link">
@@ -130,7 +131,7 @@ function AlbumContent() {
                 </div>
                 <div className="mobile-album-content">
                     <div className="mobile-album-title">
-                        <span className="album-title">{album.name} <img src="/star-regular-full.svg" alt="Estrella" className="star-icon" /></span>
+                        <h1 className="album-title">{album.name} <FavButton itemLabel={album.name} className="title-fav-btn" /></h1>
                         <a href={`/artist/${album.artist.id}`} className="album-artist">{album.artist.name}</a>
                     </div>
                     <ProfileStats 
@@ -141,7 +142,7 @@ function AlbumContent() {
                     />
                     <div className="mobile-score-action">
                         <div className="score-block">
-                            <span className="score-label"><span className="RVWS">RVWD</span>score</span>
+                            <span className="score-label"><span className="RVWS">RVWD</span> score</span>
                             <Score score={album.score} variant="white" input={false} />
                         </div>
                         <Button variant="primary" className="rvw-action-btn"><span className="RVWS">RVW</span></Button>
@@ -149,7 +150,7 @@ function AlbumContent() {
                     {/* Listados Móvil (Scroll Horizontal) */}
                     <div className="album-sections-mobile">
                         <div className="album-section">
-                            <span className="album-section-title">Top <span className="RVWS">RVWS</span></span>
+                            <h2 className="section-title album-section-title">Top <span className="RVWS">RVWS</span></h2>
                             <Carousel>
                                 {topRvws.map((item, index) => (
                                     <MediaCard
@@ -167,19 +168,20 @@ function AlbumContent() {
                             </Carousel>
                         </div>
                         <div className="album-section">
-                            <span className="album-section-title">Top canciones</span>
+                            <h2 className="section-title album-section-title">Top canciones</h2>
                             <Carousel>
-                                {topSongs.map((item, index) => (
-                                    <MediaCard
-                                        key={index}
-                                        type="cancion"
-                                        title="Jukiar"
-                                        artist={album.artist.name}
-                                        imageUrl={album.coverUrl}
-                                        score={8.5}
-                                        forceShowInfo={true}
-                                        scoreType="white"
-                                    />
+                                {album.songs.map((song) => (
+                                    <Link href={`/song/${song.id}`} key={song.id} className="media-card-link">
+                                        <MediaCard
+                                            type="cancion"
+                                            title={song.name}
+                                            artist={song.artist.name}
+                                            imageUrl={album.coverUrl}
+                                            score={song.score}
+                                            forceShowInfo={true}
+                                            scoreType="white"
+                                        />
+                                    </Link>
                                 ))}
                             </Carousel>
                         </div>

@@ -298,7 +298,7 @@ export default function AdminUserDetailPage() {
             </header>
             <div className="user-detail-grid">
                 <section className="account-data-section">
-                    <h2 className="section-heading">Datos de la Cuenta</h2>
+                    <h2 className="section-heading">Datos de la cuenta</h2>
                     <ul className="account-data-list">
                         <li><span>Email:</span> {user.email}</li>
                         <li><span>Alta:</span> {user.createdAt}</li>

@@ -94,7 +94,7 @@
 .row-title {
     font-size: 1.4rem;
     font-weight: 500;
-    color: var(--primary-white, #ffffff);
+    color: var(--primary-white);
 }
 
 .row-meta {
@@ -121,7 +121,7 @@
 }
 
 .icon-action-btn:hover {
-    color: var(--primary-red, #9d2b45);
+    color: var(--primary-red);
     transform: scale(1.1);
 }
 
@@ -144,7 +144,7 @@
 }
 
 .ver-todas-link:hover {
-    color: var(--primary-white, #ffffff);
+    color: var(--primary-white);
     text-decoration: underline;
 }
 
@@ -189,13 +189,13 @@
 .bar-fill {
     width: 100%;
     max-width: 8rem;
-    background-color: var(--primary-white, #e2f0f0);
+    background-color: var(--primary-white);
     border-radius: 0.4rem 0.4rem 0 0;
     transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 .bar-fill.peak {
-    background: linear-gradient(180deg, #b83353 0%, var(--primary-red, #9d2b45) 100%);
+    background: linear-gradient(180deg, var(--primary-red-hover) 0%, var(--primary-red) 100%);
 }
 
 .bar-fill:hover {

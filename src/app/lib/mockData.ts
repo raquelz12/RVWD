@@ -27,7 +27,7 @@ const artist1: Artist = {
     favs: 300000,
     rvws: 15000
   },
-  score: 4.8,
+  score: 9.6,
   songs: [],
   albums: [],
   rvws: [],
@@ -42,7 +42,7 @@ const album1: Album = {
     favs: 85000,
     rvws: 4200
   },
-  score: 4.9,
+  score: 9.8,
   songs: [],
   artist: artist1,
   rvws: [],
@@ -58,7 +58,7 @@ const song1: Song = {
     favs: 12000,
     rvws: 800
   },
-  score: 4.7,
+  score: 9.4,
   album: album1,
   artist: artist1,
   rvws: [],
@@ -74,7 +74,7 @@ const song2: Song = {
     favs: 15000,
     rvws: 950
   },
-  score: 4.6,
+  score: 9.2,
   album: album1,
   artist: artist1,
   rvws: [],
@@ -116,7 +116,7 @@ const song4: Song = {
 const review1: Review = {
   id: 5001,
   user: user1,
-  score: 5,
+  score: 10,
   title: 'Obra maestra vanguardista',
   text: 'La producción de este álbum rompe todos los esquemas...',
   type: 'album',

@@ -3,7 +3,7 @@
     top: calc(100% + 1rem);
     right: 0;
     width: 34rem;
-    background-color: rgba(24, 34, 38, 0.95);
+    background-color: color-mix(in srgb, var(--bg-card) 95%, transparent);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -96,7 +96,7 @@
     display: block;
     text-align: center;
     padding: 1.5rem;
-    color: var(--primary-red, #9d2b45);
+    color: var(--primary-red);
     font-size: 1.4rem;
     font-weight: 600;
     text-decoration: none;
@@ -107,15 +107,16 @@
     background-color: rgba(255,255,255,0.05);
 }
 
+/* Campana en la barra inferior (se ve hasta 1024px): se abre hacia arriba, con el ancho de la barra */
+.bottom-nav .notif-dropdown-menu {
+    top: auto;
+    bottom: calc(100% + 1rem);
+    left: 0;
+    right: 0;
+    width: auto;
+}
+
 @media (max-width: 768px) {
-    /* Campana en la barra inferior: se abre hacia arriba */
-    .bottom-nav .notif-dropdown-menu {
-        top: auto;
-        bottom: calc(100% + 1rem);
-        right: -2rem;
-        width: 90vw;
-        max-width: 35rem;
-    }
 
     /* Campana en el header (admin): se abre hacia abajo, ajustada al ancho de la pantalla */
     .header .notif-dropdown-menu {

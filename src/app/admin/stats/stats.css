@@ -94,7 +94,7 @@
 }
 
 .stat-delta.good {
-    color: #4ade80;
+    color: var(--success);
     background-color: rgba(74, 222, 128, 0.1);
 }
 
@@ -203,7 +203,7 @@
 }
 
 .stats-bar.peak {
-    background: linear-gradient(180deg, #b83353 0%, var(--primary-red) 100%);
+    background: linear-gradient(180deg, var(--primary-red-hover) 0%, var(--primary-red) 100%);
 }
 
 .stats-bar-col:hover .stats-bar {
@@ -219,7 +219,7 @@
     transform: translateX(-50%);
     padding: 0.4rem 0.8rem;
     border-radius: 0.6rem;
-    background-color: #243035;
+    background-color: var(--bg-elevated);
     border: 1px solid rgba(255, 255, 255, 0.15);
     font-size: 1.2rem;
     white-space: nowrap;
@@ -440,7 +440,7 @@ a.stats-rank-row:hover {
     display: block;
     height: 100%;
     border-radius: 0.3rem;
-    background: linear-gradient(90deg, var(--primary-red) 0%, #b83353 100%);
+    background: linear-gradient(90deg, var(--primary-red) 0%, var(--primary-red-hover) 100%);
 }
 
 /* barra repartida */

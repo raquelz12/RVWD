@@ -55,7 +55,7 @@
     display: none;
     background: none;
     border: none;
-    color: var(--primary-white, #e2f0f0);
+    color: var(--primary-white);
     cursor: pointer;
     padding: 1rem;
     border-radius: 9rem;
@@ -67,7 +67,7 @@
 }
 
 .admin-list-container .mobile-filter-btn.active {
-    color: var(--primary-red, #9d2b45);
+    color: var(--primary-red);
     background-color: rgba(255, 255, 255, 0.08);
 }
 
@@ -81,7 +81,7 @@
     padding: 0 0.4rem;
     box-sizing: border-box;
     border-radius: 1rem;
-    background-color: var(--primary-red, #9d2b45);
+    background-color: var(--primary-red);
     color: #ffffff;
     font-size: 1.1rem;
     font-weight: 600;
@@ -135,7 +135,7 @@
 }
 
 .admin-data-link:hover {
-    color: var(--primary-red, #9d2b45);
+    color: var(--primary-red);
 }
 
 .admin-chevron {
@@ -491,7 +491,7 @@
 
 .admin-pagination .page-btn:hover:not(:disabled),
 .admin-pagination .page-btn.active {
-    color: var(--primary-white, #ffffff);
+    color: var(--primary-white);
     font-weight: 600;
 }
 
@@ -619,6 +619,11 @@
     .admin-list-container .sanctions-text {
         font-size: 1.2rem;
     }
+
+    .admin-tab {
+        font-size: 1.5rem;
+        padding: 0.9rem 1.1rem;
+    }
 }
 
 /* móviles pequeños */
@@ -678,14 +683,14 @@
 }
 
 .admin-next-link {
-    color: var(--primary-white, #ffffff);
+    color: var(--primary-white);
     text-decoration: none;
     font-size: 1.5rem;
     transition: color 0.2s ease;
 }
 
 .admin-next-link:hover {
-    color: var(--primary-red, #9d2b45);
+    color: var(--primary-red);
 }
 
 .admin-detail-header {
@@ -759,7 +764,7 @@
 }
 
 .admin-detail-name-link:hover h2 {
-    color: var(--primary-red, #9d2b45);
+    color: var(--primary-red);
 }
 
 .admin-detail-handle {
@@ -777,7 +782,7 @@
 }
 
 .admin-detail-user-status.status-suspendido {
-    color: #f59e0b;
+    color: var(--warning);
 }
 
 .admin-detail-user-status.status-baneado {
@@ -917,7 +922,7 @@
 .more-menu-btn {
     background: none;
     border: none;
-    color: var(--primary-white, #ffffff);
+    color: var(--primary-white);
     font-size: 2.6rem;
     line-height: 1;
     cursor: pointer;
@@ -935,7 +940,7 @@
     top: calc(100% + 0.6rem);
     left: 0;
     min-width: 19rem;
-    background-color: #243035;
+    background-color: var(--bg-elevated);
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 1.2rem;
     padding: 0.6rem;
@@ -955,7 +960,7 @@
 .more-menu-dropdown .dropdown-item {
     background: none;
     border: none;
-    color: var(--primary-white, #e2f0f0);
+    color: var(--primary-white);
     text-decoration: none;
     font-size: 1.4rem;
     font-family: inherit;
@@ -1064,7 +1069,7 @@
 }
 
 .sanction-link {
-    color: var(--primary-white, #ffffff);
+    color: var(--primary-white);
     text-decoration: none;
     font-size: 1.6rem;
     font-weight: 500;
@@ -1073,7 +1078,7 @@
 }
 
 .sanction-link:hover {
-    color: var(--primary-red, #9d2b45);
+    color: var(--primary-red);
 }
 
 .sanctions-footnote {
@@ -1107,7 +1112,7 @@
     display: flex;
     flex-direction: column;
     gap: 1.8rem;
-    color: var(--primary-white, #ffffff);
+    color: var(--primary-white);
 }
 
 .modal-close-btn {
@@ -1164,7 +1169,7 @@
     padding: 1.2rem;
     border-radius: 3rem;
     border: none;
-    background-color: var(--primary-red, #9d2b45);
+    background-color: var(--primary-red);
     color: #ffffff;
     font-size: 1.5rem;
     font-weight: 500;
@@ -1272,7 +1277,7 @@
     transform: translateX(-50%);
     padding: 1rem 1.8rem;
     border-radius: 1rem;
-    background-color: #243035;
+    background-color: var(--bg-elevated);
     border: 1px solid rgba(255, 255, 255, 0.15);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
     font-size: 1.4rem;

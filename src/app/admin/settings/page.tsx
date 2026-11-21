@@ -10,6 +10,7 @@ import TextArea from '../../../../components/TextArea/TextArea';
 import { REPLY_SIGNATURE, REPLY_TEMPLATES, TYPE_LABEL, type InboxType } from '../inbox/mockInbox';
 import { MAX_SANCTIONS } from '@/app/lib/adminModeration';
 import { formatDate, MOCK_TODAY } from '@/app/lib/adminFilters';
+import OptionRow from '../../settings/OptionRow';
 import LegalEditor from './LegalEditor';
 import { LEGAL_DOCS, type LegalDoc } from './mockLegal';
 import '../../settings/settings.css';
@@ -53,7 +54,7 @@ export default function AdminSettingsPage() {
                         ‹
                     </button>
                 )}
-                <h1 className="settings-title">
+                <h1 className="page-title">
                     <span className="desktop-title-text">Ajustes</span>
                     <span className="mobile-title-text">{activeTitle ?? 'Ajustes'}</span>
                 </h1>
@@ -61,7 +62,7 @@ export default function AdminSettingsPage() {
             <div className="settings-content">
                 <nav className={`mobile-settings-menu ${activeSection ? 'hidden' : ''}`} aria-label="Secciones de ajustes">
                     {SECTIONS.map((s) => (
-                        <button key={s.id} type="button" className="mobile-menu-item admin-menu-item" onClick={() => setActiveSection(s.id)}>
+                        <button key={s.id} type="button" className="mobile-menu-item settings-menu-button" onClick={() => setActiveSection(s.id)}>
                             <span className="menu-icon">
                                 <img src={s.icon} alt="" />
                             </span>
@@ -76,31 +77,31 @@ export default function AdminSettingsPage() {
 
                 <div className={`settings-sections-wrapper ${activeSection ? 'show-section' : ''}`}>
                     <section className={sectionClass('account')} aria-labelledby="settings-account">
-                        <h2 className="settings-subtitle" id="settings-account">Cuenta</h2>
+                        <h2 className="section-title settings-subtitle" id="settings-account">Cuenta</h2>
                         <AccountSection notify={setToast} />
                     </section>
                     <section className={sectionClass('notifications')} aria-labelledby="settings-notifications">
-                        <h2 className="settings-subtitle" id="settings-notifications">Notificaciones</h2>
+                        <h2 className="section-title settings-subtitle" id="settings-notifications">Notificaciones</h2>
                         <NotificationsSection notify={setToast} />
                     </section>
                     <section className={sectionClass('moderation')} aria-labelledby="settings-moderation">
-                        <h2 className="settings-subtitle" id="settings-moderation">Moderación</h2>
+                        <h2 className="section-title settings-subtitle" id="settings-moderation">Moderación</h2>
                         <ModerationSection notify={setToast} />
                     </section>
                     <section className={sectionClass('inbox')} aria-labelledby="settings-inbox">
-                        <h2 className="settings-subtitle" id="settings-inbox">Bandeja</h2>
+                        <h2 className="section-title settings-subtitle" id="settings-inbox">Bandeja</h2>
                         <InboxSection notify={setToast} />
                     </section>
                     <section className={sectionClass('site')} aria-labelledby="settings-site">
-                        <h2 className="settings-subtitle" id="settings-site">Web</h2>
+                        <h2 className="section-title settings-subtitle" id="settings-site">Web</h2>
                         <SiteSection notify={setToast} />
                     </section>
                     <section className={sectionClass('legal')} aria-labelledby="settings-legal">
-                        <h2 className="settings-subtitle" id="settings-legal">Textos legales</h2>
+                        <h2 className="section-title settings-subtitle" id="settings-legal">Textos legales</h2>
                         <LegalSectionSettings notify={setToast} />
                     </section>
                     <section className={sectionClass('session')} aria-labelledby="settings-session">
-                        <h2 className="settings-subtitle" id="settings-session">Sesión</h2>
+                        <h2 className="section-title settings-subtitle" id="settings-session">Sesión</h2>
                         <SessionSection />
                     </section>
                 </div>
@@ -117,51 +118,8 @@ export default function AdminSettingsPage() {
 
 /* =========================================
    PIEZAS COMUNES
+   (OptionRow es común con los ajustes de usuario: ../../settings/OptionRow)
    ========================================= */
-
-interface OptionRowProps {
-    label: string;
-    value?: ReactNode;
-    description?: string;
-    /** Fila que abre algo (modal): toda la fila es un botón */
-    onClick?: () => void;
-    actionLabel?: string;
-    danger?: boolean;
-    /** Control en línea (interruptor, desplegable...) */
-    control?: ReactNode;
-}
-
-function OptionRow({ label, value, description, onClick, actionLabel = 'Cambiar', danger, control }: OptionRowProps) {
-    const text = (
-        <span className="settings-options-text">
-            <span className="settings-option-label">{label}</span>
-            {value !== undefined && <span className="settings-option-value">{value}</span>}
-            {description && <span className="settings-option-description">{description}</span>}
-        </span>
-    );
-
-    if (onClick) {
-        return (
-            <button type="button" className={`settings-option admin-option-btn ${danger ? 'is-danger' : ''}`} onClick={onClick}>
-                {text}
-                <span className="settings-option-actions">
-                    {/* parece un botón en escritorio; en móvil se ve la flecha */}
-                    <span className={`custom-button ${danger ? 'danger' : 'outline'} desktop-btn settings-option-btn`} aria-hidden="true">
-                        {actionLabel}
-                    </span>
-                    <span className="mobile-action-icon" aria-hidden="true">›</span>
-                </span>
-            </button>
-        );
-    }
-
-    return (
-        <div className="settings-option is-static">
-            {text}
-            {control && <div className="settings-option-actions admin-option-control">{control}</div>}
-        </div>
-    );
-}
 
 interface SettingsModalProps {
     title: string;

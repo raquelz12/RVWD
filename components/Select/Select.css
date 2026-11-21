@@ -19,7 +19,7 @@
     border-radius: 3rem;
     font-size: 1.6rem;
     transition: all 0.2s ease;
-    color: var(--primary-white, #E2F0F0);
+    color: var(--primary-white);
     font-family: inherit;
     cursor: pointer;
 }
@@ -31,12 +31,12 @@
 }
 
 .placeholder-text {
-    color: var(--primary-white, #E2F0F0);
+    color: var(--primary-white);
     opacity: 0.8;
 }
 
 .selected-text {
-    color: var(--primary-white, #E2F0F0);
+    color: var(--primary-white);
 }
 
 .chevron {
@@ -55,7 +55,7 @@
     top: calc(100% + 0.8rem);
     left: 0;
     width: 100%;
-    background-color: rgba(24, 34, 38, 0.95);
+    background-color: color-mix(in srgb, var(--bg-card) 95%, transparent);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -83,17 +83,17 @@
     align-items: center;
     padding: 1.2rem 1.6rem;
     font-size: 1.4rem;
-    color: var(--primary-white, #ffffff);
+    color: var(--primary-white);
     cursor: pointer;
     transition: background-color 0.2s ease;
 }
 
 .custom-select-item:hover {
-    background-color: rgba(157, 43, 69, 0.25);
+    background-color: color-mix(in srgb, var(--primary-red) 25%, transparent);
 }
 
 .custom-select-item.active {
-    background-color: rgba(157, 43, 69, 0.25);
+    background-color: color-mix(in srgb, var(--primary-red) 25%, transparent);
     font-weight: 600;
 }
 

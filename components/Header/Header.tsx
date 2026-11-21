@@ -12,13 +12,16 @@ import { isAdminPath } from '@/app/lib/adminNav';
 function HeaderContent() {
     const pathname = usePathname();
 
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isNotifOpen, setIsNotifOpen] = useState(false);
 
     const toggleNotifMenu = (e: React.MouseEvent) => {
         e.stopPropagation();
         setIsNotifOpen(!isNotifOpen);
     };
+
+    const isActive = (path: string) => !!pathname && pathname.startsWith(path);
+    const isFeed = isActive('/feed');
+    const isProfile = isActive('/profile');
 
     // En /admin el header es el del panel de admin
     if (isAdminPath(pathname)) {
@@ -28,36 +31,43 @@ function HeaderContent() {
     return (
         <header className="header">
             <div className="logo"><Link href="/"><span className="red">Я</span>VWD</Link></div>
-            <button
-                className="hamburger-btn"
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                aria-label="Abrir menú"
-            >
-                <span className={`hamburger-line ${isMenuOpen ? 'open' : ''}`}></span>
-                <span className={`hamburger-line ${isMenuOpen ? 'open' : ''}`}></span>
-                <span className={`hamburger-line ${isMenuOpen ? 'open' : ''}`}></span>
-            </button>
-            <div className={`nav-links ${isMenuOpen ? 'mobile-open' : ''}`}>
-                <Link href="/feed" className="nav-link">Feed</Link>
-                <a href="#" className="nav-link">Explorar</a>
-                <a href="#" className="nav-link">Artistas</a>
-                <a href="#" className="nav-link">Álbumes</a>
-                <a href="#" className="nav-link">Canciones</a>
-
+            {/* Hasta 1024px todo esto lo da la barra inferior (BottomNav) */}
+            <div className="nav-links">
                 <SearchBar placeholder="Busca canciones, usuarios, ..." value="" onChange={(): void => {}} />
 
                 <div className="user-profile">
+                    <Link
+                        href="/feed"
+                        className={`nav-button ${isFeed ? 'active' : ''}`}
+                        aria-label="Feed"
+                        aria-current={isFeed ? 'page' : undefined}
+                    >
+                        <span className="icon-home"></span>
+                    </Link>
                     <div style={{ position: 'relative' }}>
-                        <button className="nav-button" aria-label="Notificaciones" onClick={toggleNotifMenu}>
+                        <button
+                            type="button"
+                            className={`nav-button ${isNotifOpen || isActive('/notifications') ? 'active' : ''}`}
+                            aria-label="Notificaciones"
+                            aria-expanded={isNotifOpen}
+                            onClick={toggleNotifMenu}
+                            // Sin esto, el clic "fuera" del desplegable lo cerraría y el propio clic lo volvería a abrir
+                            onMouseDown={(e) => e.stopPropagation()}
+                        >
                             <span className="icon-bell"></span>
                         </button>
                         {isNotifOpen && (
                             <NotificationDropdown onClose={() => setIsNotifOpen(false)} />
                         )}
                     </div>
-                    <button className="nav-button" aria-label="Perfil" onClick={() => window.location.href = "/profile"}>
+                    <Link
+                        href="/profile"
+                        className={`nav-button ${isProfile ? 'active' : ''}`}
+                        aria-label="Perfil"
+                        aria-current={isProfile ? 'page' : undefined}
+                    >
                         <span className="icon-user"></span>
-                    </button>
+                    </Link>
                 </div>
             </div>
         </header>
