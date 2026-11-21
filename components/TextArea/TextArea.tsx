@@ -5,12 +5,14 @@ export interface TextAreaProps {
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   placeholder?: string;
   rows?: number;
-  className?: string; 
+  className?: string;
+  id?: string;
 }
 
-export default function TextArea({ value, onChange, placeholder, rows = 4, className }: TextAreaProps) {
+export default function TextArea({ value, onChange, placeholder, rows = 4, className, id }: TextAreaProps) {
   return (
-    <textarea 
+    <textarea
+      id={id}
       className={`textarea ${className || ''}`} 
       value={value} 
       onChange={onChange} 

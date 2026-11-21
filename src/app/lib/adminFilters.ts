@@ -27,3 +27,5 @@ export const formatDate = (iso: string) => {
     const [y, m, d] = iso.split('-');
     return `${d}/${m}/${y}`;
 };
+
+export const timeAgo = (days: number) => (days === 0 ? 'Hoy' : days === 1 ? 'Ayer' : `Hace ${days} días`);

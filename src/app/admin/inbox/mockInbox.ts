@@ -66,3 +66,107 @@ export const MOCK_INBOX: InboxMessage[] = [
 ];
 
 export const UNREAD_INBOX_COUNT = MOCK_INBOX.filter((m) => !m.read).length;
+
+// ---------- Detalle: hilo de respuestas y actividad ----------
+
+export const CURRENT_ADMIN = '@admin';
+
+export interface InboxReply {
+    id: string;
+    admin: string;
+    daysAgo: number;
+    text: string;
+}
+
+// Notas internas y cambios (estado, respuestas) en una sola línea de tiempo
+export interface InboxActivity {
+    id: string;
+    kind: 'note' | 'event';
+    admin: string;
+    daysAgo: number;
+    text: string;
+}
+
+export interface InboxThread {
+    replies: InboxReply[];
+    activity: InboxActivity[];
+}
+
+export const MOCK_THREADS: Record<string, InboxThread> = {
+    c3: {
+        replies: [
+            { id: 'r1', admin: '@mod.ana', daysAgo: 2, text: 'Hola Ana,\n\nLa nota RVWD es la media de todas las reseñas, pero las de usuarios con menos de 5 reseñas cuentan la mitad para evitar abusos.\n\nUn saludo,\nEl equipo de RVWD' },
+        ],
+        activity: [
+            { id: 'a1', kind: 'event', admin: '@mod.ana', daysAgo: 2, text: 'Respuesta enviada · Recibido → En curso' },
+            { id: 'a2', kind: 'note', admin: '@mod.ana', daysAgo: 2, text: 'Si pregunta por el peso exacto, pasárselo a Raquel, que lleva el cálculo.' },
+        ],
+    },
+    c4: {
+        replies: [
+            { id: 'r2', admin: CURRENT_ADMIN, daysAgo: 3, text: 'Hola Raquel,\n\nEstamos revisando el caso y te respondemos en cuanto lo tengamos.\n\nUn saludo,\nEl equipo de RVWD' },
+        ],
+        activity: [
+            { id: 'a3', kind: 'note', admin: CURRENT_ADMIN, daysAgo: 3, text: 'Es el comentario post125, ocultado por @mod.ana por falta de respeto. Tiene 3 denuncias aplicadas.' },
+            { id: 'a4', kind: 'event', admin: CURRENT_ADMIN, daysAgo: 3, text: 'Respuesta enviada · Recibido → En curso' },
+        ],
+    },
+    s4: {
+        replies: [],
+        activity: [
+            { id: 'a5', kind: 'event', admin: CURRENT_ADMIN, daysAgo: 4, text: 'Estado: En estudio → En desarrollo' },
+            { id: 'a6', kind: 'note', admin: CURRENT_ADMIN, daysAgo: 4, text: 'Se hará junto con el rediseño de ajustes (issue #42).' },
+            { id: 'a7', kind: 'event', admin: '@mod.ana', daysAgo: 8, text: 'Estado: Recibida → En estudio' },
+        ],
+    },
+    c6: {
+        replies: [
+            { id: 'r3', admin: '@mod.ana', daysAgo: 26, text: 'Hola Leo,\n\nEra un problema con el proveedor de correo, ya está solucionado. Prueba de nuevo y nos dices.\n\nUn saludo,\nEl equipo de RVWD' },
+        ],
+        activity: [
+            { id: 'a8', kind: 'event', admin: '@mod.ana', daysAgo: 26, text: 'Respuesta enviada · Recibido → Resuelto' },
+        ],
+    },
+    s5: {
+        replies: [
+            { id: 'r4', admin: CURRENT_ADMIN, daysAgo: 5, text: '¡Hola!\n\nYa puedes seguir a artistas desde su página. Gracias por la idea.\n\nUn saludo,\nEl equipo de RVWD' },
+        ],
+        activity: [
+            { id: 'a9', kind: 'event', admin: CURRENT_ADMIN, daysAgo: 5, text: 'Respuesta enviada · En desarrollo → Implementada' },
+        ],
+    },
+};
+
+export const getThread = (id: string): InboxThread => MOCK_THREADS[id] ?? { replies: [], activity: [] };
+
+// Plantillas de respuesta rápida (el saludo y la firma se añaden aparte)
+export const REPLY_TEMPLATES: Record<InboxType, { value: string; label: string; text: string }[]> = {
+    contact: [
+        { value: 'thanks', label: 'Gracias por escribir', text: 'Gracias por escribirnos. Hemos recibido tu mensaje y lo estamos revisando; te respondemos lo antes posible.' },
+        { value: 'more-info', label: 'Pedir más información', text: 'Para poder ayudarte necesitamos un poco más de información: ¿podrías indicarnos tu nombre de usuario y, si puedes, una captura del problema?' },
+        { value: 'solved', label: 'Problema resuelto', text: 'Ya hemos solucionado el problema. Prueba de nuevo y, si sigue pasando, responde a este correo.' },
+        { value: 'collab', label: 'Colaboración: lo estudiamos', text: 'Gracias por tu propuesta de colaboración. La estudiaremos con el equipo y te diremos algo en los próximos días.' },
+    ],
+    suggestion: [
+        { value: 'thanks', label: 'Gracias, la estudiaremos', text: 'Gracias por tu sugerencia. La hemos apuntado y la estudiaremos con el equipo.' },
+        { value: 'in-progress', label: 'Ya está en desarrollo', text: 'Buenas noticias: tu sugerencia ya está en desarrollo. Te avisaremos cuando esté disponible.' },
+        { value: 'done', label: 'Ya está disponible', text: 'Tu sugerencia ya está disponible en la web. ¡Gracias por la idea!' },
+        { value: 'declined', label: 'No encaja por ahora', text: 'Gracias por tu sugerencia. Por ahora no encaja en lo que tenemos planeado, pero la tendremos en cuenta más adelante.' },
+    ],
+};
+
+export const REPLY_SIGNATURE = 'Un saludo,\nEl equipo de RVWD';
+
+// Al responder, un mensaje nuevo pasa a "en marcha"
+export const statusAfterReply = (status: InboxStatus): InboxStatus =>
+    status === 'Recibido' ? 'En curso' : status === 'Recibida' ? 'En estudio' : status;
+
+// Clase de color del estado (nuevo, en marcha, terminado, descartado)
+export const statusClass = (status: InboxStatus) =>
+    isOpen(status)
+        ? status === 'Recibido' || status === 'Recibida'
+            ? 'is-new'
+            : 'is-progress'
+        : isDone(status)
+          ? 'is-done'
+          : 'is-dismissed';

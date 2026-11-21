@@ -22,6 +22,7 @@ import {
     type ModerationEntry,
 } from '../mockContent';
 import { MAX_SANCTIONS, REPORT_TO_SANCTION_REASON, SANCTION_REASONS } from '@/app/lib/adminModeration';
+import { timeAgo } from '@/app/lib/adminFilters';
 import '../../admin-shared.css';
 import '../content.css';
 import './content-detail.css';
@@ -35,7 +36,6 @@ const REPORT_STATUS_CLASS: Record<ContentReport['status'], string> = {
     Descartada: 'is-dismissed',
 };
 
-const timeAgo = (days: number) => (days === 0 ? 'Hoy' : days === 1 ? 'Ayer' : `Hace ${days} días`);
 
 // Con cacheComponents, useParams() solo se conoce en runtime, así que va dentro de un Suspense
 export default function AdminContentDetailPage() {
@@ -585,7 +585,7 @@ function AdminContentDetail({ initial }: { initial: AdminContent }) {
             )}
 
             {toast && (
-                <div className="content-toast" role="status">
+                <div className="admin-toast" role="status">
                     {toast}
                 </div>
             )}

@@ -1263,3 +1263,24 @@
         align-items: stretch;
     }
 }
+
+/* aviso breve (p. ej. "ID copiado") */
+.admin-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 3rem;
+    transform: translateX(-50%);
+    padding: 1rem 1.8rem;
+    border-radius: 1rem;
+    background-color: #243035;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+    font-size: 1.4rem;
+    z-index: 1200;
+}
+
+@media (max-width: 1124px) {
+    .admin-toast {
+        bottom: 9rem; /* por encima de la barra inferior */
+    }
+}

@@ -14,6 +14,7 @@ import {
     isDismissed,
     isDone,
     isOpen,
+    statusClass,
     statusesFor,
     type InboxMessage,
     type InboxStatus,
@@ -66,8 +67,6 @@ const matchesStatus = (m: InboxMessage, filter: string) => {
     return m.status === filter;
 };
 
-const statusClass = (status: InboxStatus) =>
-    isOpen(status) ? (status === 'Recibido' || status === 'Recibida' ? 'is-new' : 'is-progress') : isDone(status) ? 'is-done' : 'is-dismissed';
 
 const LONG_PRESS_MS = 500;
 
