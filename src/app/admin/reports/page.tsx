@@ -81,14 +81,17 @@ export default function AdminReportsPage() {
 }
 
 // /admin/reports?q=@usuario (desde una denuncia o un perfil) precarga la búsqueda.
+// /admin/reports?content=post123 (desde Contenido) muestra solo las denuncias de ese contenido.
 // Con cacheComponents Next conserva el estado de las páginas ya visitadas, así que
-// la key fuerza a recrear el listado cuando cambia ?q= y se aplica la nueva búsqueda.
+// la key fuerza a recrear el listado cuando cambian los parámetros.
 function AdminReportsWithQuery() {
-    const query = useSearchParams().get('q') ?? '';
-    return <AdminReportsContent key={query} initialQuery={query} />;
+    const searchParams = useSearchParams();
+    const query = searchParams.get('q') ?? '';
+    const contentId = searchParams.get('content') ?? '';
+    return <AdminReportsContent key={`${query}|${contentId}`} initialQuery={query} contentId={contentId} />;
 }
 
-function AdminReportsContent({ initialQuery }: { initialQuery: string }) {
+function AdminReportsContent({ initialQuery, contentId }: { initialQuery: string; contentId: string }) {
     const router = useRouter();
     const [reports, setReports] = useState<AdminReport[]>(MOCK_REPORTS);
     const [searchQuery, setSearchQuery] = useState(initialQuery);
@@ -123,9 +126,15 @@ function AdminReportsContent({ initialQuery }: { initialQuery: string }) {
         const matchesReason = reasonFilter && reasonFilter !== 'all' ? report.reason === reasonFilter : true;
         const matchesSanction = sanctionFilter && sanctionFilter !== 'all' ? report.sanctions === Number(sanctionFilter) : true;
         const matchesContent = contentFilter && contentFilter !== 'all' ? report.contentType === contentFilter : true;
+        const matchesContentId = contentId ? report.contentId === contentId : true;
 
-        return matchesSearch && matchesStatus && matchesReason && matchesSanction && matchesContent;
+        return matchesSearch && matchesStatus && matchesReason && matchesSanction && matchesContent && matchesContentId;
     });
+
+    // Quita ?content= conservando la búsqueda si la había
+    const clearContentFilter = () => {
+        router.replace(initialQuery ? `/admin/reports?q=${encodeURIComponent(initialQuery)}` : '/admin/reports');
+    };
 
     const activeFiltersCount = [statusFilter, reasonFilter, sanctionFilter, contentFilter, dateFilter].filter(Boolean).length;
     const closeFilters = useCallback(() => setShowMobileFilters(false), []);
@@ -234,6 +243,26 @@ function AdminReportsContent({ initialQuery }: { initialQuery: string }) {
                     </div>
                 </FilterSheet>
             </section>
+            {contentId && (
+                <div className="admin-active-chips">
+                    <div className="admin-active-chip">
+                        <span>
+                            Denuncias de{' '}
+                            <Link href={`/admin/content/${contentId}`} className="admin-active-chip-link">
+                                este contenido
+                            </Link>
+                        </span>
+                        <button
+                            type="button"
+                            className="admin-active-chip-x"
+                            onClick={clearContentFilter}
+                            aria-label="Quitar filtro de contenido"
+                        >
+                            ✕
+                        </button>
+                    </div>
+                </div>
+            )}
             <section className="admin-table-desktop">
                 <div className="admin-table-header reports-grid">
                     <span>Usuario</span>

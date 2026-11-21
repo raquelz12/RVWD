@@ -9,6 +9,12 @@
         display: contents;
     }
 
+    /* El panel cerrado lleva visibility: hidden, y eso se hereda aunque sea
+       display: contents: sin esto los filtros no se verían en escritorio */
+    .bottom-sheet.filter-sheet {
+        visibility: visible;
+    }
+
     .bottom-sheet-overlay.filter-sheet,
     .filter-sheet .bottom-sheet-handle,
     .filter-sheet .bottom-sheet-header,
