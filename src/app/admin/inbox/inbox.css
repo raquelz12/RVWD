@@ -1,0 +1,291 @@
+/* Bandeja: solo lo propio de esta página (listados, pestañas y menú en ../admin-shared.css) */
+
+.admin-table-header.inbox-grid,
+.admin-table-row.inbox-grid {
+    grid-template-columns: 3.2rem 1.6fr 2.4fr 1.2fr 1fr 1fr 3.6rem;
+}
+
+.admin-table-header.inbox-grid.with-type,
+.admin-table-row.inbox-grid.with-type {
+    grid-template-columns: 3.2rem 1.6fr 1fr 2.2fr 1.2fr 1fr 1fr 3.6rem;
+}
+
+.inbox-col-left {
+    text-align: left;
+}
+
+/* casillas */
+.inbox-check-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.inbox-checkbox {
+    width: 1.8rem;
+    height: 1.8rem;
+    margin: 0;
+    accent-color: var(--primary-red);
+    cursor: pointer;
+}
+
+/* remitente: inicial cuando no es un usuario registrado */
+.admin-list-container .inbox-avatar {
+    width: 3.8rem;
+    height: 3.8rem;
+}
+
+.inbox-avatar-initial {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.1);
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.admin-list-container .inbox-sender .user-fullname {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+/* no leídos: en negrita, como en el correo */
+.is-unread .user-fullname,
+.is-unread .inbox-excerpt {
+    font-weight: 700;
+}
+
+.inbox-unread-dot {
+    display: inline-block;
+}
+
+.admin-list-container .inbox-excerpt {
+    font-size: 1.5rem;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: rgba(255, 255, 255, 0.75);
+    min-width: 0;
+}
+
+.admin-list-container .is-unread .inbox-excerpt {
+    color: var(--primary-white);
+}
+
+.admin-list-container .inbox-type {
+    font-size: 1.4rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* estados */
+.inbox-status.is-new {
+    color: var(--primary-white);
+}
+
+.inbox-status.is-progress {
+    color: var(--warning);
+}
+
+.inbox-status.is-done {
+    color: var(--success);
+}
+
+.inbox-status.is-dismissed {
+    color: rgba(255, 255, 255, 0.45);
+}
+
+/* fila seleccionada */
+.admin-table-row.is-selected,
+.admin-mobile-row.is-selected {
+    background-color: color-mix(in srgb, var(--primary-red) 18%, transparent);
+}
+
+.admin-table-row.is-selected:hover {
+    background-color: color-mix(in srgb, var(--primary-red) 26%, transparent);
+}
+
+/* menú: estados como sección dentro del ⋮ */
+.inbox-menu .dropdown-label {
+    display: block;
+    padding: 0.6rem 1.2rem 0.2rem;
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.inbox-menu .dropdown-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.inbox-menu .dropdown-item.is-current {
+    color: var(--primary-red-hover);
+}
+
+/* barra de acciones de los seleccionados */
+.inbox-bulk-bar {
+    position: sticky;
+    top: 8rem;
+    z-index: 40;
+    display: flex;
+    align-items: center;
+    gap: 1.6rem;
+    margin: -1.5rem 0;
+    padding: 1rem 1.2rem 1rem 1.8rem;
+    border-radius: 1.2rem;
+    background-color: var(--bg-elevated);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+.inbox-bulk-count {
+    font-size: 1.5rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.inbox-bulk-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    flex: 1;
+}
+
+.inbox-bulk-btn {
+    background: none;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 2rem;
+    padding: 0 1.4rem;
+    height: 3.6rem;
+    color: var(--primary-white);
+    font-family: inherit;
+    font-size: 1.4rem;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.inbox-bulk-btn:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.inbox-bulk-actions .inbox-bulk-status {
+    width: 18rem;
+}
+
+.inbox-bulk-actions .inbox-bulk-status .custom-select-trigger {
+    height: 3.6rem;
+}
+
+.inbox-bulk-hint {
+    font-size: 1.3rem;
+    color: var(--text-secondary);
+}
+
+.inbox-bulk-close {
+    margin-left: auto;
+    width: 3.2rem;
+    height: 3.2rem;
+    flex-shrink: 0;
+    border: none;
+    border-radius: 50%;
+    background: none;
+    color: var(--primary-white);
+    font-size: 1.4rem;
+    cursor: pointer;
+}
+
+.inbox-bulk-close:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* móvil */
+.inbox-mobile-row {
+    -webkit-touch-callout: none;
+    user-select: none;
+}
+
+.inbox-mobile-row .user-fullname {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.inbox-mobile-status {
+    align-items: flex-end;
+    max-width: 14rem;
+}
+
+.inbox-mobile-state {
+    font-size: 1.25rem;
+    white-space: nowrap;
+}
+
+.inbox-mobile-check {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    flex-shrink: 0;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+.inbox-mobile-check.checked {
+    background-color: var(--primary-red);
+    border-color: var(--primary-red);
+}
+
+@media (max-width: 1100px) {
+    .admin-table-header.inbox-grid,
+    .admin-table-row.inbox-grid {
+        grid-template-columns: 3.2rem 1.6fr 2fr 1.2fr 1fr 3.6rem;
+    }
+
+    .admin-table-header.inbox-grid.with-type,
+    .admin-table-row.inbox-grid.with-type {
+        grid-template-columns: 3.2rem 1.6fr 1fr 1.8fr 1.2fr 1fr 3.6rem;
+    }
+}
+
+@media (max-width: 850px) {
+    .inbox-bulk-bar {
+        top: 7.6rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+        padding: 1rem 1rem 1rem 1.4rem;
+    }
+
+    .inbox-bulk-count {
+        flex: 1;
+    }
+
+    .inbox-bulk-close {
+        order: 2;
+        margin-left: 0;
+    }
+
+    .inbox-bulk-actions {
+        order: 3;
+        flex-basis: 100%;
+    }
+
+    .inbox-bulk-btn {
+        flex: 1;
+        padding: 0 1rem;
+        font-size: 1.3rem;
+    }
+
+    .inbox-bulk-actions .inbox-bulk-status {
+        width: 100%;
+    }
+}

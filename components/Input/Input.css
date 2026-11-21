@@ -8,12 +8,12 @@
   border-radius: 3rem;
   font-size: 1.6rem;
   transition: border-color 0.2s ease;
-  color: var(--primary-white, #E2F0F0);
+  color: var(--primary-white);
   font-family: inherit;
 }
 
 .input::placeholder {
-  color: var(--primary-white, #E2F0F0);
+  color: var(--primary-white);
   opacity: 0.8; 
 }
 

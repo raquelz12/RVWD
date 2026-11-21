@@ -2,6 +2,7 @@
 
 import './ReviewBigCard.css';
 import Score from '../Score/Score';
+import FavButton from '../FavButton/FavButton';
 
 interface ReviewBigCardProps {
     username?: string;
@@ -72,12 +73,12 @@ export default function ReviewBigCard({
                         {profile && (
                         <div className="review-big-card-score">
                             <div className="review-big-card-score-wrapper">
-                                <p className="review-big-card-score-text">Tu puntuación</p>
+                                <p className="review-big-card-score-text">Tu <span className="RVWS">RVW</span> score</p>
                                 <Score variant="red" input={false} score={parseFloat(score?.toString() || '0')} />
                             </div>
                             <div className="review-big-card-score-wrapper">
                             <p className="review-big-card-score-text">
-                                    <span className="RVWS">RVWD</span>score
+                                    <span className="RVWS">RVWD</span> score
                                 </p>
                                 <Score variant="white" input={false} score={parseFloat(pageScore?.toString() || '0')} />
                             </div>
@@ -98,9 +99,7 @@ export default function ReviewBigCard({
                             <button className="review-big-card-footer-btn" onClick={() => {}}>
                                 {commentsCount} <img src="/comments-solid-full.svg" alt="Comentarios" />
                             </button>
-                            <button className="review-big-card-footer-btn" onClick={() => {}}>
-                                {favoritesCount} <img src="/star-regular-full.svg" alt="Favoritos" />
-                            </button>
+                            <FavButton count={favoritesCount} itemLabel="esta RVW" className="review-big-card-footer-btn" />
                         </div>
                     </div>
                 </div>

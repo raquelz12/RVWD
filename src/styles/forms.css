@@ -1,0 +1,53 @@
+/* Acotado al formulario: los modales (siempre cargados) tienen su propio .form-group */
+.contact-form .form-group,
+.suggestions-form .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-label {
+    font-weight: 500;
+}
+
+.required-fields-note {
+    font-size: 1.4rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.terms-conditions {
+    font-size: 1.4rem;
+    margin: 0;
+}
+
+.success-message {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.2rem 1.6rem;
+    border-radius: 1rem;
+    background-color: color-mix(in srgb, var(--success) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--success) 35%, transparent);
+    color: var(--primary-white);
+    font-size: 1.4rem;
+    line-height: 1.5;
+    animation: successIn 0.3s ease-out;
+}
+
+@keyframes successIn {
+    from {
+        opacity: 0;
+        transform: translateY(-0.6rem);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .success-message {
+        animation: none;
+    }
+}

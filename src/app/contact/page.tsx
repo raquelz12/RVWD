@@ -1,10 +1,12 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import Button from '../../../components/Button/Button';
 import Input from '../../../components/Input/Input';
 import TextArea from '../../../components/TextArea/TextArea';
 import Select from '../../../components/Select/Select';
+import '@/styles/forms.css';
 import './contact.css';
 
 export default function ContactPage() {
@@ -33,7 +35,7 @@ export default function ContactPage() {
     return (
         <div className="contact-container">
             <div className="contact-header">
-                <span className="contact-title">Contacto</span>
+                <h1 className="page-title">Contacto</h1>
                 <p className="contact-description">
                     ¿Tienes alguna duda, problema con tu cuenta o simplemente quieres comentarnos algo? Escríbenos e intentaremos responderte lo antes posible.
                 </p>
@@ -44,6 +46,7 @@ export default function ContactPage() {
                         <div className="form-group">
                             <label htmlFor="name" className="form-label">Nombre*</label>
                             <Input
+                                id="name"
                                 type="text"
                                 placeholder="María García"
                                 value={name}
@@ -53,6 +56,7 @@ export default function ContactPage() {
                         <div className="form-group">
                             <label htmlFor="email" className="form-label">Email*</label>
                             <Input
+                                id="email"
                                 type="email"
                                 placeholder="email@email.com"
                                 value={email}
@@ -60,7 +64,7 @@ export default function ContactPage() {
                             />
                         </div>
                         <div className="form-group">
-                            <label htmlFor="motive" className="form-label">Motivo*</label>
+                            <span className="form-label">Motivo*</span>
                             <Select
                                 options={[
                                     { value: 'duda', label: 'Duda' },
@@ -77,29 +81,30 @@ export default function ContactPage() {
                         <div className="form-group">
                             <label htmlFor="message" className="form-label">Escribe tu mensaje*</label>
                             <TextArea
+                                id="message"
                                 placeholder="Cuéntanos de qué trata tu mensaje de forma breve..."
                                 value={mensaje}
                                 onChange={(e) => setMensaje(e.target.value)}
                                 className="form-textarea"
                             />
                         </div>
-                        <div className="terms-conditions">
-                            <label htmlFor="terms">Al enviar este mensaje, aceptas los <a href="/terms" target="_blank">Términos y Condiciones</a> y la <a href="/privacy" target="_blank">Política de Privacidad</a></label>.
-                        </div>
+                        <p className="terms-conditions">
+                            Al enviar este mensaje, aceptas las <a href="/legal" target="_blank" rel="noopener noreferrer" className="inline-link">condiciones de uso</a> y la <a href="/privacy" target="_blank" rel="noopener noreferrer" className="inline-link">política de privacidad</a>.
+                        </p>
                         <p className="required-fields-note">* Campos obligatorios</p>
                         <Button type="submit" className="submit-button">Enviar mensaje</Button>
                         {isSubmitting && (
-                            <span className="success-message">
+                            <span className="success-message" role="status">
                                 ¡Gracias por tu mensaje! Te contestaremos lo antes posible.
                             </span>
                         )}
                     </form>
                 </div>
                 <div className="contact-column">
-                    <p className="contact-column-title">Si lo prefieres puedes contactarnos mandando un email a:</p>
-                    <p className="contact-column-email">email@email.com</p>
+                    <h2 className="block-title">Si lo prefieres puedes contactarnos mandando un email a:</h2>
+                    <a href="mailto:rvwd@gmail.com" className="contact-column-email inline-link">rvwd@gmail.com</a>
                     <p className="contact-column-text">Si quieres denunciar contenido o a otro usuario, usa la opción de “Denunciar” de la publicación o el perfil. Así lo revisamos antes.</p>
-                    <p className="contact-column-text">Y si tienes cualquier sugerencia que pueda ser útil te animamos a hacerlo desde el <a href="/suggestions" >buzón de sugerencias</a>.</p>
+                    <p className="contact-column-text">Y si tienes cualquier sugerencia que pueda ser útil te animamos a hacerlo desde el <Link href="/suggestions" className="inline-link">buzón de sugerencias</Link>.</p>
                 </div>
             </div>
         </div>

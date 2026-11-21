@@ -15,7 +15,7 @@
     background: transparent;
     border: none;
     outline: none;
-    color: var(--primary-white, #fff);
+    color: var(--primary-white);
     font-size: 3rem;
     text-align: center;
     font-family: inherit;
@@ -39,12 +39,12 @@
 /* Variantes */
 .score-circle-input-wrapper.score-white {
     background: linear-gradient(to bottom, var(--gradient-grey), var(--gradient-white));
-    box-shadow: inset 0 0.1rem 0.2rem rgba(157, 43, 69, 0.4);
+    box-shadow: inset 0 0.1rem 0.2rem color-mix(in srgb, var(--primary-red) 40%, transparent);
     color: var(--primary-red);
 }
 
 .score-circle-input-wrapper.score-red {
     background: linear-gradient(to bottom, var(--gradient-red-start), var(--gradient-red-middle), var(--gradient-red-end));
-    box-shadow: 0 0.4rem 1.2rem rgba(157, 43, 69, 0.4);
+    box-shadow: 0 0.4rem 1.2rem color-mix(in srgb, var(--primary-red) 40%, transparent);
     color: var(--primary-white);
 }

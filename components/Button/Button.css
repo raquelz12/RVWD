@@ -20,40 +20,40 @@
 
 /*Variantes*/
 .custom-button.primary {
-  background-color: var(--primary-red, #9d2b45);
-  color: var(--primary-white, #e2f0f0);
+  background-color: var(--primary-red);
+  color: var(--primary-white);
 }
 
 .custom-button.primary:hover:not(:disabled) {
-  background-color: var(--primary-red-hover, #b33a57);
+  background-color: var(--primary-red-hover);
   transform: translateY(-0.2rem);
   filter: brightness(1.1);
-  box-shadow: 0 0.4rem 1.2rem rgba(157, 43, 69, 0.3);
+  box-shadow: 0 0.4rem 1.2rem color-mix(in srgb, var(--primary-red) 30%, transparent);
 }
 
 .custom-button.primary.active {
   filter: brightness(1.2);
-  box-shadow: 0 0 1.2rem rgba(157, 43, 69, 0.6);
-  outline: 0.2rem solid var(--primary-white, #e2f0f0);
+  box-shadow: 0 0 1.2rem color-mix(in srgb, var(--primary-red) 60%, transparent);
+  outline: 0.2rem solid var(--primary-white);
 }
 
 /*Secundario*/
 .custom-button.secondary {
-  background-color: var(--primary-white, #e2f0f0);
-  color: var(--primary-red, #9d2b45);
+  background-color: var(--primary-white);
+  color: var(--primary-red);
 }
 
 .custom-button.secondary:hover:not(:disabled) {
-  background-color: var(--primary-white, #e2f0f0);
-  box-shadow: 0 0.4rem 1.2rem rgba(157, 43, 69, 0.3);
+  background-color: var(--primary-white);
+  box-shadow: 0 0.4rem 1.2rem color-mix(in srgb, var(--primary-red) 30%, transparent);
   transform: translateY(-0.2rem);
 }
 
 /* Contorno (Solo el borde rojo, sin fondo) */
 .custom-button.outline {
   background-color: transparent;
-  border-color: var(--primary-white, #e2f0f0);
-  color: var(--primary-white, #e2f0f0);
+  border-color: var(--primary-white);
+  color: var(--primary-white);
 }
 
 .custom-button.outline:hover:not(:disabled) {
@@ -63,14 +63,14 @@
 
 .custom-button.outline.active {
   background-color: rgba(255, 255, 255, 0.2);
-  outline: 0.2rem solid var(--primary-white, #e2f0f0);
+  outline: 0.2rem solid var(--primary-white);
 }
 
 /* Botón de texto (sin fondo ni borde) */
 .custom-button.text {
   background-color: transparent;
   border: none;
-  color: var(--primary-white, #e2f0f0);
+  color: var(--primary-white);
 }
 
 .custom-button.text:hover:not(:disabled) {
@@ -80,12 +80,12 @@
 
 /* Botón de peligro (rojo) */
 .custom-button.danger {
-  background-color: var(--danger-red, #ff4d4f);
-  color: var(--primary-white, #e2f0f0);
+  background-color: var(--danger-red);
+  color: var(--primary-white);
 }
 
 .custom-button.danger:hover:not(:disabled) {
-  background-color: var(--danger-red-hover, #ff7875);
+  background-color: var(--danger-red-hover);
   transform: translateY(-0.2rem);
   filter: brightness(1.1);
   box-shadow: 0 0.4rem 1.2rem rgba(255, 77, 79, 0.3);

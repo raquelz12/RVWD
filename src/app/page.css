@@ -19,8 +19,10 @@
   margin-top: 4rem;
 }
 
-.head-text:first-child {
+/* Título principal de la portada: más grande que el de las demás páginas por ser la portada */
+.head-text.head-title {
   font-family: var(--font-heading);
+  font-weight: 400;
   font-size: 4.8rem;
   color: var(--primary-white);
   margin-bottom: 0.8rem;
@@ -43,10 +45,7 @@
 }
 
 .new-title {
-  font-size: 2.4rem;
-  font-weight: 600;
-  color: var(--pimary-white, #e2f0f0);
-  margin: 0;
+  color: var(--primary-white);
   padding-bottom: 1.2rem;
 }
 
@@ -59,7 +58,7 @@
   gap: 2.4rem;
 }
 
-.carousel-pagination {
+.body-landing-page .carousel-pagination {
   display: none;
 }
 
@@ -73,7 +72,7 @@
 
 .search-title {
   font-size: 2rem;
-  color: var(--primary-white, #ffffff);
+  color: var(--primary-white);
   margin: 0;
   text-align: center;
 }
@@ -88,10 +87,7 @@
 }
 
 .info-title {
-  font-size: 2.4rem;
-  font-weight: 600;
-  color: var(--primary-white, #e2f0f0);
-  margin: 0;
+  color: var(--primary-white);
 }
 
 .info {
@@ -136,7 +132,7 @@
   grid-column: span 3;
   background: linear-gradient(
     135deg,
-    rgba(157, 43, 69, 0.22) 0%,
+    color-mix(in srgb, var(--primary-red) 22%, transparent) 0%,
     rgba(255, 255, 255, 0.03) 100%
   );
 }
@@ -145,13 +141,13 @@
   content: "0" counter(info-counter);
   font-family: var(--font-heading);
   font-size: 1.3rem;
-  color: var(--primary-white, #ffffff);
-  background-color: var(--primary-red, #9d2b45);
+  color: var(--primary-white);
+  background-color: var(--primary-red);
   padding: 0.5rem 1.2rem;
   border-radius: 2rem;
   letter-spacing: 0.1rem;
   z-index: 2;
-  box-shadow: 0 0.4rem 1rem rgba(157, 43, 69, 0.35);
+  box-shadow: 0 0.4rem 1rem color-mix(in srgb, var(--primary-red) 35%, transparent);
 }
 
 .info-card::after {
@@ -177,19 +173,19 @@
 
 .info-card:hover {
   transform: translateY(-0.6rem);
-  border-color: var(--color-primary, #9d2b45);
+  border-color: var(--primary-red);
   box-shadow: 0 1.2rem 2.8rem rgba(0, 0, 0, 0.35);
 }
 
 .info-card:hover::after {
   transform: scale(1.12) rotate(-8deg);
-  color: rgba(157, 43, 69, 0.25);
+  color: color-mix(in srgb, var(--primary-red) 25%, transparent);
 }
 
 .info-card-text {
   font-size: 1.8rem;
   font-weight: 500;
-  color: var(--primary-white, #ffffff);
+  color: var(--primary-white);
   line-height: 1.5;
   margin: 0;
   z-index: 2;
@@ -213,7 +209,7 @@
     gap: 6rem;
   }
 
-  .head-text:first-child {
+  .head-text.head-title {
     font-size: 3.6rem;
   }
 
@@ -231,7 +227,7 @@
     min-height: 17rem;
     padding: 2.4rem;
     position: sticky;
-    background-color: var(--bg-card, #182226);
+    background-color: var(--bg-card);
     box-shadow: 0 -0.8rem 2rem rgba(0, 0, 0, 0.35);
   }
 

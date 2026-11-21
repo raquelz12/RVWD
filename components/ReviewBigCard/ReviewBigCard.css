@@ -243,6 +243,8 @@
     flex-direction: row;
     align-items: flex-end;
     justify-content: center;
+    /* en flex se pierden los espacios del texto: el hueco entre palabras lo pone gap */
+    gap: 0.4rem;
     font-size: 1.6rem;
     margin-bottom: 2rem;
     line-height: 1;
@@ -251,7 +253,6 @@
 
 .review-big-card-score-text .RVWS {
     font-size: 2rem;
-    margin-right: 0.4rem;
 }
 
 /* Responsive */

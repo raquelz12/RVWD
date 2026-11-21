@@ -29,7 +29,7 @@
 .checkbox-group input[type="checkbox"] {
     width: 1.6rem;
     height: 1.6rem;
-    border: 0.2rem solid var(--primary-white, #E2F0F0);
+    border: 0.2rem solid var(--primary-white);
     border-radius: 0.4rem;
     background-color: transparent;
     cursor: pointer;
@@ -38,12 +38,12 @@
 .checkbox-group a {
     text-decoration: none;
     font-weight: bold;
-    color: var(--primary-white, #E2F0F0);
+    color: var(--primary-white);
     transition: color 0.15s ease;
 }
 
 .checkbox-group a:hover {
-    color: var(--primary-red, #94314F);
+    color: var(--primary-red);
 }
 
 .button-group {

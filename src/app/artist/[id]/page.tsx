@@ -4,6 +4,7 @@ import { Suspense, useState, useEffect, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Button from '../../../../components/Button/Button';
 import Score from '../../../../components/Score/Score';
+import '@/styles/media-detail.css';
 import './artist.css';
 import MediaCard from '../../../../components/MediaCard/MediaCard';
 import Carousel from '../../../../components/Carousel/Carousel';
@@ -13,6 +14,8 @@ import { generateBreadcrumbs } from '@/utils/breadcrumbs';
 import { getArtistDetails } from '@/lib/api';
 import { Artist } from '@/types/music';
 import SearchBar from '../../../../components/SearchBar/SearchBar';
+import FavButton from '../../../../components/FavButton/FavButton';
+import Link from 'next/link';
 
 function ArtistContent() {
     const params = useParams();
@@ -49,7 +52,35 @@ function ArtistContent() {
 
     const breadcrumbs = generateBreadcrumbs('artist', artist);
     const topRvws = [1, 2, 3, 4];
-    const topSongs = [1, 2, 3, 4];
+
+    // Tarjetas reales del artista: las mismas en escritorio y en móvil
+    const albumCards = artist.albums.map((album) => (
+        <Link href={`/album/${album.id}`} key={album.id} className="media-card-link">
+            <MediaCard
+                type="album"
+                title={album.name}
+                artist={artist.name}
+                imageUrl={album.coverUrl}
+                score={album.score}
+                forceShowInfo={true}
+                scoreType="white"
+            />
+        </Link>
+    ));
+
+    const songCards = artist.songs.map((song) => (
+        <Link href={`/song/${song.id}`} key={song.id} className="media-card-link">
+            <MediaCard
+                type="cancion"
+                title={song.name}
+                artist={artist.name}
+                imageUrl={song.coverUrl}
+                score={song.score}
+                forceShowInfo={true}
+                scoreType="white"
+            />
+        </Link>
+    ));
 
     return (
         <div className="artist-page-container">
@@ -60,21 +91,21 @@ function ArtistContent() {
                     <div className="artist-info-desktop">
                         <div className="artist-title-row">
                             <div>
-                                <span className="artist-title">{artist.name} <img src="/star-regular-full.svg" alt="Estrella" className="star-icon" /> <img src="/bell-regular-full.svg" alt="Campana" className="bell-icon" /></span>
+                                <h1 className="artist-title">{artist.name} <FavButton itemLabel={artist.name} className="title-fav-btn" /> <img src="/bell-regular-full.svg" alt="Campana" className="bell-icon" /></h1>
                                 <span className="artist-subtitle">Artista</span>
                             </div>
                             <div className="artist-score-action">
                                 <div className="score-block">
-                                    <span className="score-label"><span className="RVWS">RVWD</span>score</span>
+                                    <span className="score-label"><span className="RVWS">RVWD</span> score</span>
                                     <Score score={artist.score} variant="white" input={false} />
                                 </div>
                             </div>
                         </div>
                         <div className="artist-stats-row">
-                            <ProfileStats 
-                                followers={artist.stats.followers} 
-                                following={artist.stats.favs} 
-                                rvws={artist.stats.rvws} 
+                            <ProfileStats
+                                followers={artist.stats.followers}
+                                favs={artist.stats.favs}
+                                rvws={artist.stats.rvws}
                             />
                             <div className="artist-actions">
                                 <Button variant="primary" className="artist-follow-btn">Seguir</Button>
@@ -86,7 +117,7 @@ function ArtistContent() {
                 {/* Listados PC */}
                 <div className="artist-sections">
                     <div className="artist-section">
-                        <span className="artist-section-title">Top <span className="RVWS">RVWS</span></span>
+                        <h2 className="section-title artist-section-title">Top <span className="RVWS">RVWS</span></h2>
                         <div className="cards-grid">
                             {topRvws.map((item, index) => (
                                 <MediaCard
@@ -104,37 +135,15 @@ function ArtistContent() {
                         </div>
                     </div>
                     <div className="artist-section">
-                        <span className="artist-section-title">Top álbumes</span>
+                        <h2 className="section-title artist-section-title">Top álbumes</h2>
                         <div className="cards-grid">
-                            {topSongs.map((item, index) => (
-                                <MediaCard
-                                    key={index}
-                                    type="cancion"
-                                    title="Jukiar"
-                                    artist={artist.name}
-                                    imageUrl="/placeholderCards.png"
-                                    score={8.5}
-                                    forceShowInfo={true}
-                                    scoreType="white"
-                                />
-                            ))}
+                            {albumCards}
                         </div>
                     </div>
                     <div className="artist-section">
-                        <span className="artist-section-title">Top canciones</span>
+                        <h2 className="section-title artist-section-title">Top canciones</h2>
                         <div className="cards-grid">
-                            {topSongs.map((item, index) => (
-                                <MediaCard
-                                    key={index}
-                                    type="cancion"
-                                    title="Jukiar"
-                                    artist={artist.name}
-                                    imageUrl="/placeholderCards.png"
-                                    score={8.5}
-                                    forceShowInfo={true}
-                                    scoreType="white"
-                                />
-                            ))}
+                            {songCards}
                         </div>
                     </div>
                 </div>
@@ -148,30 +157,33 @@ function ArtistContent() {
                 </div>
                 <div className="mobile-artist-content">
                     <div className="mobile-artist-title">
-                        <span className="artist-title">{artist.name} <img src="/star-regular-full.svg" alt="Estrella" className="star-icon" /></span>
+                        <h1 className="artist-title">{artist.name} <FavButton itemLabel={artist.name} className="title-fav-btn" /> <img src="/bell-regular-full.svg" alt="Campana" className="bell-icon" /></h1>
                         <span className="artist-subtitle">Artista</span>
                     </div>
-                    <ProfileStats 
-                        followers={artist.stats.followers} 
-                        following={artist.stats.favs} 
-                        rvws={artist.stats.rvws} 
+                    <ProfileStats
+                        followers={artist.stats.followers}
+                        favs={artist.stats.favs}
+                        rvws={artist.stats.rvws}
                     />
                     <div className="mobile-score-action">
                         <div className="score-block">
-                            <span className="score-label"><span className="RVWS">RVWD</span>score</span>
+                            <span className="score-label"><span className="RVWS">RVWD</span> score</span>
                             <Score score={artist.score} variant="white" input={false} />
                         </div>
-                        <Button variant="primary" className="rvw-action-btn"><span className="RVWS">RVW</span></Button>
+                        <div className="artist-actions">
+                            <Button variant="primary" className="artist-follow-btn">Seguir</Button>
+                            <Button variant="primary" className="rvw-action-btn"><span className="RVWS">RVW</span></Button>
+                        </div>
                     </div>
                     {/* Listados Móvil (Scroll Horizontal) */}
                     <div className="artist-sections-mobile">
                         <div className="artist-section">
-                            <span className="artist-section-title">Top <span className="RVWS">RVWS</span></span>
+                            <h2 className="section-title artist-section-title">Top <span className="RVWS">RVWS</span></h2>
                             <Carousel>
                                 {topRvws.map((item, index) => (
                                     <MediaCard
                                         key={index}
-                                        type="album"
+                                        type="cancion"
                                         title="No pasa nada hombre"
                                         artist={artist.name}
                                         imageUrl="/placeholderCards.png"
@@ -184,37 +196,15 @@ function ArtistContent() {
                             </Carousel>
                         </div>
                         <div className="artist-section">
-                            <span className="artist-section-title">Top álbumes</span>
+                            <h2 className="section-title artist-section-title">Top álbumes</h2>
                             <Carousel>
-                                {topSongs.map((item, index) => (
-                                    <MediaCard
-                                        key={index}
-                                        type="cancion"
-                                        title="Jukiar"
-                                        artist={artist.name}
-                                        imageUrl="/placeholderCards.png"
-                                        score={8.5}
-                                        forceShowInfo={true}
-                                        scoreType="white"
-                                    />
-                                ))}
+                                {albumCards}
                             </Carousel>
                         </div>
                         <div className="artist-section">
-                            <span className="artist-section-title">Top canciones</span>
+                            <h2 className="section-title artist-section-title">Top canciones</h2>
                             <Carousel>
-                                {topSongs.map((item, index) => (
-                                    <MediaCard
-                                        key={index}
-                                        type="cancion"
-                                        title="Jukiar"
-                                        artist={artist.name}
-                                        imageUrl="/placeholderCards.png"
-                                        score={8.5}
-                                        forceShowInfo={true}
-                                        scoreType="white"
-                                    />
-                                ))}
+                                {songCards}
                             </Carousel>
                         </div>
                     </div>

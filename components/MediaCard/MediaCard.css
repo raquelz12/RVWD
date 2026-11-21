@@ -65,7 +65,7 @@
   display: flex;
   align-items: center;
   gap: 0.8rem;
-  background-color: var(--primary-red, #94314F);
+  background-color: var(--primary-red);
   padding: 0.4rem 1.2rem 0.4rem 0.4rem;
   border-radius: 2rem;
   backdrop-filter: blur(4px);
@@ -94,7 +94,7 @@
   flex-shrink: 0;
   overflow: hidden;
   background: linear-gradient(to bottom, var(--gradient-red-start), var(--gradient-red-middle), var(--gradient-red-end));
-  box-shadow: 0 0.4rem 1.2rem rgba(157, 43, 69, 0.4);
+  box-shadow: 0 0.4rem 1.2rem color-mix(in srgb, var(--primary-red) 40%, transparent);
   color: var(--primary-white);
   font-size: 3rem;
   top: -3rem;
@@ -124,13 +124,13 @@
 .gradient-title {
   font-size: 1.6rem;
   font-weight: 600;
-  color: var(--primary-white, #E2F0F0);
+  color: var(--primary-white);
   margin: 0;
 }
 
 .gradient-type {
   font-size: 1.4rem;
-  color: var(--primary-white, #E2F0F0);
+  color: var(--primary-white);
   margin: 0;
 }
 
@@ -143,14 +143,14 @@
   gap: 0.8rem;
   width: 100%;
   height: 2.5rem;
-  background-color: var(--primary-red, #94314F);
+  background-color: var(--primary-red);
 }
 
 .bar-icon-user {
   margin-left: 2rem;
   width: 1.6rem;
   height: 1.6rem;
-  background-color: var(--primary-white, #E2F0F0);
+  background-color: var(--primary-white);
   -webkit-mask-image: url('/user-regular-full.svg');
   -webkit-mask-size: contain;
   -webkit-mask-repeat: no-repeat;
@@ -162,7 +162,7 @@
 .bar-artist-name {
   font-size: 1.6rem;
   font-weight: 400;
-  color: var(--primary-white, #E2F0F0);
+  color: var(--primary-white);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

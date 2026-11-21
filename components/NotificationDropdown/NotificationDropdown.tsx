@@ -13,9 +13,9 @@ export default function NotificationDropdown({ onClose }: Props) {
     const menuRef = useRef<HTMLDivElement>(null);
 
     const recentNotifications = [
-        { id: 1, user: '@raquelz.12204', time: 'Hace 5m', text: <>Puso un comentario en tu RVW de <strong>No pasa nada hombre.</strong></>, read: false },
-        { id: 2, user: '@clarent', time: 'Hace 1h', text: <>Dio fav a tu comentario en tu RVW de <strong>No pasa nada hombre.</strong></>, read: false },
-        { id: 3, user: '@juanp', time: 'Hace 2h', text: <>Dio fav a tu RVW de <strong>No pasa nada hombre.</strong></>, read: true },
+        { id: 1, user: '@raquelz.12204', time: 'Hace 5m', text: <>Puso un comentario en tu <span className="RVWS">RVW</span> de <strong>No pasa nada hombre.</strong></>, read: false },
+        { id: 2, user: '@clarent', time: 'Hace 1h', text: <>Dio fav a tu comentario en tu <span className="RVWS">RVW</span> de <strong>No pasa nada hombre.</strong></>, read: false },
+        { id: 3, user: '@juanp', time: 'Hace 2h', text: <>Dio fav a tu <span className="RVWS">RVW</span> de <strong>No pasa nada hombre.</strong></>, read: true },
     ];
 
     useEffect(() => {

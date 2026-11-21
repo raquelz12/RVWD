@@ -29,18 +29,19 @@
     transition: all 0.2s ease;
 }
 
-.footer-socials {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 2rem;
-    margin-bottom: 1rem;
+
+/* Con la barra inferior fija (BottomNav) el final del footer quedaba tapado
+   y no se podía pulsar: se deja debajo un hueco de su alto
+   (6,5rem de barra + 1rem de margen + aire, y el área segura del móvil) */
+@media (max-width: 1024px) {
+    .footer {
+        padding-bottom: calc(2rem + 9rem + env(safe-area-inset-bottom, 0px));
+    }
 }
 
-.footer-socials a {
-    color: var(--primary-white);
-    text-decoration: none;
-    font-size: 1.6rem;
-    transition: color 0.3s ease;
+/* En admin la barra inferior se ve hasta 1124px */
+@media (min-width: 1025px) and (max-width: 1124px) {
+    body:has(.bottom-nav-admin) .footer {
+        padding-bottom: calc(2rem + 9rem + env(safe-area-inset-bottom, 0px));
+    }
 }
-

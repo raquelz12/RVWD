@@ -10,14 +10,12 @@
     gap: 2rem;
 }
 
+/* Junto al gap del contenedor deja 4rem bajo la cabecera, como el resto de páginas */
 .legal-header-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
     margin-bottom: 2rem;
-}
-
-.legal-main-title {
-    font-size: 3.6rem;
-    font-weight: 500;
-    margin: 0 0 1.5rem 0;
 }
 
 .legal-main-intro {
@@ -36,23 +34,6 @@
     font-size: 1.6rem;
 }
 
-.text-block h3 {
-    font-size: 1.6rem;
-    font-weight: 500;
-    margin: 0 0 1rem 0;
-    color: var(--primary-white);
-}
-
-.text-block p {
-    font-size: 1.4rem;
-    line-height: 1.6;
-    margin: 0 0 0.8rem 0;
-}
-
-.text-block p:last-child {
-    margin-bottom: 0;
-}
-
 .legal-list {
     margin: 0;
     padding-left: 2rem;
@@ -68,28 +49,12 @@
     margin-bottom: 0;
 }
 
-.bold-link {
-    color: var(--primary-white);
-    font-weight: 600;
-    text-decoration: none;
-    transition: color 0.2s ease;
-}
-
-.bold-link:hover {
-    color: var(--primary-red, #9d2b45);
-}
-
-.text-block strong {
-    color: var(--primary-white);
-    font-weight: 600;
-}
-
 @media (max-width: 768px) {
     .legal-page-container {
         padding: 4rem 1.5rem;
     }
     
-    .legal-main-title {
-        font-size: 2.6rem;
+    .legal-header-section {
+        margin-bottom: 0;
     }
 }

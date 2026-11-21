@@ -15,7 +15,7 @@
 .toggle-handle {
     width: 2rem;
     height: 2rem;
-    background-color: var(--primary-white, #ffffff);
+    background-color: var(--primary-white);
     border-radius: 50%;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     transform: translateX(0);
@@ -23,9 +23,29 @@
 }
 
 .toggle-wrapper.active {
-    background-color: var(--primary-red, #9d2b45);
+    background-color: var(--primary-red);
 }
 
 .toggle-wrapper.active .toggle-handle {
     transform: translateX(2.2rem);
+}
+/* Es un <button>: sin el estilo de botón del navegador */
+.toggle-wrapper {
+    border: none;
+    flex-shrink: 0;
+    font: inherit;
+}
+
+.toggle-wrapper:focus-visible {
+    outline: 2px solid var(--primary-red-hover);
+    outline-offset: 2px;
+}
+
+.toggle-wrapper:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.toggle-handle {
+    display: block;
 }

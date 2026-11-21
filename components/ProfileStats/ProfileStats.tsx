@@ -16,13 +16,13 @@ interface ProfileStatsProps {
 export default function ProfileStats( { minutes, songs, favs, rvws, followers, following, className }: ProfileStatsProps ) {
     return (
         <div className={`stats ${className || ''}`}>
-            {followers !== undefined && following !== undefined && (
+            {followers !== undefined && (
                 <div className="stat-item">
                     <span className="stat-value">{followers}</span>
                     <span className="stat-label">Seguidores</span>
                 </div>
             )}
-            {followers !== undefined && following !== undefined && (
+            {following !== undefined && (
                 <div className="stat-item">
                     <span className="stat-value">{following}</span>
                     <span className="stat-label">Siguiendo</span>

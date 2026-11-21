@@ -11,13 +11,12 @@
 }
 
 /* cabecera */
+/* Junto al gap del contenedor deja 4rem bajo la cabecera, como el resto de páginas */
 .privacy-header-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
     padding-bottom: 2rem;
-}
-
-.privacy-main-title {
-    font-size: 3.6rem;
-    font-weight: 500;
 }
 
 .privacy-main-intro {
@@ -33,29 +32,10 @@
     gap: 6rem;
 }
 
-.privacy-section-title {
-    font-size: 2.4rem;
-    font-weight: 500;
-    margin: 0;
-}
-
 .privacy-section {
     display: flex;
     flex-direction: column;
     gap: 2.5rem;
-}
-
-.text-block h3 {
-    font-size: 1.6rem;
-    font-weight: 500;
-    margin: 0 0 0.8rem 0;
-    color: var(--primary-white);
-}
-
-.text-block p {
-    font-size: 1.4rem;
-    line-height: 1.6;
-    margin: 0;
 }
 
 .privacy-list {
@@ -67,22 +47,6 @@
 
 .privacy-list li {
     margin-bottom: 0.8rem;
-}
-
-.privacy-list strong {
-    color: var(--primary-white);
-    font-weight: 500;
-}
-
-.inline-link {
-    color: var(--primary-white);
-    font-weight: 600;
-    text-decoration: none;
-    transition: color 0.2s;
-}
-
-.inline-link:hover {
-    color: var(--primary-red, #9d2b45);
 }
 
 /* tables */
@@ -136,8 +100,8 @@
         padding: 4rem 1.5rem;
     }
     
-    .privacy-main-title {
-        font-size: 2.6rem;
+    .privacy-header-section {
+        padding-bottom: 0;
     }
     
     .privacy-table th, 

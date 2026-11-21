@@ -21,15 +21,15 @@
   flex: 1;
   background: transparent;
   border: none;
-  color: var(--text-primary, #ffffff);
+  color: var(--primary-white);
   font-family: inherit;
-  font-size: 1.4rem;
+  font-size: 1.6rem;
   margin-left: 1.2rem;
   outline: none;
 }
 
 .search-input::placeholder {
-  color: var(--text-primary, #ffffff);
+  color: var(--primary-white);
   opacity: 0.8; 
 }
 

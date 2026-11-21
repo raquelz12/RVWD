@@ -15,15 +15,15 @@ export default function Home() {
   return (
     <main className="body-landing-page">
       <div className="head">
-        <p className="head-text">Descubre tus nuevos gustos</p>
+        <h1 className="head-text head-title">Descubre tus nuevos gustos</h1>
         <p className="head-text">Comparte tus opiniones con la comunidad</p>
-        <p className="head-text">Escribe ЯVWS de tus artistas, álbumes y canciones favoritas</p>
+        <p className="head-text">Escribe <span className="RVWS">RVWS</span> de tus artistas, álbumes y canciones favoritas</p>
         <Button variant="primary" onClick={() => openModal('register') }>
           Empieza aquí
         </Button>
       </div>
       <div className="new">
-        <p className="new-title">Novedades</p>
+        <h2 className="new-title section-title">Novedades</h2>
         {/* Ordenador */}
         <div className="desktop-view-novedades">
             {topRvws.map((item, index) => (
@@ -64,32 +64,32 @@ export default function Home() {
         <SearchBar placeholder="Buscar..." value="" onChange={(): void => {}} />
       </div>
       <div className="info-wrapper">
-        <div className="info-title">¿Qué puedes hacer en ЯVWD?</div>
+        <h2 className="info-title section-title">¿Qué puedes hacer en <span className="RVWS">RVWD</span>?</h2>
         <div className="info">
           <div className="info-card">
             <p className="info-card-text">
-              Escribe ЯVWS de artistas, álbumes y canciones 
+              Escribe <span className="RVWS">RVWS</span> de artistas, álbumes y canciones 
               y compártelas con tus amigos.
             </p>
           </div>
           <div className="info-card">
             <p className="info-card-text">
-              Seguir a tus cantantes favoritos y ver sus ЯVWS.
+              Sigue a tus artistas favoritos y mira sus <span className="RVWS">RVWS</span>.
             </p>
           </div>
           <div className="info-card">
             <p className="info-card-text">
-              Escribe comentarios sobre otras ЯVWS e inicia conversaciones. 
+              Escribe comentarios sobre otras <span className="RVWS">RVWS</span> e inicia conversaciones. 
             </p>
           </div>
           <div className="info-card">
             <p className="info-card-text">
-              Sigue a tus amigos y enterate de sus últimas ЯVWS.
+              Sigue a tus amigos y entérate de sus últimas <span className="RVWS">RVWS</span>.
             </p>
           </div>
           <div className="info-card">
             <p className="info-card-text">
-              Visualiza las mejores ЯVWS de tus artistas o álbumes favoritos.
+              Visualiza las mejores <span className="RVWS">RVWS</span> de tus artistas o álbumes favoritos.
             </p>
           </div>
         </div>

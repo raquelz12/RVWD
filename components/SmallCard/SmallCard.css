@@ -4,7 +4,7 @@
   align-items: center;
   justify-content: space-between;
   width: 25rem;
-  height: 10rem;
+  height: 13rem;
   gap: 1rem;
   padding: 1.2rem;
   border: 0.2rem solid color-mix(in srgb, var(--primary-white) 30%, transparent);

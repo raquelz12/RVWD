@@ -1,0 +1,41 @@
+/* Detalle de denuncia: solo lo propio de esta página.
+   Estructura de detalle (barra, cabecera, botones, columnas), menú de 3 puntos,
+   sanciones y modales en ../../admin-shared.css */
+
+/* estados de la denuncia */
+.admin-detail-status.status-aplicada {
+    color: var(--success);
+}
+
+.admin-detail-status.status-descartada {
+    color: rgba(255, 255, 255, 0.45);
+}
+
+/* vista previa del contenido denunciado */
+.report-content-preview {
+    margin-top: 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.report-preview-label {
+    font-size: 1.4rem;
+    color: rgba(255, 255, 255, 0.65);
+}
+
+.report-content-preview blockquote {
+    margin: 0;
+    padding: 1.4rem 1.8rem;
+    border-left: 3px solid var(--primary-red);
+    border-radius: 0 1.2rem 1.2rem 0;
+    background-color: rgba(255, 255, 255, 0.06);
+    font-size: 1.5rem;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.9);
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}

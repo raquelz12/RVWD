@@ -4,6 +4,7 @@ import { Suspense, useState, useEffect, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Button from '../../../../components/Button/Button';
 import Score from '../../../../components/Score/Score';
+import '@/styles/media-detail.css';
 import './song.css';
 import MediaCard from '../../../../components/MediaCard/MediaCard';
 import Carousel from '../../../../components/Carousel/Carousel';
@@ -13,6 +14,8 @@ import { generateBreadcrumbs } from '@/utils/breadcrumbs';
 import { getSongDetails } from '@/lib/api';
 import { Song } from '@/types/music';
 import SearchBar from '../../../../components/SearchBar/SearchBar';
+import FavButton from '../../../../components/FavButton/FavButton';
+import Link from 'next/link';
 
 function SongContent() {
     const params = useParams();
@@ -58,14 +61,14 @@ function SongContent() {
                     <div className="song-info-desktop">
                         <div className="song-title-row">
                             <div>
-                                <span className="song-title">{song.name} <img src="/star-regular-full.svg" alt="Estrella" className="star-icon" /></span>
-                                <a href={`/artist/${song.artist.id}`} className="song-artist">
+                                <h1 className="song-title">{song.name} <FavButton itemLabel={song.name} className="title-fav-btn" /></h1>
+                                <Link href={`/artist/${song.artist.id}`} className="song-artist">
                                     {song.artist.name}
-                                </a>
+                                </Link>
                             </div>
                             <div className="song-score-action">
                                 <div className="score-block">
-                                    <span className="score-label"><span className="RVWS">RVWD</span>score</span>
+                                    <span className="score-label"><span className="RVWS">RVWD</span> score</span>
                                     <Score score={song.score} variant="white" input={false} />
                                 </div>
                             </div>
@@ -83,7 +86,7 @@ function SongContent() {
                 {/* Listados PC */}
                 <div className="song-sections">
                     <div className="song-section">
-                        <span className="song-section-title">Top <span className="RVWS">RVWS</span></span>
+                        <h2 className="section-title song-section-title">Top <span className="RVWS">RVWS</span></h2>
                         <div className="cards-grid">
                             {topRvws.map((item, index) => (
                                 <MediaCard
@@ -111,8 +114,8 @@ function SongContent() {
                 </div>
                 <div className="mobile-song-content">
                     <div className="mobile-song-title">
-                        <span className="song-title">{song.name} <img src="/star-regular-full.svg" alt="Estrella" className="star-icon" /></span>
-                        <span className="song-subtitle">{song.artist.name}</span>
+                        <h1 className="song-title">{song.name} <FavButton itemLabel={song.name} className="title-fav-btn" /></h1>
+                        <Link href={`/artist/${song.artist.id}`} className="song-artist">{song.artist.name}</Link>
                     </div>
                     <ProfileStats 
                         minutes={song.stats.minutes} 
@@ -121,7 +124,7 @@ function SongContent() {
                     />
                     <div className="mobile-score-action">
                         <div className="score-block">
-                            <span className="score-label"><span className="RVWS">RVWD</span>score</span>
+                            <span className="score-label"><span className="RVWS">RVWD</span> score</span>
                             <Score score={song.score} variant="white" input={false} />
                         </div>
                         <Button variant="primary" className="rvw-action-btn"><span className="RVWS">RVW</span></Button>
@@ -129,7 +132,7 @@ function SongContent() {
                     {/* Listados Móvil (Scroll Horizontal) */}
                     <div className="song-sections-mobile">
                         <div className="song-section">
-                            <span className="song-section-title">Top <span className="RVWS">RVWS</span></span>
+                            <h2 className="section-title song-section-title">Top <span className="RVWS">RVWS</span></h2>
                             <Carousel>
                                 {topRvws.map((item, index) => (
                                     <MediaCard

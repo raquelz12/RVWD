@@ -22,11 +22,6 @@
     display: none;
 }
 
-.settings-title {
-    font-size: 3.6rem;
-    font-weight: 500;
-}
-
 .mobile-title-text { display: none; }
 .desktop-title-text { display: inline; }
 
@@ -51,10 +46,6 @@
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-}
-
-.settings-subtitle {
-    font-size: 3.2rem;
 }
 
 .settings-option {
@@ -90,6 +81,63 @@
     width: 20rem;
 }
 
+/* Filas que abren algo y entradas del menú móvil: son <button> (ver OptionRow.tsx) */
+.settings-option-button,
+.settings-menu-button {
+    width: 100%;
+    background: none;
+    border: none;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.settings-option-button {
+    border-radius: 1.6rem;
+    transition: background-color 0.2s ease;
+}
+
+.settings-option-button:hover {
+    background-color: rgba(255, 255, 255, 0.04);
+}
+
+.settings-option-button:hover .custom-button.outline {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.settings-option-button:focus-visible,
+.settings-menu-button:focus-visible {
+    outline: 2px solid var(--primary-red-hover);
+    outline-offset: 2px;
+}
+
+/* El "botón" de la fila es un <span>: se centra igual que un botón real */
+.settings-option-button .settings-option-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+/* Flecha de la fila: solo en móvil */
+.mobile-action-icon {
+    display: none;
+    font-size: 2.4rem;
+}
+
+/* Filas con un control en línea (interruptor, desplegable...): no se pulsan */
+.settings-option.is-static {
+    cursor: default;
+}
+
+.settings-option-control {
+    display: flex;
+    align-items: center;
+    gap: 1.4rem;
+    flex-shrink: 0;
+}
+
 /* =========================================
    DISEÑO MÓVIL (Max-width 768px)
    ========================================= */
@@ -101,16 +149,11 @@
     .settings-header {
         justify-content: center;
         position: relative;
-        margin-bottom: 3rem;
+        margin-bottom: 2rem;
     }
 
     .desktop-title-text { display: none; }
     .mobile-title-text { display: inline; }
-
-    .settings-title {
-        font-size: 2.8rem;
-        font-weight: 400;
-    }
 
     .mobile-back-btn {
         display: block;
@@ -198,7 +241,7 @@
 
     .menu-desc {
         font-size: 1.2rem;
-        color: var(--text-secondary, #a1a1aa);
+        color: var(--text-secondary);
     }
 
     .menu-chevron {
@@ -236,5 +279,28 @@
     .settings-option-description {
         font-size: 1.2rem;
         margin-top: 0.2rem;
+    }
+
+    .settings-option-button .mobile-action-icon {
+        display: block;
+    }
+
+    /* Sin el botón rojo de escritorio, la acción de peligro se marca en el texto */
+    .settings-option.is-danger .settings-option-label,
+    .settings-option.is-danger .mobile-action-icon {
+        color: var(--danger-red);
+    }
+
+    .settings-option.is-static:hover {
+        background-color: transparent;
+    }
+
+    /* Fila con control: el texto encima y el control debajo si no cabe */
+    .settings-option.is-static {
+        flex-wrap: wrap;
+    }
+
+    .settings-option-control {
+        gap: 1rem;
     }
 }

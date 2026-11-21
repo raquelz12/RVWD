@@ -1,19 +1,19 @@
+import '@/styles/legal-text.css';
 import './privacy.css';
-import Link from 'next/link';
 
 export default function PrivacyPage() {
     return (
         <div className="privacy-page-container">
             
             <div className="privacy-header-section">
-                <h1 className="privacy-main-title">Política de privacidad y Cookies</h1>
+                <h1 className="page-title">Política de privacidad y cookies</h1>
                 <p className="privacy-main-intro">
                     Guardamos solo los datos necesarios para que tu cuenta funcione y para moderar la comunidad. No los vendemos. Puedes pedirnos que los borremos cuando quieras. Usamos pocas cookies y solo tú decides cuáles aceptar.
                 </p>
             </div>
             <div className="privacy-content">
                 <section className="privacy-section">
-                    <h2 className="privacy-section-title">Privacidad</h2>
+                    <h2 className="section-title">Privacidad</h2>
                     <div className="text-block">
                         <h3>Responsable de tus datos</h3>
                         <p>Raquel. rvwd@gmail.com</p>
@@ -80,7 +80,7 @@ export default function PrivacyPage() {
                     </div>
                 </section>
                 <section className="privacy-section">
-                    <h2 className="privacy-section-title">Cookies</h2>
+                    <h2 className="section-title">Cookies</h2>
                     <div className="text-block">
                         <h3>Qué son</h3>
                         <p>Son pequeños archivos que se guardan en tu dispositivo para que la web funcione, recuerde tus preferencias o mida cómo se usa.</p>
@@ -123,7 +123,7 @@ export default function PrivacyPage() {
                     </div>
                     <div className="text-block">
                         <h3>Cómo gestionarlas</h3>
-                        <p>Al entrar por primera vez puedes aceptarlas, rechazarlas o configurarlas. Puedes cambiar tu decisión cuando quieras <Link href="#" className="inline-link">desde aquí</Link> o borrarlas desde los ajustes de tu navegador. No usamos cookies de terceros.</p>
+                        <p>Al entrar por primera vez puedes aceptarlas, rechazarlas o configurarlas. Puedes cambiar tu decisión cuando quieras o borrarlas desde los ajustes de tu navegador. No usamos cookies de terceros.</p>
                     </div>
                     <div className="text-block">
                         <h3>Cambios</h3>

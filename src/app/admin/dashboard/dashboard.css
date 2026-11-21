@@ -1,0 +1,244 @@
+.admin-dashboard-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 120rem;
+    margin: 0 auto;
+    padding: 6rem 2rem;
+    box-sizing: border-box;
+    gap: 5rem;
+}
+
+/* cabecera */
+.admin-greeting h1 {
+    font-size: 3.6rem;
+    font-weight: 500;
+    margin: 0 0 0.6rem 0;
+}
+
+.admin-greeting p {
+    font-size: 2rem;
+    margin: 0;
+}
+
+/* metricas */
+.admin-kpis-grid {
+    display: grid;
+    grid-template-columns: repeat(4, auto);
+    justify-content: center;
+    gap: 6rem;
+}
+
+.kpi-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1.2rem;
+}
+
+.kpi-label {
+    font-size: 2rem;
+}
+
+.kpi-value {
+    font-size: 3.6rem;
+    line-height: 1;
+}
+
+/* denuncias y sugerencias */
+.admin-lists-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+}
+
+.admin-list-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-section-title {
+    font-size: 2rem;
+    font-weight: 500;
+    margin: 0 0 2rem 0;
+}
+
+.admin-list-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.admin-list-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 1.6rem;
+    border-radius: 0.8rem;
+    transition: background-color 0.2s ease;
+}
+
+.admin-list-row:hover,
+.admin-list-row.highlighted {
+    background-color: rgba(255, 255, 255, 0.12);
+    cursor: pointer;
+}
+
+.row-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.row-title {
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: var(--primary-white);
+}
+
+.row-meta {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.55);
+}
+
+.row-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+}
+
+.icon-action-btn {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    padding: 0.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.icon-action-btn:hover {
+    color: var(--primary-red);
+    transform: scale(1.1);
+}
+
+.row-status span {
+    font-size: 1.3rem;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.list-footer {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+
+.ver-todas-link {
+    font-size: 1.3rem;
+    color: rgba(255, 255, 255, 0.75);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.ver-todas-link:hover {
+    color: var(--primary-white);
+    text-decoration: underline;
+}
+
+/* =========================================
+   GRÁFICO DE BARRAS
+   ========================================= */
+.admin-chart-section {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+.chart-header .admin-section-title {
+    margin-bottom: 0.4rem;
+}
+
+.chart-subtitle {
+    font-size: 1.3rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.bar-chart-container {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 2.5rem;
+    height: 22rem;
+    width: 100%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+    padding: 0 2rem;
+    box-sizing: border-box;
+}
+
+.bar-column {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.bar-fill {
+    width: 100%;
+    max-width: 8rem;
+    background-color: var(--primary-white);
+    border-radius: 0.4rem 0.4rem 0 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.bar-fill.peak {
+    background: linear-gradient(180deg, var(--primary-red-hover) 0%, var(--primary-red) 100%);
+}
+
+.bar-fill:hover {
+    opacity: 0.85;
+}
+
+/* =========================================
+   RESPONSIVE MÓVIL
+   ========================================= */
+@media (max-width: 768px) {
+    .admin-dashboard-container {
+        padding: 3rem 1.8rem 6rem 1.8rem;
+        gap: 4rem;
+    }
+
+    .admin-greeting h1 {
+        font-size: 2.8rem;
+    }
+
+    /* Cuadrícula 2x2 para los KPIs en móvil */
+    .admin-kpis-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 3rem 2rem;
+    }
+
+    .kpi-value {
+        font-size: 3rem;
+    }
+
+    /* Listas apiladas en una columna */
+    .admin-lists-grid {
+        grid-template-columns: 1fr;
+        gap: 4rem;
+    }
+
+    .admin-list-row {
+        padding: 1rem 1.2rem;
+    }
+
+    /* Gráfico más compacto en móvil */
+    .bar-chart-container {
+        height: 16rem;
+        gap: 1rem;
+        padding: 0 0.5rem;
+    }
+}

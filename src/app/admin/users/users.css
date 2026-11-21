@@ -1,0 +1,16 @@
+/* Listado de usuarios. Lo común (tabla, lista móvil, buscador, filtros, paginación)
+   está en ../admin-shared.css */
+
+/* columnas de la tabla: usuario, estado, rol, denuncias, sanciones, fecha */
+.admin-table-header.users-grid,
+.admin-table-row.users-grid {
+    grid-template-columns: 1.4fr 1fr 1fr 1fr 1.2fr 1.2fr;
+}
+
+/* tablet: sin la columna de fecha */
+@media (max-width: 1100px) {
+    .admin-table-header.users-grid,
+    .admin-table-row.users-grid {
+        grid-template-columns: 1.6fr 1fr 1fr 0.9fr 1.2fr;
+    }
+}

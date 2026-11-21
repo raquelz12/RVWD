@@ -53,48 +53,14 @@
     align-items: center;
     gap: 1rem;
     font-family: var(--font-heading);
-}
-
-.song-subtitle {
-    font-size: 2rem;
-    margin: 0;
-}
-
-.star-icon {
-    width: 2.4rem;
-    height: 2.4rem;
-    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(103%) contrast(103%);
-}
-
-.bell-icon {
-    width: 2.4rem;
-    height: 2.4rem;
-    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(103%) contrast(103%);
+    /* Anton solo tiene un grosor: sin esto el h1 la pondría en negrita simulada */
+    font-weight: 400;
 }
 
 .song-score-action {
     display: flex;
     align-items: center;
     gap: 3rem;
-}
-
-.score-block {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.score-label {
-    font-size: 2rem;
-    line-height: 1.2;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-.score-label span {
-    font-size: 3.2rem;
 }
 
 .song-artist {
@@ -106,7 +72,7 @@
 }
 
 .song-artist:hover {
-    color: var(--primary-red, #9d2b45);
+    color: var(--primary-red);
 }
 
 /* Estadísticas (Minutos, Canciones...) */
@@ -129,16 +95,6 @@
     height: 4.8rem;
 }
 
-.rvw-action-btn {
-    height: 4.8rem;
-    display: flex;
-    align-items: center;
-}
-
-.rvw-action-btn span {
-    font-size: 3.2rem;
-}
-
 /* secciones y tarjetas */
 .song-sections {
     display: flex;
@@ -150,95 +106,6 @@
     display: flex;
     flex-direction: column;
     gap: 2rem;
-}
-
-.song-section-title {
-    font-size: 3.2rem;
-}
-
-.song-section-title .RVWS {
-    font-size: 3.6rem;
-}
-
-.cards-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 3rem;
-}
-
-.square-card {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    border-radius: 1.2rem;
-    overflow: hidden;
-    background-color: var(--primary-red, #9d2b45);
-}
-
-.square-card-image-wrapper {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 1 / 1;
-}
-
-.square-card-image-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.square-card-badge {
-    position: absolute;
-    top: -1rem;
-    right: -1rem;
-    background-color: rgba(255, 255, 255, 0.9);
-    color: var(--primary-red, #9d2b45);
-    width: 4rem;
-    height: 4rem;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.6rem;
-    font-weight: bold;
-    border: 3px solid #182226;
-}
-
-.square-card-user-overlay {
-    position: absolute;
-    top: 1rem;
-    left: 1rem;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(4px);
-    padding: 0.4rem 1rem 0.4rem 0.4rem;
-    border-radius: 2rem;
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-}
-
-.square-card-user-overlay img {
-    width: 2.4rem;
-    height: 2.4rem;
-    border-radius: 50%;
-}
-
-.square-card-user-overlay span {
-    font-size: 1.2rem;
-    color: white;
-}
-
-.square-card-footer {
-    padding: 1.2rem;
-    font-size: 1.3rem;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    color: white;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 
 /* movil */
@@ -266,18 +133,6 @@
         max-height: 50vh;
     }
 
-    .mobile-hero-bg {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    .mobile-hero-gradient {
-        position: absolute;
-        bottom: 0; left: 0; width: 100%; height: 60%;
-        background: linear-gradient(to top, rgba(34, 46, 52, 1) 0%, rgba(34, 46, 52, 0.8) 50%, rgba(34, 46, 52, 0) 100%);
-    }
-
     /* Contenido central Móvil */
     .mobile-song-content {
         padding: 0 2rem;
@@ -295,20 +150,6 @@
         justify-content: space-between;
     }
 
-    .mobile-stats {
-        justify-content: space-evenly;
-    }
-
-    .mobile-score-action {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 3rem;
-        padding-bottom: 2rem;
-        padding-top: 2rem;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
     /* Carrusel de tarjetas en móvil */
     .song-sections-mobile {
         display: flex;
@@ -321,7 +162,6 @@
         text-align: center;
         display: block;
         width: 100%;
-        font-size: 2.8rem;
         margin-bottom: 2rem;
     }
 }

@@ -4,6 +4,7 @@ import MediaCard from '../../../components/MediaCard/MediaCard';
 import Button from '../../../components/Button/Button';
 import ReviewBigCard from '../../../components/ReviewBigCard/ReviewBigCard';
 import SearchBar from '../../../components/SearchBar/SearchBar';
+import '@/styles/top-songs.css';
 import './profile.css';
 import { useState, useRef } from 'react';
 import Input from '../../../components/Input/Input';
@@ -63,13 +64,15 @@ export default function ProfilePage() {
         //Al backend
     }
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        setProfileData(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    };
+    // Cada campo dice qué dato actualiza (Input y TextArea no pasan `name`)
+    const handleChange = (field: 'name' | 'username' | 'bio') =>
+        (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+            const { value } = e.target;
+            setProfileData(prev => ({
+                ...prev,
+                [field]: value
+            }));
+        };
 
     const handleRemoveSong = (indexToRemove: number) => {
         setRemovingSlot(indexToRemove);
@@ -143,8 +146,19 @@ export default function ProfilePage() {
                 )}
 
                 {song === null && activeSearchSlot !== index && (
-                    <div className={`empty-slot ${isEditing ? 'editable' : ''}`} onClick={() => { if (isEditing) { setActiveSearchSlot(index); setSongSearchQuery(''); } }}>
-                        {isEditing ? <div className="add-circle-btn"><div className="plus-icon">+</div></div> : <div className="empty-text-placeholder">Falta canción</div>}
+                    <div
+                        className={`empty-slot ${ownProfile ? 'editable' : ''}`}
+                        onClick={() => {
+                            if (!ownProfile) return;
+                            // Fuera del modo edición, pulsar el hueco entra en edición y abre su buscador
+                            if (!isEditing) handleEditToggle();
+                            setActiveSearchSlot(index);
+                            setSongSearchQuery('');
+                        }}
+                    >
+                        {isEditing
+                            ? <div className="add-circle-btn"><div className="plus-icon">+</div></div>
+                            : <div className="empty-text-placeholder">{ownProfile ? 'Añadir canción' : 'Sin canción'}</div>}
                     </div>
                 )}
             </div>
@@ -154,22 +168,22 @@ export default function ProfilePage() {
     return (
         <div className="profile-container">
             <div className="profile-header">
-                <span className="profile-header-title">Tu perfil de <span className="RVWS">RVWD</span></span>
+                <h1 className="page-title">Tu perfil de <span className="RVWS">RVWD</span></h1>
             </div>
             <div className="profile-content">
                 {/*----------------------- Profile Info Section---------------------------- */}
                 <section className={`profile-info ${isEditing ? 'is-editing-mode' : ''}`}>
                     <div className="profile-info-pic">
-                        <img src="placeholder.png" alt="ProfilePicture" />
-                        {isEditing && <div className="profile-pic-overlay edit-anim"><img src="camera-solid-full.svg" alt="Edit" /></div>}
+                        <img src="/placeholder.png" alt="Foto de perfil" />
+                        {isEditing && <div className="profile-pic-overlay edit-anim"><img src="/camera-solid-full.svg" alt="Cambiar foto" /></div>}
                     </div>
                     <div className="profile-info-details">
                         <div className="profile-info-upper">
                             <div className="profile-info-name">
                                 {isEditing ? (
                                     <div className="edit-anim edit-inputs-group">
-                                        <Input type="text" value={profileData.name} onChange={handleChange} />
-                                        <Input type="text" value={profileData.username} onChange={handleChange} />
+                                        <Input type="text" value={profileData.name} onChange={handleChange('name')} />
+                                        <Input type="text" value={profileData.username} onChange={handleChange('username')} />
                                     </div>
                                 ) : (
                                     <div className="view-anim">
@@ -182,13 +196,21 @@ export default function ProfilePage() {
                                 <div className="profile-info-buttons">
                                     {isEditing ? (
                                         <div className="edit-anim edit-actions">
-                                            <button className="profile-btn save-btn" onClick={handleSave}><img src="floppy-disk-regular-full.svg" alt="Save" /></button>
-                                            <button className="profile-btn cancel-btn" onClick={handleCancel}>✕</button>
+                                            <button type="button" className="profile-btn" onClick={handleSave} aria-label="Guardar cambios">
+                                                <img src="/floppy-disk-regular-full.svg" alt="" />
+                                            </button>
+                                            <button type="button" className="profile-btn is-secondary" onClick={handleCancel} aria-label="Cancelar">
+                                                <span aria-hidden="true">✕</span>
+                                            </button>
                                         </div>
                                     ) : (
                                         <div className="view-anim edit-actions">
-                                            <button className="profile-btn" onClick={handleEditToggle}><img src="pencil-solid-full.svg" alt="Edit" /></button>
-                                            <button className="profile-btn" onClick={() => (window.location.href = "/settings")}><img src="gear-solid-full.svg" alt="Settings" /></button>
+                                            <button type="button" className="profile-btn" onClick={handleEditToggle} aria-label="Editar perfil">
+                                                <img src="/pencil-solid-full.svg" alt="" />
+                                            </button>
+                                            <Link href="/settings" className="profile-btn" aria-label="Ajustes">
+                                                <img src="/gear-solid-full.svg" alt="" />
+                                            </Link>
                                         </div>
                                     )}
                                 </div>
@@ -198,7 +220,7 @@ export default function ProfilePage() {
                         
                         <div className="profile-info-bio">
                             {isEditing ? (
-                                <TextArea value={profileData.bio} onChange={handleChange} rows={5} className="edit-anim" />
+                                <TextArea value={profileData.bio} onChange={handleChange('bio')} rows={5} className="edit-anim" />
                             ) : (
                                 <p className="profile-info-bio-text view-anim">{profileData.bio}</p>
                             )}
@@ -208,7 +230,7 @@ export default function ProfilePage() {
                 </section>
                 {/*----------------------- Top Songs Section---------------------------- */}
                 <section className="profile-top-songs">
-                    <span className="profile-subtitle">Tus top 4 canciones</span>
+                    <h2 className="section-title profile-subtitle">Tus top 4 canciones</h2>
                     <div className="desktop-top-songs">
                         {renderSongSlots()}
                     </div>
@@ -220,37 +242,41 @@ export default function ProfilePage() {
                 </section>
                 <section className="profile-reviews">
                     <div className="reviews-header-mobile">
-                        <span className="profile-subtitle">Tus <span className="RVWS">RVWS</span></span>
+                        <h2 className="section-title profile-subtitle">Tus <span className="RVWS">RVWS</span></h2>
                     </div>
                     <div className="profile-reviews-list">
-                        <ReviewBigCard
-                            type="Álbum"
-                            title="No pasa nada hombre"
-                            artist="Clarent"
-                            imageUrl="/placeholderCards.png"
-                            score={8.5}
-                            titleReview="Mi opinión sobre este álbum"
-                            reviewText="Este álbum es increíble. Toda la música es genial y los arreglos son perfectos."
-                            reviewDate="2023-01-01"
-                            commentsCount={10}
-                            favoritesCount={5}
-                            pageScore={7.8}
-                            profile={true}
-                        />
-                        <ReviewBigCard
-                            type="Álbum"
-                            title="No pasa nada hombre"
-                            artist="Clarent"
-                            imageUrl="/placeholderCards.png"
-                            score={8.5}
-                            titleReview="Mi opinión sobre este álbum"
-                            reviewText="Este álbum es increíble. Toda la música es genial y los arreglos son perfectos."
-                            reviewDate="2023-01-01"
-                            commentsCount={10}
-                            favoritesCount={5}
-                            pageScore={7.8}
-                            profile={true}
-                        />
+                        <Link href="/reviews/123" className="profile-review-link">
+                            <ReviewBigCard
+                                type="Álbum"
+                                title="No pasa nada hombre"
+                                artist="Clarent"
+                                imageUrl="/placeholderCards.png"
+                                score={8.5}
+                                titleReview="Mi opinión sobre este álbum"
+                                reviewText="Este álbum es increíble. Toda la música es genial y los arreglos son perfectos."
+                                reviewDate="2023-01-01"
+                                commentsCount={10}
+                                favoritesCount={5}
+                                pageScore={7.8}
+                                profile={true}
+                            />
+                        </Link>
+                        <Link href="/reviews/123" className="profile-review-link">
+                            <ReviewBigCard
+                                type="Álbum"
+                                title="No pasa nada hombre"
+                                artist="Clarent"
+                                imageUrl="/placeholderCards.png"
+                                score={8.5}
+                                titleReview="Mi opinión sobre este álbum"
+                                reviewText="Este álbum es increíble. Toda la música es genial y los arreglos son perfectos."
+                                reviewDate="2023-01-01"
+                                commentsCount={10}
+                                favoritesCount={5}
+                                pageScore={7.8}
+                                profile={true}
+                            />
+                        </Link>
                     </div>
                     <Link href="/profile/reviews" className="view-all-reviews-link">Ver todas</Link>
                 </section>

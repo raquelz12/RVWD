@@ -1,0 +1,151 @@
+/* Barra inferior de admin. La base (.bottom-nav, .bottom-item) está en ../BottomNav/BottomNav.css */
+
+/* Mismo punto de corte que el header: hasta 1124px no caben los enlaces de admin arriba */
+@media (min-width: 1025px) and (max-width: 1124px) {
+    .bottom-nav.bottom-nav-admin {
+        display: flex;
+    }
+}
+
+/* Avisos */
+.bottom-badge {
+    position: absolute;
+    top: 0.2rem;
+    right: 0.1rem;
+    min-width: 1.8rem;
+    height: 1.8rem;
+    padding: 0 0.45rem;
+    box-sizing: border-box;
+    border-radius: 1rem;
+    background-color: var(--primary-red);
+    /* borde del color de la barra para separarlo del icono */
+    border: 0.15rem solid var(--bg-card);
+    color: var(--primary-white);
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1.5rem;
+    text-align: center;
+}
+
+.bottom-dot {
+    position: absolute;
+    top: 0.9rem;
+    right: 0.9rem;
+    width: 0.9rem;
+    height: 0.9rem;
+    border-radius: 50%;
+    background-color: var(--primary-red);
+    border: 0.15rem solid var(--bg-card);
+}
+
+/* Menú "Más": desplegable encima de los tres puntos, con el estilo del de notificaciones */
+.admin-more-menu {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + 1rem);
+    width: 26rem;
+    max-width: calc(100vw - 3.2rem);
+    padding: 0.6rem;
+    background-color: color-mix(in srgb, var(--bg-card) 95%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1.6rem;
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.5);
+    animation: bottomPanelIn 0.2s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .admin-more-menu {
+        animation: none;
+    }
+}
+
+.admin-more-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.admin-more-item {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    width: 100%;
+    padding: 1rem 1.2rem;
+    border-radius: 1rem;
+    background: none;
+    border: none;
+    color: var(--primary-white);
+    text-decoration: none;
+    font-family: inherit;
+    font-size: 1.6rem;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.admin-more-item:hover,
+.admin-more-item:active {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.admin-more-item.active {
+    color: var(--primary-red);
+}
+
+.admin-more-item span[class^='icon-'] {
+    width: 2rem;
+    height: 2rem;
+    flex-shrink: 0;
+    background-color: currentColor;
+}
+
+.admin-more-label {
+    flex: 1;
+}
+
+.admin-more-chevron {
+    font-size: 2rem;
+    line-height: 1;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.admin-more-item.danger {
+    color: var(--danger-red);
+}
+
+.admin-more-divider {
+    height: 1px;
+    margin: 0.4rem 1.2rem;
+    background-color: rgba(255, 255, 255, 0.12);
+}
+
+/* Iconos de admin (máscaras, toman el color de background-color) */
+.icon-users,
+.icon-flag,
+.icon-newspaper,
+.icon-inbox,
+.icon-chart,
+.icon-gear,
+.icon-ellipsis,
+.icon-logout {
+    -webkit-mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    mask-position: center;
+}
+
+.icon-users { -webkit-mask-image: url('/users-regular-full.svg'); mask-image: url('/users-regular-full.svg'); }
+.icon-flag { -webkit-mask-image: url('/flag-regular-full.svg'); mask-image: url('/flag-regular-full.svg'); }
+.icon-newspaper { -webkit-mask-image: url('/newspaper-solid-full.svg'); mask-image: url('/newspaper-solid-full.svg'); }
+.icon-inbox { -webkit-mask-image: url('/inbox-regular-full.svg'); mask-image: url('/inbox-regular-full.svg'); }
+.icon-chart { -webkit-mask-image: url('/chart-column-regular-full.svg'); mask-image: url('/chart-column-regular-full.svg'); }
+.icon-gear { -webkit-mask-image: url('/gear-solid-full.svg'); mask-image: url('/gear-solid-full.svg'); }
+.icon-ellipsis { -webkit-mask-image: url('/ellipsis-solid-full.svg'); mask-image: url('/ellipsis-solid-full.svg'); }
+.icon-logout { -webkit-mask-image: url('/arrow-right-from-bracket-solid-full.svg'); mask-image: url('/arrow-right-from-bracket-solid-full.svg'); }

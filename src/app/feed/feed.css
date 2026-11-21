@@ -35,8 +35,15 @@
     font-size: 2rem;
 }
 
-.feed-button:hover {
+.feed-button:hover:not(:disabled) {
     transform: translateY(-0.2rem);
+}
+
+/* Pestañas de carga (mientras llega FeedTabs): mismo aspecto, sin el gris del navegador.
+   Va antes de .active para que la pestaña activa siga en rojo */
+.feed-button:disabled {
+    color: var(--primary-white);
+    cursor: default;
 }
 
 .feed-button.active {
@@ -54,7 +61,21 @@
     justify-content: space-between;
     gap: 2rem;
     padding: 2rem;
-    Width: 100%;
+    width: 100%;
+}
+
+/* Enlaces que envuelven tarjetas */
+.feed-review-link {
+    display: block;
+    width: 100%;
+    text-decoration: none;
+    color: inherit;
+}
+
+.weekly-top-link {
+    flex: 1;
+    text-decoration: none;
+    color: inherit;
 }
 
 .feed-main-column {
@@ -64,7 +85,6 @@
     justify-content: flex-start;
     gap: 2rem;
     width: 100%;
-    padding-right: 2rem;
 }
 
 .show-new {
@@ -117,10 +137,9 @@
     padding-bottom: 1rem;
 }
 
-.section-header .title{
-    font-family: inherit;
-    font-size: 2rem;
-    font-weight: 600;
+/* Tamaño y peso vienen de .block-title; se mantiene el margen que tenía el h3 */
+.section-header .title {
+    margin: 2rem 0;
 }
 
 .might-like-cards {
@@ -177,14 +196,8 @@
 }
 
 .feed-side-title {
-    font-family: inherit;
-    font-size: 2rem;
-    font-weight: 600;
+    margin: 2rem 0;
     text-align: center;
-}
-
-.accordion-icon {
-    display: none;
 }
 
 .releases-toggle-checkbox,
@@ -316,8 +329,17 @@
 
 .user-card:hover {
     transform: translateY(-0.2rem);
-    cursor: pointer;
     background-color: color-mix(in srgb, var(--primary-white) 30%, transparent);
+}
+
+/* La foto y el nombre llevan al perfil; "Seguir" queda fuera del enlace */
+.user-card-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    text-decoration: none;
+    color: inherit;
 }
 
 .user-card img {
@@ -445,7 +467,7 @@
         width: 80vw;
         max-width: 32rem;
         height: 100vh;
-        background-color: rgba(24, 34, 38, 0.9);
+        background-color: color-mix(in srgb, var(--bg-card) 90%, transparent);
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
         z-index: 105;

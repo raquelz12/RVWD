@@ -1,0 +1,120 @@
+/* =========================================
+   FICHAS DE MÚSICA
+   Común a álbum, artista y canción. El hero móvil también lo usa la reseña.
+   ========================================= */
+
+/* Estados de carga y "no encontrado" */
+.helper-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    margin-top: 10rem;
+}
+
+.helper-text {
+    padding: 4rem;
+    text-align: center;
+    font-size: 2rem;
+}
+
+/* Iconos junto al título */
+.bell-icon {
+    width: 2.4rem;
+    height: 2.4rem;
+    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(103%) contrast(103%);
+}
+
+/* Estrella de favoritos del título (FavButton) */
+.title-fav-btn .fav-icon {
+    width: 2.4rem;
+    height: 2.4rem;
+}
+
+.title-fav-btn {
+    transition: color 0.3s ease;
+}
+
+.title-fav-btn:hover {
+    color: var(--primary-red);
+}
+
+/* Puntuación RVWD */
+.score-block {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.score-label {
+    font-size: 2rem;
+    line-height: 1.2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.score-label span {
+    font-size: 3.2rem;
+}
+
+/* Botón para escribir una RVW */
+.rvw-action-btn {
+    height: 4.8rem;
+    display: flex;
+    align-items: center;
+}
+
+.rvw-action-btn span {
+    font-size: 3.2rem;
+}
+
+/* Rejilla de tarjetas (escritorio) */
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 3rem;
+}
+
+.media-card-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+@media (max-width: 768px) {
+    /* Hero inmersivo: el contenedor de cada página le da el tamaño */
+    .mobile-hero-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: 0;
+    }
+
+    .mobile-hero-gradient {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 60%;
+        background: linear-gradient(to top, var(--bg-hero-fade) 0%, color-mix(in srgb, var(--bg-hero-fade) 80%, transparent) 50%, transparent 100%);
+        z-index: 1;
+        pointer-events: none;
+    }
+
+    .mobile-score-action {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 3rem;
+        padding-bottom: 2rem;
+        padding-top: 2rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+}
