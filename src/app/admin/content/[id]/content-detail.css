@@ -1,0 +1,325 @@
+/* Detalle de contenido: solo lo propio de esta página.
+   Estructura de detalle, menú de 3 puntos, historial (estilo sanciones) y modales
+   en ../../admin-shared.css; estados y punto de pendientes en ../content.css */
+
+.content-detail-empty {
+    font-size: 1.6rem;
+    color: var(--text-secondary);
+}
+
+/* franja de oculto / eliminado */
+.content-status-banner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.4rem;
+    padding: 1.4rem 1.8rem;
+    border-radius: 1.2rem;
+    font-size: 1.5rem;
+    line-height: 1.5;
+    border: 1px solid currentColor;
+}
+
+.content-status-banner.status-hidden {
+    color: #f59e0b;
+    background-color: rgba(245, 158, 11, 0.08);
+}
+
+.content-status-banner.status-deleted {
+    color: var(--danger-red);
+    background-color: rgba(255, 83, 86, 0.08);
+}
+
+.content-status-banner-note {
+    flex-basis: 100%;
+    color: rgba(255, 255, 255, 0.75);
+    font-style: italic;
+}
+
+/* botones: el de sanción es más largo */
+.content-detail-actions .content-sanction-btn {
+    width: auto;
+    min-width: 20rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+
+.content-detail-actions .admin-detail-action-btn:not(.content-sanction-btn) {
+    width: 14rem;
+}
+
+/* columnas */
+.content-detail-main,
+.content-detail-side {
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+    min-width: 0;
+}
+
+/* tarjeta con el contenido completo */
+.content-detail-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1.8rem;
+    padding: 2rem;
+    border-radius: 1.6rem;
+    background-color: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.content-subject {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    color: inherit;
+    text-decoration: none;
+    border-radius: 1rem;
+    transition: opacity 0.2s ease;
+}
+
+.content-subject:hover {
+    opacity: 0.85;
+}
+
+.content-subject-cover {
+    width: 4.8rem;
+    height: 4.8rem;
+    border-radius: 0.8rem;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.content-subject-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    flex: 1;
+    min-width: 0;
+}
+
+.content-subject-name {
+    font-size: 1.6rem;
+    font-weight: 600;
+}
+
+.content-subject-meta {
+    font-size: 1.3rem;
+    color: var(--text-secondary);
+}
+
+.content-rvw-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.6rem;
+}
+
+.content-rvw-title {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 500;
+}
+
+.content-full-text {
+    margin: 0;
+    font-size: 1.5rem;
+    line-height: 1.6;
+    white-space: pre-line;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* comentario: contexto (RVW / respuesta) y el comentario en sí */
+.content-context {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding-left: 1.2rem;
+    border-left: 2px solid rgba(255, 255, 255, 0.2);
+    font-size: 1.35rem;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.6);
+    text-decoration: none;
+}
+
+a.content-context:hover {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.content-context-label {
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+}
+
+.content-comment {
+    margin: 0;
+    padding: 1.4rem 1.8rem;
+    border-left: 3px solid var(--primary-red);
+    border-radius: 0 1.2rem 1.2rem 0;
+    background-color: rgba(255, 255, 255, 0.06);
+    font-size: 1.5rem;
+    line-height: 1.6;
+    white-space: pre-line;
+}
+
+/* datos */
+.content-edited {
+    color: var(--text-secondary);
+}
+
+.content-pending-text {
+    color: var(--danger-red);
+    font-weight: 600;
+}
+
+.content-pending-counter {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 1.4rem;
+}
+
+/* denuncias del contenido */
+.content-reports-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.content-report-row {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    padding: 1.1rem 1rem;
+    border-radius: 1rem;
+    color: inherit;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+}
+
+.content-report-row:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+}
+
+.content-report-main {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    flex: 1;
+    min-width: 0;
+}
+
+.content-report-reason {
+    font-size: 1.6rem;
+    font-weight: 500;
+}
+
+.content-report-meta {
+    font-size: 1.3rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.content-report-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 1.4rem;
+    white-space: nowrap;
+}
+
+.content-report-status.is-pending {
+    color: var(--danger-red);
+    font-weight: 600;
+}
+
+.content-report-status.is-applied {
+    color: #4ade80;
+}
+
+.content-report-status.is-dismissed {
+    color: rgba(255, 255, 255, 0.45);
+}
+
+.content-see-all {
+    margin-top: 1.4rem;
+    font-size: 1.5rem;
+}
+
+/* historial: mismo aspecto que las sanciones */
+.content-history-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 2.2rem;
+}
+
+/* aviso de "copiado" */
+.content-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 3rem;
+    transform: translateX(-50%);
+    padding: 1rem 1.8rem;
+    border-radius: 1rem;
+    background-color: #243035;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+    font-size: 1.4rem;
+    z-index: 1200;
+}
+
+@media (max-width: 1100px) {
+    .admin-detail-grid:has(.content-detail-main) {
+        grid-template-columns: 1fr;
+        gap: 4rem;
+    }
+}
+
+@media (max-width: 850px) {
+    .content-detail-main,
+    .content-detail-side {
+        gap: 3.5rem;
+    }
+
+    /* sanción a lo ancho; ocultar y eliminar debajo, a medias */
+    .content-detail-actions {
+        flex-wrap: wrap;
+    }
+
+    .content-detail-actions .content-sanction-btn {
+        flex-basis: 100%;
+    }
+
+    .content-detail-actions .admin-detail-action-btn:not(.content-sanction-btn) {
+        width: auto;
+        flex: 1;
+    }
+
+    .content-detail-card {
+        padding: 1.6rem;
+    }
+
+    .content-rvw-title {
+        font-size: 1.8rem;
+    }
+
+    .content-toast {
+        bottom: 9rem; /* por encima de la barra inferior */
+    }
+}
+
+@media (max-width: 480px) {
+    .content-next-long {
+        display: none;
+    }
+
+    .content-report-row {
+        padding: 1rem 0.4rem;
+    }
+}

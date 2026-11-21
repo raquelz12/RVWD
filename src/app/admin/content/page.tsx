@@ -6,40 +6,10 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import SearchBar from '../../../../components/SearchBar/SearchBar';
 import Select from '../../../../components/Select/Select';
 import FilterSheet from '../../../../components/FilterSheet/FilterSheet';
-import TextArea from '../../../../components/TextArea/TextArea';
-import Button from '../../../../components/Button/Button';
+import ModerateContentModal, { type ModerationAction, type ModerationResult } from './ModerateContentModal';
+import { MOCK_CONTENT, STATUS_CLASS, formatDate, publicHref, type AdminContent, type ContentStatus } from './mockContent';
 import '../admin-shared.css';
 import './content.css';
-
-type ContentStatus = 'Publicado' | 'Oculto' | 'Eliminado';
-
-interface AdminContent {
-    id: string;
-    type: 'RVW' | 'Comentario';
-    // RVW: lo reseñado; comentario: la RVW en la que se comentó
-    subject: string;
-    // comentario: id de la RVW donde está, para "Ver en la web"
-    reviewId?: string;
-    excerpt: string;
-    authorId: string;
-    authorUsername: string;
-    status: ContentStatus;
-    likes: number;
-    reports: number;
-    pendingReports: number;
-    createdAt: string; // YYYY-MM-DD
-}
-
-const MOCK_CONTENT: AdminContent[] = [
-    { id: 'post123', type: 'Comentario', subject: 'Clarent', reviewId: 'post130', excerpt: 'Esto es spam, entra en mi perfil y gana seguidores gratis', authorId: '1', authorUsername: '@raquelz.12204', status: 'Publicado', likes: 2, reports: 4, pendingReports: 2, createdAt: '2026-11-21' },
-    { id: 'post124', type: 'RVW', subject: 'Clarent', excerpt: 'Un disco que no se parece a nada de lo anterior, y eso es lo mejor que tiene', authorId: '1', authorUsername: '@raquelz.12204', status: 'Publicado', likes: 1078, reports: 1, pendingReports: 0, createdAt: '2026-11-20' },
-    { id: 'post125', type: 'Comentario', subject: 'Mañana será bonito', reviewId: 'post131', excerpt: 'Qué opinión más absurda, se nota que no tienes ni idea', authorId: '1', authorUsername: '@raquelz.12204', status: 'Oculto', likes: 0, reports: 3, pendingReports: 0, createdAt: '2026-11-18' },
-    { id: 'post126', type: 'RVW', subject: 'Motomami', excerpt: 'La producción es arriesgada pero cada canción encuentra su sitio', authorId: '2', authorUsername: '@lucia.music', status: 'Publicado', likes: 345, reports: 17, pendingReports: 5, createdAt: '2026-11-15' },
-    { id: 'post127', type: 'RVW', subject: 'El mal querer', excerpt: 'Cinco años después sigue sonando igual de actual', authorId: '3', authorUsername: '@marcos_rvw', status: 'Eliminado', likes: 234, reports: 6, pendingReports: 0, createdAt: '2026-11-02' },
-    { id: 'post128', type: 'RVW', subject: 'Clarent', excerpt: 'No entiendo el hype, me parece un disco correcto sin más', authorId: '2', authorUsername: '@lucia.music', status: 'Publicado', likes: 89, reports: 2, pendingReports: 1, createdAt: '2026-10-28' },
-    { id: 'post129', type: 'Comentario', subject: 'Motomami', reviewId: 'post126', excerpt: 'Totalmente de acuerdo con lo de la producción', authorId: '3', authorUsername: '@marcos_rvw', status: 'Publicado', likes: 12, reports: 0, pendingReports: 0, createdAt: '2026-10-20' },
-    { id: 'post130', type: 'RVW', subject: 'Un verano sin ti', excerpt: 'Perfecto para el verano, aunque le sobran un par de canciones', authorId: '4', authorUsername: '@sara.vinilos', status: 'Publicado', likes: 512, reports: 0, pendingReports: 0, createdAt: '2026-09-30' },
-];
 
 // Fecha de referencia de los datos de ejemplo (con datos reales será la fecha actual)
 const MOCK_TODAY = new Date('2026-11-21T12:00:00');
@@ -95,17 +65,6 @@ const SORTABLE_COLUMNS: { key: SortKey; label: string; className?: string }[] = 
     { key: 'date', label: 'Fecha', className: 'col-date' },
 ];
 
-const STATUS_CLASS: Record<ContentStatus, string> = {
-    Publicado: 'status-published',
-    Oculto: 'status-hidden',
-    Eliminado: 'status-deleted',
-};
-
-const formatDate = (iso: string) => {
-    const [y, m, d] = iso.split('-');
-    return `${d}/${m}/${y}`;
-};
-
 const daysAgo = (iso: string) => (MOCK_TODAY.getTime() - new Date(`${iso}T12:00:00`).getTime()) / DAY_MS;
 
 const matchesDate = (iso: string, filter: string) => {
@@ -130,12 +89,6 @@ const sortValue = (item: AdminContent, key: SortKey) => {
     return new Date(item.createdAt).getTime();
 };
 
-// Enlace público: la RVW, o la RVW donde está el comentario
-const publicHref = (item: AdminContent) =>
-    item.type === 'RVW' ? `/reviews/${item.id}` : `/reviews/${item.reviewId}#comment-${item.id}`;
-
-type ModerationAction = 'hide' | 'delete';
-
 // useSearchParams necesita un Suspense para que la build de producción no falle
 export default function AdminContentPage() {
     return (
@@ -145,13 +98,17 @@ export default function AdminContentPage() {
     );
 }
 
-// /admin/content?q=@usuario precarga la búsqueda; la key recrea el listado al cambiar ?q=
+// /admin/content?q=@usuario precarga la búsqueda.
+// /admin/content?review=post124 (desde el detalle de una RVW) muestra solo sus comentarios.
+// La key recrea el listado al cambiar los parámetros.
 function AdminContentWithQuery() {
-    const query = useSearchParams().get('q') ?? '';
-    return <AdminContentList key={query} initialQuery={query} />;
+    const searchParams = useSearchParams();
+    const query = searchParams.get('q') ?? '';
+    const reviewId = searchParams.get('review') ?? '';
+    return <AdminContentList key={`${query}|${reviewId}`} initialQuery={query} reviewId={reviewId} />;
 }
 
-function AdminContentList({ initialQuery }: { initialQuery: string }) {
+function AdminContentList({ initialQuery, reviewId }: { initialQuery: string; reviewId: string }) {
     const router = useRouter();
     const [items, setItems] = useState<AdminContent[]>(MOCK_CONTENT);
     const [searchQuery, setSearchQuery] = useState(initialQuery);
@@ -169,9 +126,6 @@ function AdminContentList({ initialQuery }: { initialQuery: string }) {
 
     // modal de ocultar / eliminar
     const [modal, setModal] = useState<{ action: ModerationAction; item: AdminContent } | null>(null);
-    const [modalNote, setModalNote] = useState('');
-    const [notifyAuthor, setNotifyAuthor] = useState(true);
-    const [modalError, setModalError] = useState(false);
 
     useEffect(() => {
         const handleClickOutside = (e: MouseEvent) => {
@@ -193,8 +147,10 @@ function AdminContentList({ initialQuery }: { initialQuery: string }) {
                 item.subject.toLowerCase().includes(search);
             const matchesStatus = statusFilter ? item.status === statusFilter : true;
             const matchesType = typeFilter ? item.type === typeFilter : true;
+            const matchesReview = reviewId ? item.reviewId === reviewId : true;
             return (
                 matchesSearch &&
+                matchesReview &&
                 matchesStatus &&
                 matchesType &&
                 matchesReports(item, reportsFilter) &&
@@ -207,6 +163,11 @@ function AdminContentList({ initialQuery }: { initialQuery: string }) {
         });
 
     const activeFiltersCount = [statusFilter, reportsFilter, typeFilter, dateFilter].filter(Boolean).length;
+
+    // Quita ?review= conservando la búsqueda si la había
+    const clearReviewFilter = () => {
+        router.replace(initialQuery ? `/admin/content?q=${encodeURIComponent(initialQuery)}` : '/admin/content');
+    };
     const closeFilters = useCallback(() => setShowMobileFilters(false), []);
     const clearFilters = () => {
         setStatusFilter('');
@@ -229,21 +190,21 @@ function AdminContentList({ initialQuery }: { initialQuery: string }) {
     const openModal = (action: ModerationAction, item: AdminContent) => {
         setOpenMenuId(null);
         setModal({ action, item });
-        setModalNote('');
-        setNotifyAuthor(true);
-        setModalError(false);
     };
 
     const closeModal = () => setModal(null);
 
-    const handleConfirmModal = () => {
+    // TODO: enviar nota interna y aviso al autor cuando haya backend
+    const handleConfirmModal = ({ markReportsApplied }: ModerationResult) => {
         if (!modal) return;
-        if (!modalNote.trim()) {
-            setModalError(true);
-            return;
-        }
-        // TODO: enviar nota interna y aviso al autor cuando haya backend
-        setStatus(modal.item.id, modal.action === 'hide' ? 'Oculto' : 'Eliminado');
+        const status: ContentStatus = modal.action === 'hide' ? 'Oculto' : 'Eliminado';
+        setItems((prev) =>
+            prev.map((item) =>
+                item.id === modal.item.id
+                    ? { ...item, status, pendingReports: markReportsApplied ? 0 : item.pendingReports }
+                    : item
+            )
+        );
         closeModal();
     };
 
@@ -364,6 +325,26 @@ function AdminContentList({ initialQuery }: { initialQuery: string }) {
                     </div>
                 </FilterSheet>
             </section>
+            {reviewId && (
+                <div className="admin-active-chips">
+                    <div className="admin-active-chip">
+                        <span>
+                            Comentarios de{' '}
+                            <Link href={`/admin/content/${reviewId}`} className="admin-active-chip-link">
+                                esta RVW
+                            </Link>
+                        </span>
+                        <button
+                            type="button"
+                            className="admin-active-chip-x"
+                            onClick={clearReviewFilter}
+                            aria-label="Quitar filtro de RVW"
+                        >
+                            ✕
+                        </button>
+                    </div>
+                </div>
+            )}
             <section className="admin-table-desktop">
                 <div className="admin-table-header content-grid">
                     <span className="content-col-head">Contenido</span>
@@ -520,54 +501,13 @@ function AdminContentList({ initialQuery }: { initialQuery: string }) {
 
             {/* modal: ocultar / eliminar contenido */}
             {modal && (
-                <div className="admin-modal-overlay" onClick={closeModal}>
-                    <div className="admin-modal-card" onClick={(e) => e.stopPropagation()}>
-                        <button className="modal-close-btn" onClick={closeModal} aria-label="Cerrar">✕</button>
-                        <h3>{modal.action === 'hide' ? '¿Ocultar este contenido?' : '¿Eliminar este contenido?'}</h3>
-                        <p className="modal-subtitle">
-                            {modal.action === 'hide'
-                                ? 'Dejará de verse en la web, pero el autor y el equipo de moderación seguirán teniéndolo. Puedes volver a mostrarlo cuando quieras.'
-                                : 'Se quitará de la web y del perfil del autor. Podrás restaurarlo desde este listado.'}
-                        </p>
-                        <blockquote className="content-modal-preview">
-                            <strong>{modal.item.type} · {modal.item.subject}</strong> «{modal.item.excerpt}»
-                            <span>{modal.item.authorUsername}</span>
-                        </blockquote>
-                        <div className="modal-field">
-                            <label>Nota interna</label>
-                            <TextArea
-                                value={modalNote}
-                                onChange={(e) => {
-                                    setModalNote(e.target.value);
-                                    setModalError(false);
-                                }}
-                                rows={3}
-                                placeholder={`Explica por qué se ${modal.action === 'hide' ? 'oculta' : 'elimina'} para el equipo de moderación...`}
-                            />
-                        </div>
-                        <label className="modal-checkbox">
-                            <input
-                                type="checkbox"
-                                checked={notifyAuthor}
-                                onChange={(e) => setNotifyAuthor(e.target.checked)}
-                            />
-                            <span>Avisar al autor por correo.</span>
-                        </label>
-                        <div className="modal-actions-row">
-                            <Button variant="text" onClick={closeModal}>
-                                Cancelar
-                            </Button>
-                            <Button variant={modal.action === 'hide' ? 'primary' : 'danger'} onClick={handleConfirmModal}>
-                                {modal.action === 'hide' ? 'Ocultar' : 'Eliminar'}
-                            </Button>
-                        </div>
-                        {modalError && (
-                            <p className="modal-error-text">
-                                Añade una nota interna para {modal.action === 'hide' ? 'ocultar' : 'eliminar'} el contenido.
-                            </p>
-                        )}
-                    </div>
-                </div>
+                <ModerateContentModal
+                    action={modal.action}
+                    item={modal.item}
+                    pendingReports={modal.item.pendingReports}
+                    onClose={closeModal}
+                    onConfirm={handleConfirmModal}
+                />
             )}
         </div>
     );

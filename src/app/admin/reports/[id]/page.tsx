@@ -7,6 +7,7 @@ import Dot from '../../../../../components/Dot/Dot';
 import Select from '../../../../../components/Select/Select';
 import TextArea from '../../../../../components/TextArea/TextArea';
 import Button from '../../../../../components/Button/Button';
+import { SANCTION_REASONS, REPORT_TO_SANCTION_REASON } from '@/app/lib/adminModeration';
 import '../../admin-shared.css';
 import './report.css';
 
@@ -59,22 +60,6 @@ const MOCK_REPORTS: ReportDetail[] = [
     { id: '5', status: 'Aplicada', reason: 'Spam', createdAt: '12/03/2027', contentType: 'RVW', contentId: 'post127', contentPreview: 'Mismo texto publicado en 20 álbumes distintos.', reporter: { id: '3', username: '@lucia.music' }, reportedUser: REPORTED_USER },
     { id: '6', status: 'En revisión', reason: 'Mal uso', createdAt: '12/03/2027', contentType: 'RVW', contentId: 'post128', contentPreview: 'Reseña de 0 estrellas sin escuchar el álbum, solo para bajar la nota.', reporter: { id: '4', username: '@marcos_rvw' }, reportedUser: REPORTED_USER },
 ];
-
-const SANCTION_REASONS = [
-    { value: 'Spam', label: 'Spam' },
-    { value: 'Lenguaje inapropiado', label: 'Lenguaje inapropiado' },
-    { value: 'Acoso', label: 'Acoso o falta de respeto' },
-    { value: 'Plagio', label: 'Plagio de contenido' },
-    { value: 'Contenido inapropiado', label: 'Contenido inapropiado' },
-];
-
-// Motivos de denuncia -> motivo de sanción equivalente (para precargar el modal)
-const REPORT_TO_SANCTION_REASON: Record<string, string> = {
-    'Spam': 'Spam',
-    'Palabras inapropiadas': 'Lenguaje inapropiado',
-    'Acoso': 'Acoso',
-    'Mal uso': 'Contenido inapropiado',
-};
 
 const BAN_REASONS = [
     { value: '3 strikes', label: '3 strikes' },
@@ -318,28 +303,28 @@ function AdminReportDetailContent({ reportId }: { reportId: string }) {
     const isResolved = report.status !== 'En revisión';
 
     return (
-        <div className="report-detail-container">
-            <div className="report-detail-topbar">
+        <div className="admin-detail-container">
+            <div className="admin-detail-topbar">
                 <Button className="back-btn" onClick={() => router.push('/admin/reports')} variant="text">
                     Volver a denuncias
                 </Button>
                 {nextReport && (
-                    <Link href={`/admin/reports/${nextReport.id}`} className="report-next-link">
+                    <Link href={`/admin/reports/${nextReport.id}`} className="admin-next-link">
                         Siguiente denuncia ›
                     </Link>
                 )}
             </div>
 
-            <header className="report-detail-header">
-                <h1 className="report-detail-title">Denuncia de</h1>
-                <div className="report-header-row">
-                    <div className="report-header-left">
-                        <Link href={`/admin/users/${reportedUser.id}`} className="report-avatar-link">
-                            <img src={reportedUser.avatar} alt={reportedUser.name} className="report-detail-avatar" />
+            <header className="admin-detail-header">
+                <h1 className="admin-detail-title">Denuncia de</h1>
+                <div className="admin-detail-header-row">
+                    <div className="admin-detail-person">
+                        <Link href={`/admin/users/${reportedUser.id}`} className="admin-detail-avatar-link">
+                            <img src={reportedUser.avatar} alt={reportedUser.name} className="admin-detail-avatar" />
                         </Link>
-                        <div className="report-header-info">
-                            <div className="report-name-row">
-                                <Link href={`/admin/users/${reportedUser.id}`} className="report-name-link">
+                        <div className="admin-detail-info">
+                            <div className="admin-detail-name-row">
+                                <Link href={`/admin/users/${reportedUser.id}`} className="admin-detail-name-link">
                                     <h2>{reportedUser.name}</h2>
                                 </Link>
                                 <div className="more-menu-wrapper" ref={menuRef}>
@@ -417,21 +402,21 @@ function AdminReportDetailContent({ reportId }: { reportId: string }) {
                                     )}
                                 </div>
                             </div>
-                            <span className="report-detail-handle">{reportedUser.username}</span>
-                            <span className={`report-detail-status ${statusClass(report.status)}`}>
+                            <span className="admin-detail-handle">{reportedUser.username}</span>
+                            <span className={`admin-detail-status ${statusClass(report.status)}`}>
                                 {report.status}
                             </span>
                             {userStatus !== 'Activo' && (
-                                <span className={`report-user-status ${statusClass(userStatus)}`}>
+                                <span className={`admin-detail-user-status ${statusClass(userStatus)}`}>
                                     Usuario {userStatus.toLowerCase()}
                                     {userStatus === 'Suspendido' && suspendedUntil ? ` (${suspendedUntil})` : ''}
                                 </span>
                             )}
                         </div>
                     </div>
-                    <div className="report-header-actions">
+                    <div className="admin-detail-actions">
                         <Button
-                            className="report-action-btn"
+                            className="admin-detail-action-btn"
                             onClick={openSanctionModal}
                             disabled={userStatus === 'Baneado'}
                             variant="primary"
@@ -439,11 +424,11 @@ function AdminReportDetailContent({ reportId }: { reportId: string }) {
                             Añadir sanción
                         </Button>
                         {isResolved ? (
-                            <Button className="report-action-btn" onClick={openReopenModal} variant="outline">
+                            <Button className="admin-detail-action-btn" onClick={openReopenModal} variant="outline">
                                 Reabrir denuncia
                             </Button>
                         ) : (
-                            <Button className="report-action-btn" onClick={() => openResolveModal()} variant="danger">
+                            <Button className="admin-detail-action-btn" onClick={() => openResolveModal()} variant="danger">
                                 Resolver denuncia
                             </Button>
                         )}
@@ -451,10 +436,10 @@ function AdminReportDetailContent({ reportId }: { reportId: string }) {
                 </div>
             </header>
 
-            <div className="report-detail-grid">
+            <div className="admin-detail-grid">
                 <section className="report-data-section">
                     <h2 className="section-heading">Datos de la Denuncia</h2>
-                    <ul className="report-data-list">
+                    <ul className="admin-data-list">
                         <li>
                             <Link href={`/admin/users/${report.reporter.id}`} className="admin-data-link">
                                 Usuario denunciante: {report.reporter.username}
