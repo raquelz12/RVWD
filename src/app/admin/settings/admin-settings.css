@@ -1,0 +1,576 @@
+/* Ajustes de admin: se apoya en ../../settings/settings.css (mismo diseño que los
+   ajustes de usuario) y en ../admin-shared.css (modales, aviso). Aquí solo lo propio. */
+
+.admin-settings .settings-title {
+    margin: 0;
+    font-weight: 500;
+}
+
+.admin-settings .settings-subtitle {
+    margin: 0;
+    font-weight: 400;
+}
+
+/* En el diseño de usuario las filas son <div>; aquí las que abren algo son <button> */
+.admin-option-btn,
+.admin-menu-item {
+    width: 100%;
+    background: none;
+    border: none;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.admin-option-btn {
+    border-radius: 1.6rem;
+    transition: background-color 0.2s ease;
+}
+
+.admin-option-btn:hover {
+    background-color: rgba(255, 255, 255, 0.04);
+}
+
+.admin-option-btn:hover .custom-button.outline {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.admin-option-btn:focus-visible,
+.admin-menu-item:focus-visible {
+    outline: 2px solid var(--primary-red-hover);
+    outline-offset: 2px;
+}
+
+.admin-option-btn .settings-option-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+.mobile-action-icon {
+    display: none;
+    font-size: 2.4rem;
+}
+
+/* filas con control en línea: sin efecto de pulsar */
+.settings-option.is-static {
+    cursor: default;
+}
+
+.admin-option-control {
+    display: flex;
+    align-items: center;
+    gap: 1.4rem;
+    flex-shrink: 0;
+}
+
+.admin-inline-select {
+    width: 17rem;
+}
+
+.admin-value-alert {
+    color: #f59e0b;
+}
+
+.admin-signature-preview {
+    white-space: pre-line;
+    font-style: italic;
+}
+
+/* botón de texto (Editar, Borrar, Ver página...) */
+.admin-text-btn {
+    background: none;
+    border: none;
+    padding: 0.4rem 0.2rem;
+    color: var(--primary-white);
+    font-family: inherit;
+    font-size: 1.4rem;
+    text-decoration: underline;
+    text-underline-offset: 0.3rem;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.admin-text-btn:hover {
+    color: var(--primary-red-hover);
+}
+
+.admin-text-btn.danger {
+    color: var(--danger-red);
+}
+
+/* bloques con más contenido (sesiones, tabla de avisos, listas...) */
+.admin-settings-block {
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+    padding: 1.6rem 1rem;
+}
+
+.admin-block-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+}
+
+.admin-block-head > div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.admin-block-btn {
+    width: 20rem;
+    flex-shrink: 0;
+}
+
+.admin-block-count {
+    min-width: 2.8rem;
+    padding: 0.2rem 0.8rem;
+    box-sizing: border-box;
+    border-radius: 1.4rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    text-align: center;
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+/* sesiones */
+.admin-sessions {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    border-radius: 1.4rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+}
+
+.admin-session {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: 1.2rem 1.6rem;
+}
+
+.admin-session + .admin-session {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.admin-session-device {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-size: 1.6rem;
+}
+
+.admin-session-current {
+    font-size: 1.15rem;
+    font-weight: 600;
+    padding: 0.2rem 0.8rem;
+    border-radius: 1rem;
+    background-color: rgba(74, 222, 128, 0.15);
+    color: #4ade80;
+}
+
+.admin-session-meta {
+    font-size: 1.3rem;
+    color: var(--text-secondary);
+}
+
+/* tabla campana / email */
+.admin-notif-table {
+    width: 100%;
+    max-width: 56rem;
+    border-collapse: collapse;
+}
+
+.admin-notif-table th,
+.admin-notif-table td {
+    padding: 1rem 0.8rem;
+    font-size: 1.5rem;
+    font-weight: 400;
+    text-align: center;
+}
+
+.admin-notif-table thead th {
+    font-size: 1.3rem;
+    color: var(--text-secondary);
+}
+
+.admin-notif-table tbody th {
+    text-align: left;
+}
+
+.admin-notif-table td .toggle-wrapper {
+    margin: 0 auto;
+}
+
+.admin-notif-table tbody tr + tr {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* pastillas (duraciones, palabras prohibidas) */
+.admin-chip-editor {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.admin-chips {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+}
+
+.admin-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 0.5rem 0.5rem 1.2rem;
+    border-radius: 2rem;
+    background-color: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    font-size: 1.4rem;
+}
+
+.admin-chip button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.2rem;
+    height: 2.2rem;
+    border: none;
+    border-radius: 50%;
+    background: none;
+    color: inherit;
+    font-size: 1.1rem;
+    cursor: pointer;
+}
+
+.admin-chip button:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.admin-chip-add {
+    display: flex;
+    gap: 1rem;
+    max-width: 48rem;
+}
+
+.admin-chip-add .input {
+    flex: 1;
+    min-width: 0;
+}
+
+.admin-chip-add .custom-button {
+    flex-shrink: 0;
+}
+
+.admin-chip-empty {
+    margin: 0;
+    font-size: 1.4rem;
+    color: var(--text-secondary);
+}
+
+/* plantillas */
+.admin-template-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.admin-template-group-title {
+    font-size: 1.3rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.admin-templates {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    border-radius: 1.4rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+}
+
+.admin-template {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    padding: 1.2rem 1.6rem;
+}
+
+.admin-template + .admin-template {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.admin-template-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    flex: 1;
+    min-width: 0;
+}
+
+.admin-template-label {
+    font-size: 1.5rem;
+}
+
+.admin-template-preview {
+    font-size: 1.3rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.admin-template-actions {
+    display: flex;
+    gap: 1.2rem;
+    flex-shrink: 0;
+}
+
+/* modales */
+.admin-qr-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 14rem;
+    height: 14rem;
+    margin: 0 auto 1.6rem;
+    border-radius: 1.2rem;
+    background:
+        repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.12) 0 0.6rem, transparent 0.6rem 1.2rem),
+        rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+}
+
+.admin-remove-notice {
+    display: block;
+    margin-bottom: 1.6rem;
+}
+
+/* =========================================
+   EDITOR DE TEXTOS LEGALES
+   ========================================= */
+.admin-modal-card.admin-legal-editor {
+    width: 100%;
+    max-width: 80rem;
+    max-height: 90dvh;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 0;
+    overflow: hidden;
+}
+
+.legal-edit-body {
+    flex: 1;
+    overflow-y: auto;
+    margin: 0 -1rem;
+    padding: 0 1rem 2rem;
+}
+
+.legal-edit-hint {
+    margin: 0 0 1.6rem;
+    font-size: 1.3rem;
+    color: var(--text-secondary);
+}
+
+.legal-edit-sections {
+    list-style: none;
+    margin: 0 0 1.6rem;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+}
+
+.legal-edit-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    padding: 1.4rem;
+    border-radius: 1.4rem;
+    background-color: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.legal-edit-section .textarea {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.legal-edit-section-head {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.legal-edit-number {
+    width: 2.4rem;
+    flex-shrink: 0;
+    text-align: center;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.input.legal-edit-title {
+    flex: 1;
+    min-width: 0;
+    font-weight: 600;
+}
+
+.legal-edit-tools {
+    display: flex;
+    gap: 0.4rem;
+    flex-shrink: 0;
+}
+
+.legal-edit-tools button {
+    width: 3.2rem;
+    height: 3.2rem;
+    border: none;
+    border-radius: 50%;
+    background: none;
+    color: var(--primary-white);
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.legal-edit-tools button:hover:not(:disabled) {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.legal-edit-tools button:disabled {
+    opacity: 0.3;
+    cursor: default;
+}
+
+.legal-edit-tools button.danger {
+    color: var(--danger-red);
+}
+
+.legal-edit-add {
+    width: 100%;
+}
+
+.legal-edit-footer {
+    margin: 0 -3.2rem;
+    padding: 1.6rem 3.2rem 2.4rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.legal-edit-footer .modal-actions-row {
+    margin-top: 1.2rem;
+}
+
+.legal-edit-note {
+    color: var(--text-secondary);
+}
+
+.legal-edit-discard {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    font-size: 1.5rem;
+}
+
+/* =========================================
+   MÓVIL
+   ========================================= */
+@media (max-width: 768px) {
+    .admin-option-btn .mobile-action-icon {
+        display: block;
+    }
+
+    .settings-option.is-static:hover {
+        background-color: transparent;
+    }
+
+    .admin-option-control {
+        gap: 1rem;
+    }
+
+    .admin-inline-select {
+        width: 13rem;
+    }
+
+    /* fila con control: el texto encima y el control debajo si no cabe */
+    .settings-option.is-static {
+        flex-wrap: wrap;
+    }
+
+    .admin-block-head {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1.2rem;
+    }
+
+    .admin-block-btn {
+        width: 100%;
+    }
+
+    .admin-template {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.8rem;
+    }
+
+    .admin-template-preview {
+        white-space: normal;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
+
+    .admin-notif-table th,
+    .admin-notif-table td {
+        font-size: 1.4rem;
+        padding: 0.9rem 0.4rem;
+    }
+
+    .legal-edit-footer {
+        margin: 0 -2rem;
+        padding: 1.4rem 2rem 1.6rem;
+    }
+
+    .legal-edit-section {
+        padding: 1.2rem 1rem;
+    }
+
+    .legal-edit-section-head {
+        flex-wrap: wrap;
+    }
+
+    .legal-edit-number {
+        display: none;
+    }
+
+    .input.legal-edit-title {
+        flex-basis: 100%;
+        order: 2;
+    }
+
+    .legal-edit-tools {
+        order: 1;
+        margin-left: auto;
+    }
+}
