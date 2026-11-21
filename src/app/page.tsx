@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from 'react';
 import './page.css';
 import MediaCard from '../../components/MediaCard/MediaCard';
 import SearchBar from '../../components/SearchBar/SearchBar';
@@ -11,6 +10,22 @@ import Carousel from '../../components/Carousel/Carousel';
 export default function Home() {
   const { openModal } = useModal();
   const topRvws = [1, 2, 3, 4];
+
+  // Las mismas tarjetas para ordenador (en fila) y móvil (en carrusel)
+  const novedades = topRvws.map((id) => (
+    <MediaCard
+      key={id}
+      type="album"
+      title="No pasa nada hombre"
+      artist="Clarent"
+      imageUrl="/placeholderCards.png"
+      userName="@raquelz.12204"
+      userPicture="/placeholderCards.png"
+      score={8.5}
+      forceShowInfo={true}
+      href="/reviews/123"
+    />
+  ));
 
   return (
     <main className="body-landing-page">
@@ -26,36 +41,12 @@ export default function Home() {
         <h2 className="new-title section-title">Novedades</h2>
         {/* Ordenador */}
         <div className="desktop-view-novedades">
-            {topRvws.map((item, index) => (
-                <MediaCard
-                  key={`desktop-${index}`}
-                  type="album"
-                  title="No pasa nada hombre"
-                  artist="Clarent"
-                  imageUrl="/placeholderCards.png"
-                  userName="@raquelz.12204"
-                  userPicture="/placeholderCards.png"
-                  score={8.5}
-                  forceShowInfo={true}
-                />
-            ))}
+            {novedades}
         </div>
         {/* Movil*/}
         <div className="mobile-view-novedades">
             <Carousel>
-              {topRvws.map((item, index) => (
-                  <MediaCard
-                    key={`mobile-${index}`}
-                    type="album"
-                    title="No pasa nada hombre"
-                    artist="Clarent"
-                    imageUrl="/placeholderCards.png"
-                    userName="@raquelz.12204"
-                    userPicture="/placeholderCards.png"
-                    score={8.5}
-                    forceShowInfo={true}
-                  />
-              ))}
+              {novedades}
             </Carousel>
         </div>
       </div>

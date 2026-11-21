@@ -49,19 +49,6 @@
   padding-bottom: 1.2rem;
 }
 
-.new-cards {
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  gap: 2.4rem;
-}
-
-.body-landing-page .carousel-pagination {
-  display: none;
-}
-
 /*Buscador*/
 .search {
   display: flex;
@@ -118,7 +105,7 @@
   text-align: left;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+  transition: border-color 0.35s ease;
 }
 
 .info-card:nth-child(1),
@@ -156,7 +143,7 @@
   bottom: -2.5rem;
   font-family: var(--font-heading);
   font-size: 15rem;
-  font-weight: 900;
+  font-weight: 400;
   line-height: 1;
   color: rgba(255, 255, 255, 0.04);
   pointer-events: none;
@@ -171,10 +158,9 @@
 .info-card:nth-child(4)::after { content: "D"; }
 .info-card:nth-child(5)::after { content: "★"; }
 
+/* No son pulsables: al pasar el ratón no suben, solo se marca el borde y gira la letra */
 .info-card:hover {
-  transform: translateY(-0.6rem);
   border-color: var(--primary-red);
-  box-shadow: 0 1.2rem 2.8rem rgba(0, 0, 0, 0.35);
 }
 
 .info-card:hover::after {

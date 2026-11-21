@@ -52,7 +52,11 @@
 }
 
 .pagination-letter {
+    padding: 0;
+    border: none;
+    background: none;
     font-family: var(--font-heading);
+    font-weight: 400;
     font-size: 1.6rem;
     color: color-mix(in srgb, var(--primary-white) 15%, transparent);
     transition: all 0.3s ease;
@@ -62,6 +66,11 @@
 .pagination-letter.active {
     color: var(--primary-red);
     font-size: 2.2rem;
-    font-weight: bold;
     text-shadow: 0 0 0.8rem color-mix(in srgb, var(--primary-red) 50%, transparent);
+}
+
+.pagination-letter:focus-visible {
+    outline: 2px solid var(--primary-white);
+    outline-offset: 2px;
+    border-radius: 0.4rem;
 }

@@ -47,13 +47,16 @@ export default function MobileCarousel({ children }: MobileCarouselProps) {
             </div>
             <div className="carousel-pagination">
                 {visibleLetters.map((letter, index) => (
-                    <span 
-                        key={index} 
+                    <button
+                        type="button"
+                        key={index}
                         onClick={() => scrollToCard(index)}
                         className={`pagination-letter ${activeIndex === index ? 'active' : ''}`}
+                        aria-label={`Ir a la tarjeta ${index + 1}`}
+                        aria-current={activeIndex === index ? 'true' : undefined}
                     >
                         {letter}
-                    </span>
+                    </button>
                 ))}
             </div>
         </div>

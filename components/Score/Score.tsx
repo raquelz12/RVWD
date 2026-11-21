@@ -50,8 +50,9 @@ export default function Score({ className, score, onChange, input, variant }: Sc
                     className={`score-circle-real-input ${className || ''}`}
                 />
             ) || (
+                // Solo lectura: enseña siempre la nota que recibe, aunque cambie después
                 <div className={`score-circle ${className || ''}`}>
-                    {currentScore}
+                    {score}
                 </div>
             )}
         </div>
