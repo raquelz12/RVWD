@@ -442,10 +442,10 @@
     position: relative;
 }
 
-/* Hueco a la derecha para el botón de enviar */
+/* Hueco a la derecha para el botón de enviar.
+   Sin bajar la letra de 16px (la de Input): con menos, Safari de iPhone hace zoom al tocar el campo */
 .sheet-input-pill .input {
     padding-right: 5rem;
-    font-size: 1.4rem;
 }
 
 .sheet-input-pill.reply {

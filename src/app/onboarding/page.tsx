@@ -14,6 +14,7 @@ import Score from '../../../components/Score/Score';
 import Input from '../../../components/Input/Input';
 import TextArea from '../../../components/TextArea/TextArea';
 import Rvw from '../../../components/Rvw/Rvw';
+import SearchResults from '../../../components/SearchResults/SearchResults';
 
 interface SongData {
   title: string;
@@ -38,45 +39,6 @@ const SLOT_ANIMATION_MS = 400;
 const songKey = (song: SongData) => `${song.title}|${song.artist}`;
 
 const matches = (text: string, query: string) => text.toLowerCase().includes(query.trim().toLowerCase());
-
-interface SearchResultItem {
-  key: string;
-  title: string;
-  sub: string;
-  imageUrl: string;
-  disabled?: boolean;
-  onSelect: () => void;
-}
-
-/* Desplegable de resultados de los tres buscadores de la página */
-function SearchResults({ items, notFound, className = '' }: { items: SearchResultItem[]; notFound: string; className?: string }) {
-  return (
-    <div className={`search-dropdown-results ${className}`}>
-      {items.length > 0 ? (
-        <ul className="search-results-list">
-          {items.map((item) => (
-            <li key={item.key}>
-              <button
-                type="button"
-                className="search-result-item"
-                disabled={item.disabled}
-                onClick={item.onSelect}
-              >
-                <img src={item.imageUrl} alt="" />
-                <span className="search-result-text">
-                  <span className="result-title">{item.title}</span>
-                  <span className="result-sub">{item.sub}</span>
-                </span>
-              </button>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p className="search-no-results">{notFound}</p>
-      )}
-    </div>
-  );
-}
 
 export default function OnboardingPage() {
   const router = useRouter();

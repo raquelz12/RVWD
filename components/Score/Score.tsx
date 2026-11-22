@@ -17,7 +17,8 @@ export default function Score({ className, score, onChange, input, variant, id }
     const [currentScore, setCurrentScore] = React.useState(score);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const val = e.target.value;
+        // El teclado decimal en español escribe coma: se guarda con punto
+        const val = e.target.value.replace(',', '.');
 
         if (val === '') {
             setCurrentScore('');
@@ -25,17 +26,11 @@ export default function Score({ className, score, onChange, input, variant, id }
             return;
         }
 
-        const num = parseFloat(val);
+        // De 0 a 10 con un decimal como mucho ("7", "7.", "7.5", "10"); lo demás no se escribe
+        if (!/^\d{1,2}(\.\d?)?$/.test(val) || parseFloat(val) > 10) return;
 
-        if (!isNaN(num) && num >= 0 && num <= 10) {
-            if (val.includes('.')) {
-                const parts = val.split('.');
-                if (parts[1] && parts[1].length > 1) return;
-            }
-            
-            setCurrentScore(val);
-            if (onChange) onChange(val);
-        }
+        setCurrentScore(val);
+        if (onChange) onChange(val);
     };
 
     return (
@@ -43,11 +38,12 @@ export default function Score({ className, score, onChange, input, variant, id }
             {input && (
                 <input
                     id={id}
-                    type="number"
-                    step="0.1" 
-                    min="0" 
-                    max="10" 
-                    value={currentScore} 
+                    // text + inputMode y no type="number": con este, la coma del teclado
+                    // en español deja el valor vacío en algunos navegadores
+                    type="text"
+                    inputMode="decimal"
+                    autoComplete="off"
+                    value={currentScore}
                     onChange={handleChange}
                     placeholder="0.0"
                     className={`score-circle-real-input ${className || ''}`}

@@ -221,9 +221,9 @@ button.remove-overlay {
 
 /* =========================================
    BUSCADOR FLOTANTE (onboarding y perfil)
-   La base de .search-dropdown-results está en AddModal.css, que se carga
-   siempre. Aquí solo se ajusta dentro de estas dos páginas para no
-   cambiar el desplegable del modal.
+   La base del desplegable está en components/SearchResults. Aquí solo
+   se hace flotante dentro de estas dos páginas, para no cambiar el
+   desplegable del modal de crear RVW.
    ========================================= */
 
 .onboarding-container .search-dropdown-results,

@@ -229,45 +229,6 @@
   background-color: rgba(0, 0, 0, 0.4);
 }
 
-/* Resultados de búsqueda: son botones en una lista (copia de onboarding; la base visual está en AddModal.css) */
-.profile-container .search-results-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.profile-container .search-results-list .search-result-item {
-  width: 100%;
-  background-color: transparent;
-  border: none;
-  color: inherit;
-  font: inherit;
-  text-align: left;
-}
-
-.profile-container .search-results-list .search-result-item:hover:not(:disabled),
-.profile-container .search-results-list .search-result-item:focus-visible {
-  background-color: color-mix(in srgb, var(--primary-red) 25%, transparent);
-  outline: none;
-}
-
-.profile-container .search-results-list .search-result-item:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.profile-container .search-result-text {
-  display: flex;
-  flex-direction: column;
-}
-
-.profile-container .search-no-results {
-  margin: 0;
-  padding: 1.2rem 1.4rem;
-  font-size: 1.2rem;
-  color: var(--text-secondary);
-}
-
 /* --------------------------RESEÑAS-------------------------- */
 .profile-reviews {
   display: flex;

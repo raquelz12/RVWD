@@ -75,45 +75,6 @@
   margin-top: 2rem;
 }
 
-/* Resultados de búsqueda: son botones en una lista (la base visual está en AddModal.css) */
-.onboarding-container .search-results-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.onboarding-container .search-results-list .search-result-item {
-  width: 100%;
-  background-color: transparent;
-  border: none;
-  color: inherit;
-  font: inherit;
-  text-align: left;
-}
-
-.onboarding-container .search-results-list .search-result-item:hover:not(:disabled),
-.onboarding-container .search-results-list .search-result-item:focus-visible {
-  background-color: color-mix(in srgb, var(--primary-red) 25%, transparent);
-  outline: none;
-}
-
-.onboarding-container .search-results-list .search-result-item:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.onboarding-container .search-result-text {
-  display: flex;
-  flex-direction: column;
-}
-
-.onboarding-container .search-no-results {
-  margin: 0;
-  padding: 1.2rem 1.4rem;
-  font-size: 1.2rem;
-  color: var(--text-secondary);
-}
-
 /* Step 1 */
 .onboarding-container .search-dropdown-wrapper {
   position: relative;
@@ -392,11 +353,8 @@
   }
 }
 
+/* .fade-in-section y su versión sin movimiento están en globals.css */
 @media (prefers-reduced-motion: reduce) {
-  .onboarding-container .fade-in-section {
-    animation: none;
-  }
-
   .onboarding-container .artist-chip {
     transition: none;
   }

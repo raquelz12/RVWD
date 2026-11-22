@@ -159,6 +159,28 @@ input[type="checkbox"]:checked {
   border: 0;
 }
 
+/*Entrada suave de una sección que aparece (pasos del onboarding, campos del modal de crear RVW)*/
+.fade-in-section {
+  animation: fadeInSlide 0.35s ease-out forwards;
+}
+
+@keyframes fadeInSlide {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-in-section {
+    animation: none;
+  }
+}
+
 /*Responsive*/
 @media (max-width: 1024px) {
   

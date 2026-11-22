@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from 'react';
+import { revealInModal } from './revealInModal';
 import './Modal.css';
 
 export interface ModalProps {
@@ -14,6 +15,7 @@ export interface ModalProps {
 const FOCUSABLE = 'input, select, textarea, button, a[href], [tabindex]:not([tabindex="-1"])';
 
 export default function Modal({ isOpen, onClose, children, labelledBy }: ModalProps) {
+  const overlayRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   // Si el clic empezó dentro (p. ej. seleccionando texto) y se suelta fuera, no se cierra
   const pressedOnOverlay = useRef(false);
@@ -35,7 +37,8 @@ export default function Modal({ isOpen, onClose, children, labelledBy }: ModalPr
     const previousFocus = document.activeElement as HTMLElement | null;
     const body = dialogRef.current?.querySelector('.modal-body');
     const first = body?.querySelector<HTMLElement>(FOCUSABLE);
-    (first ?? dialogRef.current)?.focus();
+    // preventScroll: el foco no debe mover la página (en Safari de iPhone la desplaza)
+    (first ?? dialogRef.current)?.focus({ preventScroll: true });
 
     // Con overflow-x: hidden en html (globals.css) quien scrollea es <html>, no <body>: se bloquean los dos
     const html = document.documentElement;
@@ -53,10 +56,74 @@ export default function Modal({ isOpen, onClose, children, labelledBy }: ModalPr
     };
   }, [isOpen]);
 
+  // Teclado del móvil o la tablet: se pone encima de la página sin cambiar su alto, y Safari
+  // además desplaza la vista. Se mide la zona que se ve de verdad (visualViewport) y cuánto
+  // tapa el teclado, y el CSS coloca el contenido justo encima (Modal.css)
+  useEffect(() => {
+    const viewport = window.visualViewport;
+    const overlay = overlayRef.current;
+    if (!isOpen || !viewport || !overlay) return;
+
+    const update = (event?: Event) => {
+      // clientHeight es el alto de la página sin teclado; en Safari es más fiable que innerHeight
+      const layoutHeight = document.documentElement.clientHeight;
+      const keyboardInset = Math.max(0, layoutHeight - viewport.offsetTop - viewport.height);
+      overlay.style.setProperty('--visual-top', `${Math.round(viewport.offsetTop)}px`);
+      overlay.style.setProperty('--visual-height', `${Math.round(viewport.height)}px`);
+      overlay.style.setProperty('--keyboard-inset', `${Math.round(keyboardInset)}px`);
+
+      // Safari (barra flotante): bajo la barra de direcciones, con el teclado abierto, se ve la página
+      // pero nunca los elementos fijos como el modal. Mientras el teclado está abierto se oculta la
+      // página y su fondo pasa a ser el del panel (Modal.css). Con zoom no cuenta como teclado
+      const keyboardOpen = viewport.scale < 1.01 && window.innerHeight - viewport.height > 150;
+      document.documentElement.classList.toggle('modal-keyboard-open', keyboardOpen);
+
+      // Al abrirse el teclado (resize) el panel encoge y el campo en el que se escribe puede quedar fuera:
+      // se vuelve a enseñar moviendo solo el modal. En los scroll del viewport no, para no pelear con el dedo
+      const active = document.activeElement;
+      if (event?.type === 'resize' && active instanceof HTMLElement && active.matches('input, textarea') && dialogRef.current?.contains(active)) {
+        requestAnimationFrame(() => revealInModal(active));
+      }
+    };
+
+    update();
+    viewport.addEventListener('resize', update);
+    viewport.addEventListener('scroll', update);
+
+    return () => {
+      viewport.removeEventListener('resize', update);
+      viewport.removeEventListener('scroll', update);
+      document.documentElement.classList.remove('modal-keyboard-open');
+    };
+  }, [isOpen]);
+
+  // Aviso de «hay más debajo» (degradado en Modal.css): se ve mientras quede contenido por ver.
+  // Se revisa al desplazar y cuando cambia el tamaño del panel o de su contenido (campos que aparecen)
+  useEffect(() => {
+    const panel = dialogRef.current;
+    const body = panel?.querySelector('.modal-body');
+    if (!isOpen || !panel) return;
+
+    const updateMoreBelow = () => {
+      panel.classList.toggle('has-more-below', panel.scrollHeight - panel.scrollTop - panel.clientHeight > 8);
+    };
+
+    updateMoreBelow();
+    panel.addEventListener('scroll', updateMoreBelow, { passive: true });
+    const observer = new ResizeObserver(updateMoreBelow);
+    observer.observe(panel);
+    if (body) observer.observe(body);
+    return () => {
+      panel.removeEventListener('scroll', updateMoreBelow);
+      observer.disconnect();
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   return (
     <div
+      ref={overlayRef}
       className="modal-overlay"
       onMouseDown={(e) => { pressedOnOverlay.current = e.target === e.currentTarget; }}
       onClick={(e) => {

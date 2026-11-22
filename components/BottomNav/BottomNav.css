@@ -106,24 +106,31 @@
   filter: drop-shadow(0 0.6rem 1.2rem rgba(0, 0, 0, 0.45));
 }
 
-/* Buscar: la barra se abre encima de la barra inferior, con su mismo ancho */
+/* Buscar: con el mismo ancho y aspecto que la barra inferior, apoyado justo encima de lo que
+   esté más arriba, el teclado o la barra. BottomNav.tsx calcula ese punto (--search-bottom) y el
+   buscador se coloca con su borde de abajo ahí (translateY(-100%)). Hasta que lo calcula: encima
+   de la barra (6.4rem de alto + 1rem de separación del borde + 1rem de hueco) */
 .bottom-search-panel {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: calc(100% + 1rem);
+  position: fixed;
+  top: var(--search-bottom, calc(100dvh - 8.4rem - env(safe-area-inset-bottom, 0px)));
+  left: 50%;
+  transform: translate(-50%, -100%);
+  width: 90%;
+  max-width: 40rem;
+  z-index: 1000;
   padding: 0.8rem;
   background-color: var(--bg-card);
   border: 1px solid color-mix(in srgb, var(--primary-white) 12%, transparent);
   border-radius: 4rem;
   box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.45);
-  animation: bottomPanelIn 0.2s ease-out;
+  animation: bottomSearchIn 0.2s ease-out;
 }
 
 .bottom-search-bar {
   max-width: none;
 }
 
+/* Sube desde abajo. También la usa el menú «Más» de la barra de admin (BottomNavAdmin.css) */
 @keyframes bottomPanelIn {
   from {
     opacity: 0;
@@ -132,6 +139,18 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* El buscador sube un poco al aparecer. Lleva el translate de su colocación para no perderlo durante la animación */
+@keyframes bottomSearchIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, calc(-100% + 0.8rem));
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -100%);
   }
 }
 
@@ -166,7 +185,9 @@
 
 /*Responsive*/
 @media (min-width: 1025px) {
-  .bottom-nav {
+  /* El buscador va fuera de la barra: se oculta con ella (en escritorio está el del Header) */
+  .bottom-nav,
+  .bottom-search-panel {
     display: none;
   }
 }

@@ -18,6 +18,7 @@ function BottomNavContent() {
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const navRef = useRef<HTMLElement>(null);
+    const searchPanelRef = useRef<HTMLDivElement>(null);
 
     const toggleNotifMenu = (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -35,13 +36,13 @@ function BottomNavContent() {
         setIsSearchOpen(false);
     }, [pathname]);
 
-    // ...y al tocar fuera de la barra inferior o pulsar Escape
+    // ...y al tocar fuera de la barra inferior y del buscador, o pulsar Escape
     useEffect(() => {
         if (!isSearchOpen) return;
         const handlePointerDown = (event: PointerEvent) => {
-            if (navRef.current && !navRef.current.contains(event.target as Node)) {
-                setIsSearchOpen(false);
-            }
+            const target = event.target as Node;
+            if (navRef.current?.contains(target) || searchPanelRef.current?.contains(target)) return;
+            setIsSearchOpen(false);
         };
         const handleKeyDown = (event: KeyboardEvent) => {
             if (event.key === 'Escape') setIsSearchOpen(false);
@@ -51,6 +52,35 @@ function BottomNavContent() {
         return () => {
             document.removeEventListener('pointerdown', handlePointerDown);
             document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [isSearchOpen]);
+
+    // El buscador se apoya justo encima de lo que esté más arriba: el teclado o la barra inferior.
+    // - Sin teclado: encima de la barra.
+    // - iPhone con teclado: la zona visible acaba donde la página, y la barra sigue a la vista: encima de la barra.
+    // - Android con teclado: la zona visible acaba en el teclado y la barra queda detrás: encima del teclado.
+    // Todo en coordenadas de la página (las de position: fixed); --search-bottom es el borde de abajo del buscador
+    useEffect(() => {
+        const viewport = window.visualViewport;
+        const panel = searchPanelRef.current;
+        const nav = navRef.current;
+        if (!isSearchOpen || !panel || !nav) return;
+
+        const GAP = 10;
+        const update = () => {
+            const visibleBottom = viewport ? viewport.offsetTop + viewport.height : window.innerHeight;
+            const navTop = window.innerHeight - parseFloat(getComputedStyle(nav).bottom) - nav.offsetHeight;
+            panel.style.setProperty('--search-bottom', `${Math.round(Math.min(visibleBottom, navTop) - GAP)}px`);
+        };
+
+        update();
+        viewport?.addEventListener('resize', update);
+        viewport?.addEventListener('scroll', update);
+        window.addEventListener('resize', update);
+        return () => {
+            viewport?.removeEventListener('resize', update);
+            viewport?.removeEventListener('scroll', update);
+            window.removeEventListener('resize', update);
         };
     }, [isSearchOpen]);
 
@@ -65,18 +95,21 @@ function BottomNavContent() {
     }
 
     return (
+        <>
+        {/* Fuera del <nav>: la barra tiene transform y backdrop-filter, y con eso un hijo fijo
+            se colocaría respecto a la barra y no respecto a la pantalla */}
+        {isSearchOpen && (
+            <div className="bottom-search-panel" ref={searchPanelRef}>
+                <SearchBar
+                    placeholder="Busca canciones, usuarios, ..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    autoFocus
+                    className="bottom-search-bar"
+                />
+            </div>
+        )}
         <nav className="bottom-nav" ref={navRef} aria-label="Navegación principal">
-            {isSearchOpen && (
-                <div className="bottom-search-panel">
-                    <SearchBar
-                        placeholder="Busca canciones, usuarios, ..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        autoFocus
-                        className="bottom-search-bar"
-                    />
-                </div>
-            )}
             <Link
                 href="/feed"
                 className={`bottom-item ${isActive('/feed') ? 'active' : ''}`}
@@ -95,7 +128,7 @@ function BottomNavContent() {
                 <span className="icon-search"></span>
             </button>
             <button type="button" className="primary-action" onClick={() => openModal('add')} aria-label="Crear RVW">
-                <img src="/Logo.svg" alt="" className="icon-logo-img" />
+                <img src="/logo.svg" alt="" className="icon-logo-img" />
             </button>
             <button
                 type="button"
@@ -122,6 +155,7 @@ function BottomNavContent() {
             )}
 
         </nav>
+        </>
     );
 }
 

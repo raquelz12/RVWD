@@ -13,8 +13,8 @@ function RButtonView() {
     const { openModal } = useModal();
 
     return (
-        <button className="r-button" onClick={() => openModal('add')}>
-            <img src="/logo.svg" alt="Agregar" className="r-button-icon" />
+        <button type="button" className="r-button" onClick={() => openModal('add')} aria-label="Crear RVW">
+            <img src="/logo.svg" alt="" className="r-button-icon" />
         </button>
     );
 }

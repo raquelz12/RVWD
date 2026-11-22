@@ -12,6 +12,7 @@ import TextArea from '../../../components/TextArea/TextArea';
 import Carousel from '../../../components/Carousel/Carousel';
 import ProfileStats from '../../../components/ProfileStats/ProfileStats';
 import Rvw from '../../../components/Rvw/Rvw';
+import SearchResults from '../../../components/SearchResults/SearchResults';
 
 interface SongData {
     id: string;
@@ -64,45 +65,6 @@ const matches = (text: string, query: string) => text.toLowerCase().includes(que
 const revokeIfBlob = (url: string) => {
     if (url.startsWith('blob:')) URL.revokeObjectURL(url);
 };
-
-interface SearchResultItem {
-    key: string;
-    title: string;
-    sub: string;
-    imageUrl: string;
-    disabled?: boolean;
-    onSelect: () => void;
-}
-
-/* Desplegable de resultados del buscador de un hueco (copia del de onboarding) */
-function SearchResults({ items, notFound, className = '' }: { items: SearchResultItem[]; notFound: string; className?: string }) {
-    return (
-        <div className={`search-dropdown-results ${className}`}>
-            {items.length > 0 ? (
-                <ul className="search-results-list">
-                    {items.map((item) => (
-                        <li key={item.key}>
-                            <button
-                                type="button"
-                                className="search-result-item"
-                                disabled={item.disabled}
-                                onClick={item.onSelect}
-                            >
-                                <img src={item.imageUrl} alt="" />
-                                <span className="search-result-text">
-                                    <span className="result-title">{item.title}</span>
-                                    <span className="result-sub">{item.sub}</span>
-                                </span>
-                            </button>
-                        </li>
-                    ))}
-                </ul>
-            ) : (
-                <p className="search-no-results">{notFound}</p>
-            )}
-        </div>
-    );
-}
 
 export default function ProfilePage() {
     // TODO: saldrá de comparar el perfil visitado con la sesión cuando haya backend
