@@ -9,9 +9,11 @@ export interface ScoreProps {
     onChange?: (value: string) => void;
     input: boolean;
     variant?: 'red' | 'white';
+    /** id del input (solo con input), para asociarle un <label htmlFor> */
+    id?: string;
 }
 
-export default function Score({ className, score, onChange, input, variant }: ScoreProps) {
+export default function Score({ className, score, onChange, input, variant, id }: ScoreProps) {
     const [currentScore, setCurrentScore] = React.useState(score);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,8 +41,9 @@ export default function Score({ className, score, onChange, input, variant }: Sc
     return (
         <div className={`score-circle-input-wrapper ${variant === 'red' ? 'score-red' : 'score-white'} ${className || ''}`}>
             {input && (
-                <input 
-                    type="number" 
+                <input
+                    id={id}
+                    type="number"
                     step="0.1" 
                     min="0" 
                     max="10" 

@@ -32,6 +32,7 @@
 .artist-image img {
   width: 13rem;
   height: 13rem;
+  object-fit: cover;
   transition: all 0.3s ease;
   border-radius: 9rem;
 }

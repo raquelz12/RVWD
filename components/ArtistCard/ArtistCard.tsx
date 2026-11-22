@@ -22,7 +22,8 @@ export default function ArtistCard({ name, imageUrl, isSelected, showFollow, has
   const card = (
     <div className={`artist-card ${isSelected ? 'selected' : ''}`}>
       <div className="artist-image">
-        <img src={imageUrl || '/placeholderCards.png'} alt={name} />
+        {/* Decorativa: el nombre ya va escrito debajo */}
+        <img src={imageUrl || '/placeholderCards.png'} alt="" />
       </div>
       <div className="artist-name">{name}</div>
       {hasScore && score !== undefined && score !== null &&

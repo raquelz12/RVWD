@@ -268,15 +268,6 @@
     display: none !important;
 }
 
-.desktop-top-songs {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    gap: 1.5rem;
-    flex-wrap: wrap;
-    margin-bottom: 3rem;
-}
-
 .mobile-top-songs {
     display: none;
 }
@@ -292,7 +283,8 @@
         width: 100%;
     }
 
-    .desktop-top-songs {
+    /* La rejilla (.top-songs-grid, en top-songs.css) se cambia por el carrusel */
+    .profile-top-songs .desktop-top-songs {
         display: none;
     }
 

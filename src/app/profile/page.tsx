@@ -231,7 +231,7 @@ export default function ProfilePage() {
                 {/*----------------------- Top Songs Section---------------------------- */}
                 <section className="profile-top-songs">
                     <h2 className="section-title profile-subtitle">Tus top 4 canciones</h2>
-                    <div className="desktop-top-songs">
+                    <div className="top-songs-grid desktop-top-songs">
                         {renderSongSlots()}
                     </div>
                     <div className="mobile-top-songs">
