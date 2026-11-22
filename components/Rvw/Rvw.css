@@ -1,0 +1,10 @@
+/* R girada en horizontal: se ve como la Я, pero en el texto sigue siendo una R */
+.rvw-reversed-r {
+    display: inline-block;
+    transform: scaleX(-1);
+}
+
+/* La copia para lectores de pantalla no entra al seleccionar: al copiar sale "RVWS", no "RVWSRVWS" */
+.rvw-sr-text {
+    user-select: none;
+}

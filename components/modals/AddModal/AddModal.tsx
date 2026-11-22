@@ -7,6 +7,7 @@ import Input from '../../Input/Input';
 import Textarea from '../../TextArea/TextArea';
 import Score from '../../Score/Score';
 import './AddModal.css';
+import Rvw from '../../Rvw/Rvw';
 
 export interface AddModalProps {
     isOpen: boolean;
@@ -57,7 +58,7 @@ export default function AddModal({ isOpen, onClose }: AddModalProps) {
     return (
         <Modal isOpen={isOpen} onClose={onClose}>
             <div className="modal-header">
-                <h2>Crea tu <span className="logo-text">ЯVW</span></h2>
+                <h2>Crea tu <Rvw className="logo-text">RVW</Rvw></h2>
                 <p>Comparte tu opinión con la comunidad de ЯVWD</p>
             </div>
 
@@ -159,7 +160,7 @@ export default function AddModal({ isOpen, onClose }: AddModalProps) {
                                 onChange={(val) => setScore(val)}
                             />
                             <div className="score-label-container">
-                                <span className="score-brand">Tu <span className="logo-text">RVW</span> score</span>
+                                <span className="score-brand">Tu <Rvw className="logo-text">RVW</Rvw> score</span>
                             </div>
                         </div>
                     </div>
@@ -192,7 +193,7 @@ export default function AddModal({ isOpen, onClose }: AddModalProps) {
                 {type && selectedItem && score && title && description && (
                     <div className="button-group fade-in-section">
                         <Button variant="primary" type="submit">
-                            Publicar <span className="logo-text">RVW</span>
+                            Publicar <Rvw className="logo-text">RVW</Rvw>
                         </Button>
                     </div>
                 )}

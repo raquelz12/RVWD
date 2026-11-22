@@ -9,6 +9,7 @@ import FeedTabs, { type FeedTab } from '../../../components/FeedTabs/FeedTabs';
 import SideDrawer from '../../../components/SideDrawer/SideDrawer';
 import Link from 'next/link';
 import { mockAlbums } from '../lib/mockData';
+import Rvw from '../../../components/Rvw/Rvw';
 
 export const instant = false;
 
@@ -25,7 +26,7 @@ export default async function Feed({ searchParams }: { searchParams: Promise<{ t
                     <div className="feed-main-column">
                         <Link href="/feed" className="show-new">
                             <img src="/arrow-up-long-solid-full.svg" alt="" />
-                            <span className="RVWS">ЯVWS</span> nuevas
+                            <Rvw>RVWS</Rvw> nuevas
                         </Link>
                         <ReviewBigCard
                             href="/reviews/123"
@@ -59,7 +60,7 @@ export default async function Feed({ searchParams }: { searchParams: Promise<{ t
                         </section>
                         <section className="feed-section">
                             <div className="section-header">
-                                <h2 className="section-title"><span className="RVWS">ЯVWS</span> favoritas para ti</h2>
+                                <h2 className="section-title"><Rvw>RVWS</Rvw> favoritas para ti</h2>
                                 <Button variant="text">Ver más</Button>
                             </div>
                             <div className="media-cards-row">
@@ -129,7 +130,7 @@ export default async function Feed({ searchParams }: { searchParams: Promise<{ t
                         </section>
                         <section className="feed-section">
                             <div className="section-header">
-                                <h2 className="section-title"><span className="RVWS">ЯVWS</span> favoritas de la semana</h2>
+                                <h2 className="section-title"><Rvw>RVWS</Rvw> favoritas de la semana</h2>
                                 <Button variant="text">Ver más</Button>
                             </div>
                             <div className="media-cards-row">
@@ -160,7 +161,7 @@ export default async function Feed({ searchParams }: { searchParams: Promise<{ t
                         </section>
                         <section className="feed-section">
                             <div className="section-header">
-                                <h2 className="section-title"><span className="RVWS">ЯVWS</span> que podrían gustarte</h2>
+                                <h2 className="section-title"><Rvw>RVWS</Rvw> que podrían gustarte</h2>
                                 <Button variant="text">Ver más</Button>
                             </div>
                             <ReviewBigCard

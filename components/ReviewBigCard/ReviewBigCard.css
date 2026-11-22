@@ -78,6 +78,15 @@
     z-index: 1;
 }
 
+/* Menú en la fila del título (reseña propia sin cabecera): la nota y el ⋮ van juntos a la derecha */
+.review-big-card-header:has(> .review-big-card-extra) {
+    gap: 1rem;
+}
+
+.review-big-card-header:has(> .review-big-card-extra) > .review-big-card-score {
+    margin-left: auto;
+}
+
 /* Con el menú abierto, la tarjeta pasa por delante de las siguientes para que no tapen el desplegable */
 .review-big-card:has(.more-menu.is-open) {
     z-index: 20;
@@ -339,5 +348,39 @@
 
     .review-big-card-score-text {
         display: none;
+    }
+}
+
+/* Móvil, reseña propia con el ⋮ junto a la nota (perfil): en la fila del título no caben
+   título, dos notas y ⋮ (a 320px el título se partía palabra a palabra).
+   Arriba van el tipo, el título y el artista con el ⋮ a la derecha, y las notas bajan a su propia fila, centradas */
+@media (max-width: 768px) {
+    .review-big-card-header:has(> .review-big-card-extra) {
+        flex-wrap: wrap;
+        align-items: flex-start;
+        row-gap: 1rem;
+    }
+
+    .review-big-card-header:has(> .review-big-card-extra) > .review-big-card-header-info {
+        flex: 1 1 0;
+        min-width: 0;
+    }
+
+    .review-big-card-header:has(> .review-big-card-extra) .review-big-card-title {
+        overflow-wrap: anywhere;
+    }
+
+    /* Las notas, centradas en su fila */
+    .review-big-card-header:has(> .review-big-card-extra) > .review-big-card-score {
+        order: 1;
+        flex-basis: 100%;
+        justify-content: center;
+        margin-left: 0;
+        padding-right: 0;
+    }
+
+    /* Un poco de aire respecto al borde de la tarjeta (en móvil su padding es de solo 1rem) */
+    .review-big-card-header:has(> .review-big-card-extra) > .review-big-card-extra {
+        margin: 0.4rem 0.4rem 0 0;
     }
 }

@@ -1,9 +1,6 @@
 /* Ajustes de admin: se apoya en ../../settings/settings.css (mismo diseño que los
-   ajustes de usuario) y en ../admin-shared.css (modales, aviso). Aquí solo lo propio. */
-
-.admin-inline-select {
-    width: 17rem;
-}
+   ajustes de usuario: filas, bloques, tabla de avisos, desplegable en línea) y en
+   ../admin-shared.css (modales, aviso). Aquí solo lo propio. */
 
 .admin-value-alert {
     color: var(--warning);
@@ -36,27 +33,7 @@
     color: var(--danger-red);
 }
 
-/* bloques con más contenido (sesiones, tabla de avisos, listas...) */
-.admin-settings-block {
-    display: flex;
-    flex-direction: column;
-    gap: 1.6rem;
-    padding: 1.6rem 1rem;
-}
-
-.admin-block-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 2rem;
-}
-
-.admin-block-head > div {
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
-}
-
+/* botón y contador en la cabecera de un .settings-block */
 .admin-block-btn {
     width: 20rem;
     flex-shrink: 0;
@@ -116,38 +93,6 @@
 .admin-session-meta {
     font-size: 1.3rem;
     color: var(--text-secondary);
-}
-
-/* tabla campana / email */
-.admin-notif-table {
-    width: 100%;
-    max-width: 56rem;
-    border-collapse: collapse;
-}
-
-.admin-notif-table th,
-.admin-notif-table td {
-    padding: 1rem 0.8rem;
-    font-size: 1.5rem;
-    font-weight: 400;
-    text-align: center;
-}
-
-.admin-notif-table thead th {
-    font-size: 1.3rem;
-    color: var(--text-secondary);
-}
-
-.admin-notif-table tbody th {
-    text-align: left;
-}
-
-.admin-notif-table td .toggle-wrapper {
-    margin: 0 auto;
-}
-
-.admin-notif-table tbody tr + tr {
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 /* pastillas (duraciones, palabras prohibidas) */
@@ -432,16 +377,6 @@
    ========================================= */
 @media (max-width: 768px) {
 
-    .admin-inline-select {
-        width: 13rem;
-    }
-
-    .admin-block-head {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 1.2rem;
-    }
-
     .admin-block-btn {
         width: 100%;
     }
@@ -458,12 +393,6 @@
         -webkit-line-clamp: 2;
         line-clamp: 2;
         -webkit-box-orient: vertical;
-    }
-
-    .admin-notif-table th,
-    .admin-notif-table td {
-        font-size: 1.4rem;
-        padding: 0.9rem 0.4rem;
     }
 
     .legal-edit-footer {

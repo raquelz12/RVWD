@@ -51,6 +51,9 @@
 
 /* Desplegable */
 .custom-select-dropdown {
+    /* Animación propia (antes usaba .edit-anim, que solo existía en el CSS del perfil) */
+    animation: selectFadeScale 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    transform-origin: top center;
     position: absolute;
     top: calc(100% + 0.8rem);
     left: 0;
@@ -102,7 +105,13 @@
     font-weight: bold;
 }
 
-@keyframes fadeScale {
+@keyframes selectFadeScale {
     0% { opacity: 0; transform: scaleY(0.95); }
     100% { opacity: 1; transform: scaleY(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .custom-select-dropdown {
+        animation: none;
+    }
 }

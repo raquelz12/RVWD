@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Dot from '../../../components/Dot/Dot';
 import Button from '../../../components/Button/Button';
 import './notifications.css';
+import Rvw from '../../../components/Rvw/Rvw';
 
 interface NotificationData {
     id: number;
@@ -16,7 +17,7 @@ interface NotificationData {
     href: string;
 }
 
-const RVW = <span className="RVWS">RVW</span>;
+const RVW = <Rvw>RVW</Rvw>;
 
 // Las recientes son las mismas que enseña el desplegable de la campana
 const recentNotifications: NotificationData[] = [

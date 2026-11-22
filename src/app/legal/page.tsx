@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import '@/styles/legal-text.css';
 import './legal.css';
+import Rvw from '../../../components/Rvw/Rvw';
 
 export default function LegalPage() {
     return (
@@ -9,7 +10,7 @@ export default function LegalPage() {
             <div className="legal-header-section">
                 <h1 className="page-title">Aviso legal y condiciones de uso</h1>
                 <p className="legal-main-intro">
-                    <span className="RVWS">ЯVWD</span> es un proyecto personal sin ánimo de lucro y sin actividad comercial. No incluye publicidad, ventas ni ningún tipo de ingreso.
+                    <Rvw>RVWD</Rvw> es un proyecto personal sin ánimo de lucro y sin actividad comercial. No incluye publicidad, ventas ni ningún tipo de ingreso.
                 </p>
             </div>
 
@@ -24,7 +25,7 @@ export default function LegalPage() {
                 <div className="text-block">
                     <h3>Objetivo y aceptación</h3>
                     <p>
-                        <span className="RVWS">ЯVWD</span> es una red social en la que puedes crear un perfil, publicar contenido e interactuar con otras personas. Al acceder al sitio, crear una cuenta o usarlo, aceptas este documento, las <Link href="/rules" className="inline-link">Normas de la comunidad</Link> y la <Link href="/privacy" className="inline-link">Política de privacidad y cookies</Link>.
+                        <Rvw>RVWD</Rvw> es una red social en la que puedes crear un perfil, publicar contenido e interactuar con otras personas. Al acceder al sitio, crear una cuenta o usarlo, aceptas este documento, las <Link href="/rules" className="inline-link">Normas de la comunidad</Link> y la <Link href="/privacy" className="inline-link">Política de privacidad y cookies</Link>.
                     </p>
                 </div>
 
@@ -55,12 +56,12 @@ export default function LegalPage() {
 
                 <div className="text-block">
                     <h3>Propiedad intelectual</h3>
-                    <p>Los diseños, textos, logotipos, código y demás elementos del sitio son de <span className="RVWS">ЯVWD</span> o se usan con licencia, y no pueden reproducirse ni distribuirse sin permiso. El contenido de los usuarios sigue siendo de quien lo publica, según el apartado de Tu contenido.</p>
+                    <p>Los diseños, textos, logotipos, código y demás elementos del sitio son de <Rvw>RVWD</Rvw> o se usan con licencia, y no pueden reproducirse ni distribuirse sin permiso. El contenido de los usuarios sigue siendo de quien lo publica, según el apartado de Tu contenido.</p>
                 </div>
 
                 <div className="text-block">
                     <h3>Disponibilidad y responsabilidad</h3>
-                    <p>Nos esforzamos para que la información sea correcta y el servicio funcione, pero puede haber interrupciones por mantenimiento, errores o causas ajenas. <span className="RVWS">ЯVWD</span> no se hace responsable del contenido publicado por los usuarios, aunque actuará cuando se le informe de un incumplimiento. Esto no limita los derechos que la ley te reconoce como consumidor.</p>
+                    <p>Nos esforzamos para que la información sea correcta y el servicio funcione, pero puede haber interrupciones por mantenimiento, errores o causas ajenas. <Rvw>RVWD</Rvw> no se hace responsable del contenido publicado por los usuarios, aunque actuará cuando se le informe de un incumplimiento. Esto no limita los derechos que la ley te reconoce como consumidor.</p>
                 </div>
 
                 <div className="text-block">

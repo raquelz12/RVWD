@@ -8,6 +8,7 @@ import TextArea from '../../../../../components/TextArea/TextArea';
 import '../../admin-shared.css';
 import './user.css';
 import Button from '../../../../../components/Button/Button';
+import Rvw from '../../../../../components/Rvw/Rvw';
 
 interface Sanction {
     id: string;
@@ -304,7 +305,7 @@ export default function AdminUserDetailPage() {
                         <li><span>Alta:</span> {user.createdAt}</li>
                         <li><span>Última conexión:</span> {user.lastLogin}</li>
                         <li><span>Rol:</span> {user.role}</li>
-                        <li><span className="RVWS">RVWS:</span> {user.rvwsCount}</li>
+                        <li><Rvw>RVWS</Rvw>: {user.rvwsCount}</li>
                         <li>
                             <Link href={`/admin/reports?q=${encodeURIComponent(user.username)}`} className="admin-data-link">
                                 <span>Denuncias recibidas:</span> {user.reportsReceived}

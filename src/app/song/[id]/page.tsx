@@ -16,6 +16,7 @@ import { Song } from '@/types/music';
 import SearchBar from '../../../../components/SearchBar/SearchBar';
 import FavButton from '../../../../components/FavButton/FavButton';
 import Link from 'next/link';
+import Rvw from '../../../../components/Rvw/Rvw';
 
 function SongContent() {
     const params = useParams();
@@ -68,7 +69,7 @@ function SongContent() {
                             </div>
                             <div className="song-score-action">
                                 <div className="score-block">
-                                    <span className="score-label"><span className="RVWS">RVWD</span> score</span>
+                                    <span className="score-label"><Rvw>RVWD</Rvw> score</span>
                                     <Score score={song.score} variant="white" input={false} />
                                 </div>
                             </div>
@@ -79,14 +80,14 @@ function SongContent() {
                                 favs={song.stats.favs} 
                                 rvws={song.stats.rvws} 
                             />
-                            <Button variant="primary" className="rvw-action-btn"><span className="RVWS">RVW</span></Button>
+                            <Button variant="primary" className="rvw-action-btn"><Rvw>RVW</Rvw></Button>
                         </div>
                     </div>
                 </div>
                 {/* Listados PC */}
                 <div className="song-sections">
                     <div className="song-section">
-                        <h2 className="section-title song-section-title">Top <span className="RVWS">RVWS</span></h2>
+                        <h2 className="section-title song-section-title">Top <Rvw>RVWS</Rvw></h2>
                         <div className="cards-grid">
                             {topRvws.map((item, index) => (
                                 <MediaCard
@@ -124,15 +125,15 @@ function SongContent() {
                     />
                     <div className="mobile-score-action">
                         <div className="score-block">
-                            <span className="score-label"><span className="RVWS">RVWD</span> score</span>
+                            <span className="score-label"><Rvw>RVWD</Rvw> score</span>
                             <Score score={song.score} variant="white" input={false} />
                         </div>
-                        <Button variant="primary" className="rvw-action-btn"><span className="RVWS">RVW</span></Button>
+                        <Button variant="primary" className="rvw-action-btn"><Rvw>RVW</Rvw></Button>
                     </div>
                     {/* Listados Móvil (Scroll Horizontal) */}
                     <div className="song-sections-mobile">
                         <div className="song-section">
-                            <h2 className="section-title song-section-title">Top <span className="RVWS">RVWS</span></h2>
+                            <h2 className="section-title song-section-title">Top <Rvw>RVWS</Rvw></h2>
                             <Carousel>
                                 {topRvws.map((item, index) => (
                                     <MediaCard

@@ -8,6 +8,7 @@ import Input from '../../Input/Input';
 import { useModal } from '@/context/ModalContext';
 import '@/styles/forms.css';
 import './RegisterModal.css';
+import Rvw from '../../Rvw/Rvw';
 
 export interface RegisterModalProps {
   isOpen: boolean;
@@ -47,7 +48,7 @@ export default function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
   return (
     <Modal isOpen={isOpen} onClose={handleClose} labelledBy="register-title">
       <div className="modal-header">
-        <h2 id="register-title" className="section-title">Únete a <span className="RVWS">ЯVWD</span></h2>
+        <h2 id="register-title" className="section-title">Únete a <Rvw>RVWD</Rvw></h2>
         <p>Crea tu cuenta para empezar a reseñar</p>
       </div>
       <form onSubmit={handleSubmit} className="modal-form">

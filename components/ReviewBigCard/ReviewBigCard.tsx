@@ -8,6 +8,7 @@ import FavButton from '../FavButton/FavButton';
 import MoreMenu, { type MoreMenuItem } from '../MoreMenu/MoreMenu';
 import { formatDate } from '@/app/lib/adminFilters';
 import { useModal } from '@/context/ModalContext';
+import Rvw from '../Rvw/Rvw';
 
 interface ReviewBigCardProps {
     username?: string;
@@ -31,7 +32,8 @@ interface ReviewBigCardProps {
     href?: string;
     /** Ruta del álbum / canción / artista reseñado (opción "Ir al…" del menú ⋮) */
     mediaHref?: string;
-    /** La reseña es del usuario: el menú enseña Editar / Eliminar en vez de Seguir / Denunciar */
+    /** La reseña es del usuario: el menú enseña Editar / Eliminar (si se pasan onEdit / onDelete)
+     *  en vez de Seguir / Denunciar. Sin cabecera de usuario, el menú ⋮ sale junto a la nota */
     ownReview?: boolean;
     /** Id de la reseña (para la denuncia); si no se pasa, se usa href */
     reviewId?: string;
@@ -80,9 +82,9 @@ export default function ReviewBigCard({
         ...(href ? [{ label: 'Copiar enlace', copyPath: href }] : []),
         ...(ownReview
             ? [
-                  { label: 'Editar', onClick: onEdit },
-                  'divider' as const,
-                  { label: 'Eliminar', onClick: onDelete, danger: true },
+                  // Solo las acciones que tienen función: sin onEdit / onDelete no salen
+                  ...(onEdit ? [{ label: 'Editar', onClick: onEdit }] : []),
+                  ...(onDelete ? ['divider' as const, { label: 'Eliminar', onClick: onDelete, danger: true }] : []),
               ]
             : [
                   {
@@ -98,9 +100,13 @@ export default function ReviewBigCard({
               ]),
     ];
 
+    const showUserHeader = !!(userImageUrl && username && followed !== undefined);
+    // Reseña propia sin cabecera (p. ej. en el perfil): el menú va en la fila del título
+    const showInlineMenu = !showUserHeader && !!ownReview && menuItems.length > 0;
+
     return (
         <div className="review-big-card" onClick={onClick}>
-            {userImageUrl && username && followed !== undefined && (
+            {showUserHeader && (
                 <div className="review-big-card-header">
                     <div className="review-big-card-user">
                         <img src={userImageUrl} alt="" />
@@ -132,12 +138,12 @@ export default function ReviewBigCard({
                         {profile && (
                         <div className="review-big-card-score">
                             <div className="review-big-card-score-wrapper">
-                                <p className="review-big-card-score-text">Tu <span className="RVWS">ЯVW</span> score</p>
+                                <p className="review-big-card-score-text">Tu <Rvw>RVW</Rvw> score</p>
                                 <Score variant="red" input={false} score={parseFloat(score?.toString() || '0')} />
                             </div>
                             <div className="review-big-card-score-wrapper">
                             <p className="review-big-card-score-text">
-                                    <span className="RVWS">ЯVWD</span> score
+                                    <Rvw>RVWD</Rvw> score
                                 </p>
                                 <Score variant="white" input={false} score={parseFloat(pageScore?.toString() || '0')} />
                             </div>
@@ -146,6 +152,9 @@ export default function ReviewBigCard({
                             <div className="review-big-card-score">
                                 <Score variant="red" input={false} score={parseFloat(score?.toString() || '0')} />
                             </div>
+                        )}
+                        {showInlineMenu && (
+                            <MoreMenu items={menuItems} label="Opciones de la RVW" className="review-big-card-extra" />
                         )}
                     </div>
                     <div className="review-big-card-review">

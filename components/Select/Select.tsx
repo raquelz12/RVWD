@@ -49,7 +49,7 @@ export default function Select({ options, value, onChange, placeholder = 'Selecc
                 <span className="chevron">▼</span>
             </div>
             {isOpen && (
-                <div className="custom-select-dropdown edit-anim">
+                <div className="custom-select-dropdown">
                     {options.map((option) => (
                         <div 
                             key={option.value}

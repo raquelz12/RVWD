@@ -1,4 +1,5 @@
 import './ProfileStats.css';
+import Rvw from '../Rvw/Rvw';
 
 interface ProfileStatsProps {
     minutes?: number;
@@ -48,7 +49,7 @@ export default function ProfileStats( { minutes, songs, favs, rvws, followers, f
             )}
             <div className="stat-item">
                 <span className="stat-value">{rvws}</span>
-                <span className="stat-label RVWS">RVWS</span>
+                <Rvw className="stat-label">RVWS</Rvw>
             </div>
         </div>
     );

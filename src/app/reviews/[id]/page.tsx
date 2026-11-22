@@ -12,6 +12,7 @@ import MoreMenu, { type MoreMenuItem } from '../../../../components/MoreMenu/Mor
 import { useModal } from '@/context/ModalContext';
 import '@/styles/media-detail.css';
 import './review.css';
+import Rvw from '../../../../components/Rvw/Rvw';
 
 function ReviewContent() {
     const params = useParams();
@@ -73,7 +74,7 @@ function ReviewContent() {
                 <div className="single-review-content">
                     <div className="single-review-head">
                         <h1 className="page-title">
-                            {yourReview ? 'Tu ' : 'La '} <span className="RVWS">RVW</span> {yourReview ? '' : 'de'}
+                            {yourReview ? 'Tu ' : 'La '} <Rvw>RVW</Rvw> {yourReview ? '' : 'de'}
                         </h1>
                     </div>      
                     <div className="single-review-user-avatar-container">
@@ -177,11 +178,11 @@ function ReviewContent() {
                 <div className="mobile-scores-section">
                     <div className="mobile-score-item">
                         <Score score={rvwdScore} variant="white" input={false} />
-                        <span><span className="RVWS">RVWD</span> score</span>
+                        <span><Rvw>RVWD</Rvw> score</span>
                     </div>
                     <div className="mobile-score-item">
                         <Score score={reviewScore} variant="red" input={false} />
-                        <span>Tu <span className="RVWS">RVW</span> score</span>
+                        <span>Tu <Rvw>RVW</Rvw> score</span>
                     </div>
                 </div>
 

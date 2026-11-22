@@ -4,6 +4,7 @@ import { useRef, useEffect } from 'react';
 import Link from 'next/link';
 import './NotificationDropdown.css';
 import Dot from '../Dot/Dot';
+import Rvw from '../Rvw/Rvw';
 
 interface Props {
     onClose: () => void;
@@ -13,9 +14,9 @@ export default function NotificationDropdown({ onClose }: Props) {
     const menuRef = useRef<HTMLDivElement>(null);
 
     const recentNotifications = [
-        { id: 1, user: '@raquelz.12204', time: 'Hace 5m', text: <>Puso un comentario en tu <span className="RVWS">RVW</span> de <strong>No pasa nada hombre.</strong></>, read: false },
-        { id: 2, user: '@clarent', time: 'Hace 1h', text: <>Dio fav a tu comentario en tu <span className="RVWS">RVW</span> de <strong>No pasa nada hombre.</strong></>, read: false },
-        { id: 3, user: '@juanp', time: 'Hace 2h', text: <>Dio fav a tu <span className="RVWS">RVW</span> de <strong>No pasa nada hombre.</strong></>, read: true },
+        { id: 1, user: '@raquelz.12204', time: 'Hace 5m', text: <>Puso un comentario en tu <Rvw>RVW</Rvw> de <strong>No pasa nada hombre.</strong></>, read: false },
+        { id: 2, user: '@clarent', time: 'Hace 1h', text: <>Dio fav a tu comentario en tu <Rvw>RVW</Rvw> de <strong>No pasa nada hombre.</strong></>, read: false },
+        { id: 3, user: '@juanp', time: 'Hace 2h', text: <>Dio fav a tu <Rvw>RVW</Rvw> de <strong>No pasa nada hombre.</strong></>, read: true },
     ];
 
     useEffect(() => {
@@ -29,7 +30,7 @@ export default function NotificationDropdown({ onClose }: Props) {
     }, [onClose]);
 
     return (
-        <div className="notif-dropdown-menu edit-anim" ref={menuRef}>
+        <div className="notif-dropdown-menu" ref={menuRef}>
             <div className="notif-header">
                 <h3>Notificaciones</h3>
             </div>

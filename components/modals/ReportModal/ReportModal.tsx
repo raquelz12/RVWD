@@ -7,6 +7,7 @@ import Select from '../../Select/Select';
 import TextArea from '../../TextArea/TextArea';
 import { REPORT_REASONS, REPORT_DETAILS_MAX, type ReportReason, type ReportTarget } from '@/app/lib/reports';
 import './ReportModal.css';
+import Rvw from '../../Rvw/Rvw';
 
 export interface ReportModalProps {
   isOpen: boolean;
@@ -15,13 +16,13 @@ export interface ReportModalProps {
 }
 
 const TITLE: Record<ReportTarget['type'], React.ReactNode> = {
-  RVW: <>Denunciar <span className="RVWS">ЯVW</span></>,
+  RVW: <>Denunciar <Rvw>RVW</Rvw></>,
   Comentario: 'Denunciar comentario',
   Perfil: 'Denunciar perfil',
 };
 
 const CONTEXT: Record<ReportTarget['type'], React.ReactNode> = {
-  RVW: <><span className="RVWS">ЯVW</span> de</>,
+  RVW: <><Rvw>RVW</Rvw> de</>,
   Comentario: 'Comentario de',
   Perfil: 'Perfil de',
 };

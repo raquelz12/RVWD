@@ -7,6 +7,7 @@ import Button from '../../Button/Button';
 import Input from '../../Input/Input';
 import { useModal } from '@/context/ModalContext';
 import '@/styles/forms.css';
+import Rvw from '../../Rvw/Rvw';
 
 export interface LoginModalProps {
   isOpen: boolean;
@@ -40,7 +41,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
   return (
     <Modal isOpen={isOpen} onClose={handleClose} labelledBy="login-title">
       <div className="modal-header">
-        <h2 id="login-title" className="section-title">Inicia sesión en <span className="RVWS">ЯVWD</span></h2>
+        <h2 id="login-title" className="section-title">Inicia sesión en <Rvw>RVWD</Rvw></h2>
         <p>Accede a tu cuenta para empezar a reseñar</p>
       </div>
       <form onSubmit={handleSubmit} className="modal-form">

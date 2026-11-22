@@ -5,6 +5,7 @@ import { useState } from 'react';
 import Select from '../../../../components/Select/Select';
 import ReviewBigCard from '../../../../components/ReviewBigCard/ReviewBigCard';
 import Link from 'next/link';
+import Rvw from '../../../../components/Rvw/Rvw';
 
 export default function ReviewsPage() {
 
@@ -24,7 +25,7 @@ export default function ReviewsPage() {
 
     return (
         <div className="reviews-page-container">
-            <h1 className="page-title reviews-page-title">Tus <span className="RVWS">RVWS</span></h1>
+            <h1 className="page-title reviews-page-title">Tus <Rvw>RVWS</Rvw></h1>
             <Select 
                 options={opcionesOrden} 
                 value={filtro} 

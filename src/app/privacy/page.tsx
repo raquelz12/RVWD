@@ -1,5 +1,6 @@
 import '@/styles/legal-text.css';
 import './privacy.css';
+import Rvw from '../../../components/Rvw/Rvw';
 
 export default function PrivacyPage() {
     return (
@@ -76,7 +77,7 @@ export default function PrivacyPage() {
                     </div>
                     <div className="text-block">
                         <h3>Menores</h3>
-                        <p>Para usar <span className="RVWS">ЯVWD</span> debes tener al menos 14 años. Si descubrimos una cuenta de una persona menor de esa edad, la cerraremos.</p>
+                        <p>Para usar <Rvw>RVWD</Rvw> debes tener al menos 14 años. Si descubrimos una cuenta de una persona menor de esa edad, la cerraremos.</p>
                     </div>
                 </section>
                 <section className="privacy-section">

@@ -1,23 +1,17 @@
 import './TextArea.css';
 
-export interface TextAreaProps {
+/* Acepta cualquier atributo de <textarea> (id, maxLength, aria-label, required...), como Input */
+export interface TextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
-  placeholder?: string;
-  rows?: number;
-  className?: string;
-  id?: string;
 }
 
-export default function TextArea({ value, onChange, placeholder, rows = 4, className, id }: TextAreaProps) {
+export default function TextArea({ rows = 4, className = '', ...props }: TextAreaProps) {
   return (
     <textarea
-      id={id}
-      className={`textarea ${className || ''}`} 
-      value={value} 
-      onChange={onChange} 
-      placeholder={placeholder} 
-      rows={rows} 
+      className={`textarea ${className}`.trim()}
+      rows={rows}
+      {...props}
     />
   );
 }

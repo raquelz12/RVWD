@@ -2,7 +2,6 @@
     display: flex;
     justify-content: space-between;
     gap: 3rem;
-    min-width: 38rem;
 }
 
 .stat-item {
@@ -24,5 +23,6 @@
 @media (max-width: 768px) {
     .stats {
         justify-content: space-evenly;
+        min-width: 0;
     }
 }

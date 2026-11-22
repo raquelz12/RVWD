@@ -16,6 +16,7 @@ import { Artist } from '@/types/music';
 import SearchBar from '../../../../components/SearchBar/SearchBar';
 import FavButton from '../../../../components/FavButton/FavButton';
 import Link from 'next/link';
+import Rvw from '../../../../components/Rvw/Rvw';
 
 function ArtistContent() {
     const params = useParams();
@@ -96,7 +97,7 @@ function ArtistContent() {
                             </div>
                             <div className="artist-score-action">
                                 <div className="score-block">
-                                    <span className="score-label"><span className="RVWS">RVWD</span> score</span>
+                                    <span className="score-label"><Rvw>RVWD</Rvw> score</span>
                                     <Score score={artist.score} variant="white" input={false} />
                                 </div>
                             </div>
@@ -109,7 +110,7 @@ function ArtistContent() {
                             />
                             <div className="artist-actions">
                                 <Button variant="primary" className="artist-follow-btn">Seguir</Button>
-                                <Button variant="primary" className="rvw-action-btn"><span className="RVWS">RVW</span></Button>
+                                <Button variant="primary" className="rvw-action-btn"><Rvw>RVW</Rvw></Button>
                             </div>
                         </div>
                     </div>
@@ -117,7 +118,7 @@ function ArtistContent() {
                 {/* Listados PC */}
                 <div className="artist-sections">
                     <div className="artist-section">
-                        <h2 className="section-title artist-section-title">Top <span className="RVWS">RVWS</span></h2>
+                        <h2 className="section-title artist-section-title">Top <Rvw>RVWS</Rvw></h2>
                         <div className="cards-grid">
                             {topRvws.map((item, index) => (
                                 <MediaCard
@@ -167,18 +168,18 @@ function ArtistContent() {
                     />
                     <div className="mobile-score-action">
                         <div className="score-block">
-                            <span className="score-label"><span className="RVWS">RVWD</span> score</span>
+                            <span className="score-label"><Rvw>RVWD</Rvw> score</span>
                             <Score score={artist.score} variant="white" input={false} />
                         </div>
                         <div className="artist-actions">
                             <Button variant="primary" className="artist-follow-btn">Seguir</Button>
-                            <Button variant="primary" className="rvw-action-btn"><span className="RVWS">RVW</span></Button>
+                            <Button variant="primary" className="rvw-action-btn"><Rvw>RVW</Rvw></Button>
                         </div>
                     </div>
                     {/* Listados Móvil (Scroll Horizontal) */}
                     <div className="artist-sections-mobile">
                         <div className="artist-section">
-                            <h2 className="section-title artist-section-title">Top <span className="RVWS">RVWS</span></h2>
+                            <h2 className="section-title artist-section-title">Top <Rvw>RVWS</Rvw></h2>
                             <Carousel>
                                 {topRvws.map((item, index) => (
                                     <MediaCard

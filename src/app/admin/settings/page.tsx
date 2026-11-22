@@ -11,6 +11,7 @@ import { REPLY_SIGNATURE, REPLY_TEMPLATES, TYPE_LABEL, type InboxType } from '..
 import { MAX_SANCTIONS } from '@/app/lib/adminModeration';
 import { formatDate, MOCK_TODAY } from '@/app/lib/adminFilters';
 import OptionRow from '../../settings/OptionRow';
+import SettingsShell from '../../settings/SettingsShell';
 import LegalEditor from './LegalEditor';
 import { LEGAL_DOCS, type LegalDoc } from './mockLegal';
 import '../../settings/settings.css';
@@ -33,10 +34,7 @@ const SECTIONS: { id: SectionId; title: string; desc: string; icon: string }[] =
 type Notify = (message: string) => void;
 
 export default function AdminSettingsPage() {
-    // En móvil se ve el menú o una sección; en escritorio, todas seguidas
-    const [activeSection, setActiveSection] = useState<SectionId | null>(null);
     const [toast, setToast] = useState('');
-    const activeTitle = SECTIONS.find((s) => s.id === activeSection)?.title;
 
     useEffect(() => {
         if (!toast) return;
@@ -44,75 +42,24 @@ export default function AdminSettingsPage() {
         return () => clearTimeout(timer);
     }, [toast]);
 
-    const sectionClass = (id: SectionId) => `settings-section admin-settings-section ${activeSection === id ? 'active-mobile' : ''}`;
+    const content: Record<SectionId, ReactNode> = {
+        account: <AccountSection notify={setToast} />,
+        notifications: <NotificationsSection notify={setToast} />,
+        moderation: <ModerationSection notify={setToast} />,
+        inbox: <InboxSection notify={setToast} />,
+        site: <SiteSection notify={setToast} />,
+        legal: <LegalSectionSettings notify={setToast} />,
+        session: <SessionSection />,
+    };
 
     return (
-        <div className="settings-page-container admin-settings">
-            <div className="settings-header">
-                {activeSection && (
-                    <button className="mobile-back-btn" onClick={() => setActiveSection(null)} aria-label="Volver a ajustes">
-                        ‹
-                    </button>
-                )}
-                <h1 className="page-title">
-                    <span className="desktop-title-text">Ajustes</span>
-                    <span className="mobile-title-text">{activeTitle ?? 'Ajustes'}</span>
-                </h1>
-            </div>
-            <div className="settings-content">
-                <nav className={`mobile-settings-menu ${activeSection ? 'hidden' : ''}`} aria-label="Secciones de ajustes">
-                    {SECTIONS.map((s) => (
-                        <button key={s.id} type="button" className="mobile-menu-item settings-menu-button" onClick={() => setActiveSection(s.id)}>
-                            <span className="menu-icon">
-                                <img src={s.icon} alt="" />
-                            </span>
-                            <span className="menu-text">
-                                <span className="menu-title">{s.title}</span>
-                                <span className="menu-desc">{s.desc}</span>
-                            </span>
-                            <span className="menu-chevron" aria-hidden="true">›</span>
-                        </button>
-                    ))}
-                </nav>
-
-                <div className={`settings-sections-wrapper ${activeSection ? 'show-section' : ''}`}>
-                    <section className={sectionClass('account')} aria-labelledby="settings-account">
-                        <h2 className="section-title settings-subtitle" id="settings-account">Cuenta</h2>
-                        <AccountSection notify={setToast} />
-                    </section>
-                    <section className={sectionClass('notifications')} aria-labelledby="settings-notifications">
-                        <h2 className="section-title settings-subtitle" id="settings-notifications">Notificaciones</h2>
-                        <NotificationsSection notify={setToast} />
-                    </section>
-                    <section className={sectionClass('moderation')} aria-labelledby="settings-moderation">
-                        <h2 className="section-title settings-subtitle" id="settings-moderation">Moderación</h2>
-                        <ModerationSection notify={setToast} />
-                    </section>
-                    <section className={sectionClass('inbox')} aria-labelledby="settings-inbox">
-                        <h2 className="section-title settings-subtitle" id="settings-inbox">Bandeja</h2>
-                        <InboxSection notify={setToast} />
-                    </section>
-                    <section className={sectionClass('site')} aria-labelledby="settings-site">
-                        <h2 className="section-title settings-subtitle" id="settings-site">Web</h2>
-                        <SiteSection notify={setToast} />
-                    </section>
-                    <section className={sectionClass('legal')} aria-labelledby="settings-legal">
-                        <h2 className="section-title settings-subtitle" id="settings-legal">Textos legales</h2>
-                        <LegalSectionSettings notify={setToast} />
-                    </section>
-                    <section className={sectionClass('session')} aria-labelledby="settings-session">
-                        <h2 className="section-title settings-subtitle" id="settings-session">Sesión</h2>
-                        <SessionSection />
-                    </section>
-                </div>
-            </div>
-
+        <SettingsShell sections={SECTIONS.map((s) => ({ ...s, content: content[s.id] }))}>
             {toast && (
                 <div className="admin-toast" role="status">
                     {toast}
                 </div>
             )}
-        </div>
+        </SettingsShell>
     );
 }
 
@@ -327,8 +274,8 @@ function AccountSection({ notify }: { notify: Notify }) {
                 control={<Toggle checked={twoFactor} onChange={(on) => open(on ? '2fa-on' : '2fa-off')} label="Verificación en dos pasos" />}
             />
 
-            <div className="admin-settings-block">
-                <div className="admin-block-head">
+            <div className="settings-block">
+                <div className="settings-block-head">
                     <div>
                         <span className="settings-option-label">Sesiones abiertas</span>
                         <span className="settings-option-description">Dispositivos donde está iniciada tu cuenta de admin.</span>
@@ -464,14 +411,14 @@ function NotificationsSection({ notify }: { notify: Notify }) {
 
     return (
         <>
-            <div className="admin-settings-block">
-                <div className="admin-block-head">
+            <div className="settings-block">
+                <div className="settings-block-head">
                     <div>
                         <span className="settings-option-label">Avisos</span>
                         <span className="settings-option-description">Elige por dónde te llega cada aviso.</span>
                     </div>
                 </div>
-                <table className="admin-notif-table">
+                <table className="settings-notif-table">
                     <thead>
                         <tr>
                             <th scope="col"><span className="visually-hidden">Aviso</span></th>
@@ -502,7 +449,7 @@ function NotificationsSection({ notify }: { notify: Notify }) {
                     <>
                         {urgent && (
                             <Select
-                                className="admin-inline-select"
+                                className="settings-inline-select"
                                 options={URGENT_OPTIONS}
                                 value={urgentThreshold}
                                 onChange={(v) => {
@@ -522,7 +469,7 @@ function NotificationsSection({ notify }: { notify: Notify }) {
                     <>
                         {digest && (
                             <Select
-                                className="admin-inline-select"
+                                className="settings-inline-select"
                                 options={DIGEST_OPTIONS}
                                 value={digestTime}
                                 onChange={(v) => {
@@ -581,7 +528,7 @@ function ModerationSection({ notify }: { notify: Notify }) {
                 description="Pasado este tiempo, una sanción deja de contar para el baneo."
                 control={
                     <Select
-                        className="admin-inline-select"
+                        className="settings-inline-select"
                         options={EXPIRY_OPTIONS}
                         value={expiry}
                         onChange={(v) => {
@@ -592,8 +539,8 @@ function ModerationSection({ notify }: { notify: Notify }) {
                 }
             />
 
-            <div className="admin-settings-block">
-                <div className="admin-block-head">
+            <div className="settings-block">
+                <div className="settings-block-head">
                     <div>
                         <span className="settings-option-label">Duraciones de suspensión</span>
                         <span className="settings-option-description">Las opciones que salen al suspender una cuenta.</span>
@@ -626,7 +573,7 @@ function ModerationSection({ notify }: { notify: Notify }) {
                     <>
                         {autoHide && (
                             <Select
-                                className="admin-inline-select"
+                                className="settings-inline-select"
                                 options={AUTO_HIDE_OPTIONS}
                                 value={autoHideAt}
                                 onChange={(v) => {
@@ -640,8 +587,8 @@ function ModerationSection({ notify }: { notify: Notify }) {
                 }
             />
 
-            <div className="admin-settings-block">
-                <div className="admin-block-head">
+            <div className="settings-block">
+                <div className="settings-block-head">
                     <div>
                         <span className="settings-option-label">Palabras prohibidas</span>
                         <span className="settings-option-description">
@@ -727,8 +674,8 @@ function InboxSection({ notify }: { notify: Notify }) {
 
     return (
         <>
-            <div className="admin-settings-block">
-                <div className="admin-block-head">
+            <div className="settings-block">
+                <div className="settings-block-head">
                     <div>
                         <span className="settings-option-label">Plantillas de respuesta</span>
                         <span className="settings-option-description">

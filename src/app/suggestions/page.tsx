@@ -7,6 +7,7 @@ import TextArea from '../../../components/TextArea/TextArea';
 import Select from '../../../components/Select/Select';
 import '@/styles/forms.css';
 import './suggestions.css';
+import Rvw from '../../../components/Rvw/Rvw';
 
 export default function SugerenciasPage() {
     const [sugerencia, setSugerencia] = useState('');
@@ -34,7 +35,7 @@ export default function SugerenciasPage() {
             <div className="suggestions-header">
                 <h1 className="page-title">Ayúdanos a mejorar</h1>
                 <p className="suggestions-description">
-                    <span className="RVWS">RVWD</span> se construye contigo. Cuéntanos qué te gustaría mejorar, 
+                    <Rvw>RVWD</Rvw> se construye contigo. Cuéntanos qué te gustaría mejorar, 
                     qué echas en falta o qué idea tienes. Leemos todas las sugerencias.
                 </p>
             </div>

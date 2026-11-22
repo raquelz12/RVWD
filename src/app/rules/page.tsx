@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import './rules.css';
+import Rvw from '../../../components/Rvw/Rvw';
 
 export default function NormasPage() {
     const [openRule, setOpenRule] = useState<number | null>(null);
@@ -59,7 +60,7 @@ export default function NormasPage() {
             <div className="rules-header-section">
                 <h1 className="page-title rules-main-title">Normas de la comunidad</h1>
                 <p className="rules-main-intro">
-                    En <span className="RVWS">ЯVWD</span> queremos que cualquiera pueda compartir, comentar y conocer gente sin sentirse incómodo. Estas normas explican qué esperamos de ti y qué puedes esperar de nosotros. Son pocas y sencillas: si las sigues, no tendrás ningún problema.
+                    En <Rvw>RVWD</Rvw> queremos que cualquiera pueda compartir, comentar y conocer gente sin sentirse incómodo. Estas normas explican qué esperamos de ti y qué puedes esperar de nosotros. Son pocas y sencillas: si las sigues, no tendrás ningún problema.
                 </p>
             </div>
             <div className="rules-columns-layout">

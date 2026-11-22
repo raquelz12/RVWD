@@ -13,6 +13,7 @@ import SmallCard from '../../../components/SmallCard/SmallCard';
 import Score from '../../../components/Score/Score';
 import Input from '../../../components/Input/Input';
 import TextArea from '../../../components/TextArea/TextArea';
+import Rvw from '../../../components/Rvw/Rvw';
 
 interface SongData {
   title: string;
@@ -447,7 +448,7 @@ export default function OnboardingPage() {
           <div className="step step-3">
             {renderStepHeader(
               3,
-              <>Deja tu primera <span className="RVWS">RVW</span></>,
+              <>Deja tu primera <Rvw>RVW</Rvw></>,
               'Puntúa y cuéntale a la gente qué piensas de esta canción que tienes en bucle.'
             )}
             {reviewSubStep === 1 ? (
