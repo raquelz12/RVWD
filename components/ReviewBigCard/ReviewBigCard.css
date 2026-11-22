@@ -132,8 +132,8 @@
 /* Tamaño fijo: si la portada no es cuadrada, se recorta en vez de deformarse */
 .review-big-card-image img {
     display: block;
-    width: 20rem;
-    height: 20rem;
+    width: 23rem;
+    height: 23rem;
     object-fit: cover;
     border-radius: 1.6rem;
 }

@@ -122,7 +122,8 @@ export default function ReviewBigCard({
             )}
             <div className="review-big-card-content">
                 <div className="review-big-card-image">
-                    <img src={imageUrl || '/placeholderCards.png'} alt={title} />
+                    {/* Decorativa: el título va justo al lado */}
+                    <img src={imageUrl || '/placeholderCards.png'} alt="" />
                 </div>
                 <div className="review-big-card-info">
                     <div className="review-big-card-header">
