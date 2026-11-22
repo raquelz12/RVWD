@@ -174,22 +174,19 @@
     color: var(--primary-red);
 }
 
-.review-comment-extra-button {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-start;
-    background: none;
-    border: none;
-    cursor: pointer;
+/* Menú ⋮ de los comentarios (componente MoreMenu) */
+.single-review-comment-actions .more-menu {
     color: var(--primary-white);
-    font-size: 2rem;
-    font-family: inherit;
-    transition: color 0.3s ease;
 }
 
-.review-comment-extra-button:hover {
-    color: var(--primary-red);
+/* En el panel claro del móvil: a la derecha y en el verde del panel */
+.sheet-comment-menu {
+    margin-left: auto;
+    color: var(--green);
+}
+
+.sheet-comment-menu .more-menu-trigger:hover {
+    background-color: rgba(0, 0, 0, 0.08);
 }
 
 /* =========================================

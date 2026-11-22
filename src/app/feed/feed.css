@@ -9,6 +9,7 @@
   box-sizing: border-box;
 }
 
+/* Pestañas */
 .feed-buttons {
     display: flex;
     flex-direction: row;
@@ -26,34 +27,27 @@
     justify-content: center;
     gap: 0.5rem;
     padding: 0.5rem 1rem;
-    border: none;
-    cursor: pointer;
+    /* El borde de la activa tapa la línea gris del contenedor en vez de quedar encima */
+    margin-bottom: -0.1rem;
+    border-bottom: 0.2rem solid transparent;
     transition: all 0.3s ease;
-    background-color: transparent;
     color: var(--primary-white);
+    text-decoration: none;
     font-family: inherit;
     font-size: 2rem;
 }
 
-.feed-button:hover:not(:disabled) {
+.feed-button:hover {
     transform: translateY(-0.2rem);
-}
-
-/* Pestañas de carga (mientras llega FeedTabs): mismo aspecto, sin el gris del navegador.
-   Va antes de .active para que la pestaña activa siga en rojo */
-.feed-button:disabled {
-    color: var(--primary-white);
-    cursor: default;
 }
 
 .feed-button.active {
     color: var(--primary-red);
     font-weight: 600;
-    border-bottom: 0.2rem solid var(--primary-red);
+    border-bottom-color: var(--primary-red);
 }
 
-/* --------------------------- Para ti ------------------------------*/
-
+/* Layout: columna principal + columna lateral (SideDrawer) */
 .feed {
     display: flex;
     flex-direction: row;
@@ -64,20 +58,6 @@
     width: 100%;
 }
 
-/* Enlaces que envuelven tarjetas */
-.feed-review-link {
-    display: block;
-    width: 100%;
-    text-decoration: none;
-    color: inherit;
-}
-
-.weekly-top-link {
-    flex: 1;
-    text-decoration: none;
-    color: inherit;
-}
-
 .feed-main-column {
     display: flex;
     flex-direction: column;
@@ -85,41 +65,11 @@
     justify-content: flex-start;
     gap: 2rem;
     width: 100%;
+    min-width: 0;
 }
 
-.show-new {
-    width: fit-content;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: baseline;
-    gap: .5rem;
-    transition: all 0.3s ease;
-    padding: 1rem 2rem;
-    border-radius: 8rem;
-    background-color: color-mix(in srgb, var(--primary-red) 60%, transparent);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    position: sticky;
-    top: 8rem;  
-    z-index: 30; 
-    align-self: center;
-}
-
-.show-new:hover {
-    background-color: color-mix(in srgb, var(--primary-red) 80%, transparent);
-    cursor: pointer;
-}
-
-.show-new img {
-    width: 2rem;
-    height: 2rem;
-    align-self: center;
-    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(103%) contrast(103%);
-}
-
-.might-like-section {
+/* Todas las secciones de las dos pestañas se separan igual */
+.feed-section {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -133,13 +83,48 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+    gap: 1rem;
     width: 100%;
-    padding-bottom: 1rem;
 }
 
-/* Tamaño y peso vienen de .block-title; se mantiene el margen que tenía el h3 */
-.section-header .title {
-    margin: 2rem 0;
+/* Tamaño y peso vienen de .section-title; aquí solo el margen */
+.section-header .section-title {
+    margin: 2rem 0 1rem;
+}
+
+/* --------------------------- Para ti ------------------------------*/
+
+.show-new {
+    width: fit-content;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: baseline;
+    gap: .5rem;
+    transition: all 0.3s ease;
+    padding: 1rem 2rem;
+    border-radius: 8rem;
+    color: var(--primary-white);
+    text-decoration: none;
+    background-color: color-mix(in srgb, var(--primary-red) 60%, transparent);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: sticky;
+    top: 8rem;
+    z-index: 30;
+    align-self: center;
+}
+
+.show-new:hover {
+    background-color: color-mix(in srgb, var(--primary-red) 80%, transparent);
+}
+
+.show-new img {
+    width: 2rem;
+    height: 2rem;
+    align-self: center;
+    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(103%) contrast(103%);
 }
 
 .might-like-cards {
@@ -152,81 +137,48 @@
     width: 100%;
 }
 
-/* Fav reviews */
+/* Filas de MediaCard (RVWS favoritas, en las dos pestañas): las 3 siempre en una fila.
+   Las tarjetas dejan su ancho fijo (26rem) y se encogen con la columna, siempre cuadradas */
+.media-cards-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 3rem;
+    width: 100%;
+    /* Hueco para la nota, que sobresale 2rem por arriba a la derecha */
+    padding: 2rem 2rem 0 0;
+}
 
-.fav-reviews-for-you-section {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-    gap: 1rem;
+.media-cards-row .media-card-link {
+    display: block;
+    min-width: 0;
+}
+
+.media-cards-row .media-card {
     width: 100%;
 }
 
-.fav-reviews-for-you-cards {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 2rem;
+.media-cards-row .media-image-container {
     width: 100%;
+    height: auto;
+    aspect-ratio: 1;
 }
 
-/* Secondary column */
-.feed-side-column {
-  align-self: flex-start; 
-  position: sticky;
-  top: 8rem; 
-}
-
-.new-releases-cards {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 2rem;
-    width: 100%;
-    margin-right: 2rem;
-}
-
-.new-releases-cards a {
-    text-decoration: none;
-    color: inherit;
-}
-
-.feed-side-title {
-    margin: 2rem 0;
-    text-align: center;
-}
-
-.releases-toggle-checkbox,
-.floating-releases-btn,
-.close-drawer-btn,
-.drawer-overlay {
-    display: none;
-}
-
-.drawer-header {
+/* La foto va dentro de .image-wrapper: tiene que ocupar todo el recuadro para que el % de la foto
+   se calcule sobre la tarjeta y no sobre un div encogido */
+.media-cards-row .image-wrapper {
     display: flex;
     justify-content: center;
-    align-items: center;
     width: 100%;
+}
+
+.media-cards-row .media-image {
+    display: block;
+    width: calc(100% - 2rem);
+    height: auto;
+    aspect-ratio: 1;
 }
 
 /*------------------------------ Descubrir ------------------------------*/
-/* Columna principal */
-
-/* Top semanal */
-
-.weekly-top-section {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-    gap: 1rem;
-    width: 100%;
-}
 
 .buttons-container {
     display: flex;
@@ -238,16 +190,7 @@
     width: 100%;
 }
 
-.weekly-top-cards {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    width: 100%;
-}
-
+/* Top semanal */
 .weekly-top-cards-list {
     display: flex;
     flex-direction: column;
@@ -255,6 +198,9 @@
     justify-content: flex-start;
     gap: 2rem;
     width: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
 }
 
 .weekly-top-card {
@@ -272,37 +218,14 @@
     font-weight: 600;
 }
 
-/* Reviews favoritas de la semana */
-
-.favorite-weekly-rvws-section {
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-    gap: 1rem;
-    width: 100%;
-    display: flex;
+.weekly-top-link {
+    flex: 1;
+    min-width: 0;
+    text-decoration: none;
+    color: inherit;
 }
 
-.favorite-weekly-rvws-cards {
-    flex-flow: wrap;
-    justify-content: space-between;
-    align-items: center;
-    gap: 2rem;
-    width: 100%;
-    display: flex;
-}
-
-/* Usuarios que podrían gustarte */
-
-.users-section {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-    gap: 1rem;
-    width: 100%;
-}
-
+/* Usuarios con los que tienes mucho en común */
 .users-cards {
     display: flex;
     flex-direction: row;
@@ -338,6 +261,7 @@
     flex-direction: column;
     align-items: center;
     gap: 1rem;
+    max-width: 100%;
     text-decoration: none;
     color: inherit;
 }
@@ -355,6 +279,16 @@
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
+    max-width: 100%;
+}
+
+/* Nombres largos: en una línea con "…" en vez de salirse de la tarjeta */
+.user-info .username,
+.user-info .name {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .user-info .username {
@@ -369,8 +303,7 @@
     font-weight: 400;
 }
 
-/* Columna secundaria */
-
+/* Columna lateral: tarjeta de novedades */
 .discovery-card {
     display: flex;
     flex-direction: column;
@@ -388,151 +321,44 @@
     color: var(--primary-white);
     text-decoration: none;
     font-weight: 600;
-    transition: all 0.3s ease;
 }
 
 .discovery-card a:hover {
-    transform: translateY(-0.2rem);
     text-decoration: underline;
 }
 
 
 /* Responsive */
-@media (max-width: 768px) {
+
+/* Tablet: la columna lateral pasa a ser el cajón de SideDrawer (mismo corte que el header) */
+@media (max-width: 1024px) {
     .feed {
         flex-direction: column;
         align-items: center;
         justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .feed {
         padding: 1rem;
-    }
-
-    .feed-main-column {
-        width: 100%;
-    }
-
-    .might-like-cards {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
-    }
-
-    .fav-reviews-for-you-cards {
-        flex-direction: column;
     }
 
     .show-new {
         top: 10rem;
     }
 
-    .feed-side-column {
-        position: static;
-        width: auto;
-        margin: 0;
-        padding: 0;
-        border: none;
+    .might-like-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+        justify-items: center;
     }
 
-    .floating-releases-btn {
-        display: flex;
-        align-items: center;
+    /* Móvil: una debajo de otra, con su tamaño normal */
+    .media-cards-row {
+        grid-template-columns: minmax(0, 26rem);
         justify-content: center;
-        position: fixed;
-        top: 10rem;
-        right: -2rem;
-        z-index: 100;
-        padding: 1.5rem 2.5rem;
-        border-radius: 9rem;
-        font-size: 1.4rem;
-        font-weight: 600;
-        background-color: var(--primary-red);
-        box-shadow: 0 0.8rem 1.6rem rgba(0, 0, 0, 0.4);
-        cursor: pointer;
-        transition: transform 0.2s ease;
-    }
-
-    .floating-releases-btn:active {
-        transform: scale(0.95);
-    }
-
-    .floating-releases-btn img {
-        width: 1.6rem;
-        height: 1.6rem;
-        margin-right: 0.5rem;
-        filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(103%) contrast(103%);
-    }
-
-    .mobile-releases-drawer {
-        position: fixed;
-        top: 0;
-        right: -100%;
-        width: 80vw;
-        max-width: 32rem;
-        height: 100vh;
-        background-color: color-mix(in srgb, var(--bg-card) 90%, transparent);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        z-index: 105;
-        padding: 4rem 2rem;
-        box-shadow: -1rem 0 3rem rgba(0, 0, 0, 0.5);
-        transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        overflow-y: auto;
-    }
-
-    .feed-side-title {
-        text-align: left;
-        margin-bottom: 0;
-    }
-
-    .close-drawer-btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 3.2rem;
-        height: 3.2rem;
-        background-color: rgba(255, 255, 255, 0.1);
-        border-radius: 50%;
-        font-size: 1.6rem;
-        color: #fff;
-        cursor: pointer;
-    }
-
-    .new-releases-cards {
-        margin-top: 3rem;
-    }
-
-    .releases-toggle-checkbox:checked ~ .mobile-releases-drawer {
-        right: 0;
-    }
-    
-    .releases-toggle-checkbox:checked ~ .floating-releases-btn {
-        opacity: 0;
-        pointer-events: none;
-    }
-
-    .releases-toggle-checkbox:checked ~ .drawer-overlay {
-        opacity: 1;
-        pointer-events: auto;
-    }
-
-    .drawer-header {
-        justify-content: space-between;
-    }
-
-    .drawer-overlay {
-        display: block;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background-color: rgba(0, 0, 0, 0.4);
-        z-index: 104;
-        opacity: 0;
-        pointer-events: none; 
-        transition: opacity 0.4s ease;
-    }
-
-    .favorite-weekly-rvws-cards {
-        flex-direction: column;
+        padding-right: 0;
     }
 
     .users-cards {
@@ -540,4 +366,15 @@
         grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
     }
 
+    .user-card {
+        min-width: 0;
+    }
+
+    .user-info .username {
+        font-size: 1.6rem;
+    }
+
+    .user-info .name {
+        font-size: 1.4rem;
+    }
 }

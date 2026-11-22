@@ -8,6 +8,8 @@ import Textarea from '../../../../components/TextArea/TextArea';
 import Score from '../../../../components/Score/Score';
 import Input from '../../../../components/Input/Input';
 import FavButton from '../../../../components/FavButton/FavButton';
+import MoreMenu, { type MoreMenuItem } from '../../../../components/MoreMenu/MoreMenu';
+import { useModal } from '@/context/ModalContext';
 import '@/styles/media-detail.css';
 import './review.css';
 
@@ -32,6 +34,29 @@ function ReviewContent() {
             setActiveReplyId(commentId);
         }
     };
+
+    const { openReport } = useModal();
+
+    // Opciones del menú ⋮ de un comentario: las de uno propio o las de uno de otra persona
+    // TODO: editar / eliminar cuando haya backend
+    const commentMenuItems = (commentId: number, author: string, own: boolean): MoreMenuItem[] =>
+        own
+            ? [
+                  { label: 'Editar' },
+                  'divider',
+                  { label: 'Eliminar', danger: true },
+              ]
+            : [
+                  { label: 'Copiar enlace', copyPath: `/reviews/${reviewId}#comentario-${commentId}` },
+                  'divider',
+                  {
+                      label: 'Denunciar',
+                      danger: true,
+                      onClick: () => openReport({ type: 'Comentario', id: String(commentId), author }),
+                  },
+              ];
+    // De momento el comentario de ejemplo es de otra persona
+    const comment1Menu = commentMenuItems(1, '@raquelz.12204', false);
 
     return (
         <div className="single-review-page-container">
@@ -90,7 +115,7 @@ function ReviewContent() {
                     <div className="single-review-comments-list">
                         
                         {/* COMENTARIO 1 ESCRITORIO */}
-                        <div className="single-review-comment">
+                        <div className="single-review-comment" id="comentario-1">
                             <div className="single-review-user">
                                 <div className="single-review-user-avatar-container">
                                     <img className="single-review-user-avatar" src="/placeholder.png" alt="Avatar" />
@@ -102,7 +127,7 @@ function ReviewContent() {
                                 </div>
                                 <div className="single-review-comment-actions">
                                     <FavButton count={15} itemLabel="este comentario" className="review-comment-like-button" />
-                                    <button className="review-comment-extra-button" onClick={() => {}}>...</button>
+                                    <MoreMenu items={comment1Menu} label="Opciones del comentario" />
                                 </div>
                             </div>
                             <div className="single-review-comment-text">
@@ -186,6 +211,7 @@ function ReviewContent() {
                             <div className="sheet-comment-user">
                                 <img src="/placeholder.png" alt="Avatar" />
                                 <span>@raquelz.12204 <FavButton count={15} itemLabel="este comentario" className="review-comment-like-button" /></span>
+                                <MoreMenu items={comment1Menu} label="Opciones del comentario" className="sheet-comment-menu" />
                             </div>
                             <p className="sheet-comment-text">
                                 Curabitur quis turpis quis sapien luctus iaculis. Aenean venenatis eros suscipit urna tristique congue ac non metus.

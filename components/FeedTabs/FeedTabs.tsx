@@ -1,31 +1,26 @@
-'use client';
+import Link from 'next/link';
 
-import { useSearchParams, useRouter, usePathname } from 'next/navigation';
+export type FeedTab = 'para-ti' | 'descubrir';
 
-export default function FeedTabs() {
-    const searchParams = useSearchParams();
-    const router = useRouter();
-    const pathname = usePathname();
-    const currentTab = searchParams.get('tab') || 'para-ti';
+const TABS: { id: FeedTab; label: string }[] = [
+    { id: 'para-ti', label: 'Para ti' },
+    { id: 'descubrir', label: 'Descubrir' },
+];
 
-    const handleTabChange = (newTab: string) => {
-        router.push(`${pathname}?tab=${newTab}`);
-    };
-
+// La página ya sabe qué pestaña está activa: se la pasa y así no hace falta leer la URL aquí
+export default function FeedTabs({ currentTab }: { currentTab: FeedTab }) {
     return (
-        <div className="feed-buttons">
-            <button 
-                className={currentTab === 'para-ti' ? "feed-button active" : "feed-button"} 
-                onClick={() => handleTabChange('para-ti')}
-            >
-                Para ti
-            </button>
-            <button 
-                className={currentTab === 'descubrir' ? "feed-button active" : "feed-button"} 
-                onClick={() => handleTabChange('descubrir')}
-            >
-                Descubrir
-            </button>
-        </div>
+        <nav className="feed-buttons" aria-label="Pestañas del feed">
+            {TABS.map((tab) => (
+                <Link
+                    key={tab.id}
+                    href={tab.id === 'para-ti' ? '/feed' : `/feed?tab=${tab.id}`}
+                    className={currentTab === tab.id ? 'feed-button active' : 'feed-button'}
+                    aria-current={currentTab === tab.id ? 'page' : undefined}
+                >
+                    {tab.label}
+                </Link>
+            ))}
+        </nav>
     );
 }
