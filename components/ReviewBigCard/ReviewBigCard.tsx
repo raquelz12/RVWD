@@ -27,6 +27,11 @@ interface ReviewBigCardProps {
     commentsCount?: number;
     favoritesCount?: number;
     profile?: boolean; // Indica si la tarjeta sale solo la socre red o las dos
+    /** Enseña la reseña entera en vez de cortarla a 3 líneas (página de la propia RVW) */
+    fullText?: boolean;
+    /** Ancla de la lista de comentarios en la misma página (p. ej. "#comentarios"):
+     *  el contador de comentarios pasa a ser un enlace que baja hasta ella */
+    commentsHref?: string;
     /** Si se pasa, toda la tarjeta lleva a esta ruta, pero sus botones siguen funcionando por separado
      *  (así no hay botones dentro de un enlace) */
     href?: string;
@@ -64,6 +69,8 @@ export default function ReviewBigCard({
     commentsCount,
     favoritesCount,
     profile,
+    fullText,
+    commentsHref,
     href,
     mediaHref,
     ownReview,
@@ -100,7 +107,17 @@ export default function ReviewBigCard({
               ]),
     ];
 
-    const showUserHeader = !!(userImageUrl && username && followed !== undefined);
+    // Baja con suavidad hasta los comentarios (sin animación si se pide menos movimiento)
+    const scrollToComments = (e: React.MouseEvent<HTMLAnchorElement>) => {
+        e.stopPropagation();
+        const target = commentsHref?.startsWith('#') ? document.getElementById(commentsHref.slice(1)) : null;
+        if (!target) return;
+        e.preventDefault();
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+    };
+
+    const showUserHeader =!!(userImageUrl && username && followed !== undefined);
     // Reseña propia sin cabecera (p. ej. en el perfil): el menú va en la fila del título
     const showInlineMenu = !showUserHeader && !!ownReview && menuItems.length > 0;
 
@@ -139,7 +156,8 @@ export default function ReviewBigCard({
                         {profile && (
                         <div className="review-big-card-score">
                             <div className="review-big-card-score-wrapper">
-                                <p className="review-big-card-score-text">Tu <Rvw>RVW</Rvw> score</p>
+                                {/* Nota de quien escribió la RVW; "RVW score" se confundía con "RVWD score" */}
+                                <p className="review-big-card-score-text">{ownReview ? 'Tu nota' : 'Su nota'}</p>
                                 <Score variant="red" input={false} score={parseFloat(score?.toString() || '0')} />
                             </div>
                             <div className="review-big-card-score-wrapper">
@@ -158,17 +176,28 @@ export default function ReviewBigCard({
                             <MoreMenu items={menuItems} label="Opciones de la RVW" className="review-big-card-extra" />
                         )}
                     </div>
-                    <div className="review-big-card-review">
+                    <div className={`review-big-card-review ${fullText ? 'is-full' : ''}`}>
                         <span className="title">{titleReview}</span>
                         <span className="text">{reviewText}</span>
                     </div>
                     <div className="review-big-card-footer">
                         <p>{reviewDate ? formatDate(reviewDate) : null}</p>
                         <div className="review-big-card-footer-stats">
-                            {/* Solo informa: los comentarios se ven dentro de la reseña */}
-                            <span className="review-big-card-footer-stat" aria-label={`${commentsCount ?? 0} comentarios`}>
-                                {commentsCount} <img src="/comments-solid-full.svg" alt="" />
-                            </span>
+                            {commentsHref ? (
+                                <a
+                                    href={commentsHref}
+                                    className="review-big-card-footer-stat review-big-card-comments-link"
+                                    aria-label={`Ver los ${commentsCount ?? 0} comentarios`}
+                                    onClick={scrollToComments}
+                                >
+                                    {commentsCount} <span className="review-big-card-comments-icon" aria-hidden="true" />
+                                </a>
+                            ) : (
+                                // Solo informa: los comentarios se ven dentro de la reseña
+                                <span className="review-big-card-footer-stat" aria-label={`${commentsCount ?? 0} comentarios`}>
+                                    {commentsCount} <img src="/comments-solid-full.svg" alt="" />
+                                </span>
+                            )}
                             <FavButton count={favoritesCount} itemLabel="esta RVW" className="review-big-card-footer-btn" />
                         </div>
                     </div>

@@ -204,4 +204,4 @@ export { formatDate } from '@/app/lib/adminFilters';
 
 // Enlace público: la RVW, o la RVW donde está el comentario
 export const publicHref = (item: Pick<AdminContent, 'id' | 'type' | 'reviewId'>) =>
-    item.type === 'RVW' ? `/reviews/${item.id}` : `/reviews/${item.reviewId}#comment-${item.id}`;
+    item.type === 'RVW' ? `/reviews/${item.id}` : `/reviews/${item.reviewId}#comentario-${item.id}`;

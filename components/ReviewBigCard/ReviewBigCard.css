@@ -11,7 +11,6 @@
     border-radius: 2.4rem;
     background-color: color-mix(in srgb, var(--primary-white) 15%, transparent);
     transition: all 0.3s ease;
-    /* Referencia para el enlace que cubre toda la tarjeta (.review-big-card-link) */
     position: relative;
 }
 
@@ -67,7 +66,6 @@
     margin: 0;
 }
 
-/* Menú ⋮ (componente MoreMenu): arriba a la derecha y por encima del enlace que cubre la tarjeta */
 .review-big-card-extra {
     align-self: flex-start;
 }
@@ -78,7 +76,6 @@
     z-index: 1;
 }
 
-/* Menú en la fila del título (reseña propia sin cabecera): la nota y el ⋮ van juntos a la derecha */
 .review-big-card-header:has(> .review-big-card-extra) {
     gap: 1rem;
 }
@@ -87,12 +84,10 @@
     margin-left: auto;
 }
 
-/* Con el menú abierto, la tarjeta pasa por delante de las siguientes para que no tapen el desplegable */
 .review-big-card:has(.more-menu.is-open) {
     z-index: 20;
 }
 
-/* El título es el enlace y su ::after se estira a toda la tarjeta: se puede pulsar en cualquier sitio */
 .review-big-card-link {
     color: inherit;
     text-decoration: none;
@@ -129,7 +124,6 @@
     flex-shrink: 0;
 }
 
-/* Tamaño fijo: si la portada no es cuadrada, se recorta en vez de deformarse */
 .review-big-card-image img {
     display: block;
     width: 23rem;
@@ -195,6 +189,12 @@
     -webkit-box-orient: vertical;
 }
 
+.review-big-card-review.is-full {
+    display: block;
+    overflow: visible;
+    -webkit-line-clamp: unset;
+}
+
 .review-big-card-review .title {
     font-weight: 600;
     font-size: 2.0rem;
@@ -258,6 +258,29 @@
     color: var(--primary-red);
 }
 
+.review-big-card-comments-link {
+    position: relative;
+    z-index: 1;
+    color: var(--primary-white);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.review-big-card-comments-link:hover {
+    color: var(--primary-red);
+}
+
+.review-big-card-comments-icon {
+    display: inline-block;
+    flex-shrink: 0;
+    width: 2rem;
+    height: 2rem;
+    margin-left: 0.5rem;
+    background-color: currentColor;
+    -webkit-mask: url('/comments-solid-full.svg') center / contain no-repeat;
+    mask: url('/comments-solid-full.svg') center / contain no-repeat;
+}
+
 .review-big-card-score {
     display: flex;
     flex-direction: row;
@@ -280,7 +303,6 @@
     flex-direction: row;
     align-items: flex-end;
     justify-content: center;
-    /* en flex se pierden los espacios del texto: el hueco entre palabras lo pone gap */
     gap: 0.4rem;
     font-size: 1.6rem;
     margin-bottom: 2rem;
@@ -351,9 +373,6 @@
     }
 }
 
-/* Móvil, reseña propia con el ⋮ junto a la nota (perfil): en la fila del título no caben
-   título, dos notas y ⋮ (a 320px el título se partía palabra a palabra).
-   Arriba van el tipo, el título y el artista con el ⋮ a la derecha, y las notas bajan a su propia fila, centradas */
 @media (max-width: 768px) {
     .review-big-card-header:has(> .review-big-card-extra) {
         flex-wrap: wrap;
@@ -370,7 +389,6 @@
         overflow-wrap: anywhere;
     }
 
-    /* Las notas, centradas en su fila */
     .review-big-card-header:has(> .review-big-card-extra) > .review-big-card-score {
         order: 1;
         flex-basis: 100%;
@@ -379,7 +397,6 @@
         padding-right: 0;
     }
 
-    /* Un poco de aire respecto al borde de la tarjeta (en móvil su padding es de solo 1rem) */
     .review-big-card-header:has(> .review-big-card-extra) > .review-big-card-extra {
         margin: 0.4rem 0.4rem 0 0;
     }

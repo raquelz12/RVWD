@@ -28,4 +28,17 @@ export const formatDate = (iso: string) => {
     return `${d}/${m}/${y}`;
 };
 
-export const timeAgo = (days: number) => (days === 0 ? 'Hoy' : days === 1 ? 'Ayer' : `Hace ${days} días`);
+/** Fecha y hora ISO → "Hace 5 minutos" / "Hace 3 horas" durante las primeras 24 h; después, DD/MM/AAAA.
+ *  `now` se pasa desde fuera (ms) para no leer la hora durante el prerender */
+export const formatRelativeDate = (iso: string, now: number) => {
+    const date = new Date(iso);
+    const minutes = Math.floor((now - date.getTime()) / 60_000);
+    if (minutes < 1) return 'Ahora mismo';
+    if (minutes < 60) return `Hace ${minutes} ${minutes === 1 ? 'minuto' : 'minutos'}`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `Hace ${hours} ${hours === 1 ? 'hora' : 'horas'}`;
+    const pad = (n: number) => String(n).padStart(2, '0');
+    return formatDate(`${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`);
+};
+
+export const timeAgo =(days: number) => (days === 0 ? 'Hoy' : days === 1 ? 'Ayer' : `Hace ${days} días`);
