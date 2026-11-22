@@ -14,14 +14,14 @@ export interface ReportModalProps {
   target: ReportTarget | null;
 }
 
-const TITLE: Record<ReportTarget['type'], string> = {
-  RVW: 'Denunciar RVW',
+const TITLE: Record<ReportTarget['type'], React.ReactNode> = {
+  RVW: <>Denunciar <span className="RVWS">ЯVW</span></>,
   Comentario: 'Denunciar comentario',
   Perfil: 'Denunciar perfil',
 };
 
-const CONTEXT: Record<ReportTarget['type'], string> = {
-  RVW: 'RVW de',
+const CONTEXT: Record<ReportTarget['type'], React.ReactNode> = {
+  RVW: <><span className="RVWS">ЯVW</span> de</>,
   Comentario: 'Comentario de',
   Perfil: 'Perfil de',
 };

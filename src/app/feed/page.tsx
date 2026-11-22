@@ -25,7 +25,7 @@ export default async function Feed({ searchParams }: { searchParams: Promise<{ t
                     <div className="feed-main-column">
                         <Link href="/feed" className="show-new">
                             <img src="/arrow-up-long-solid-full.svg" alt="" />
-                            <span className="RVWS">RVWS</span> nuevas
+                            <span className="RVWS">ЯVWS</span> nuevas
                         </Link>
                         <ReviewBigCard
                             href="/reviews/123"
@@ -59,7 +59,7 @@ export default async function Feed({ searchParams }: { searchParams: Promise<{ t
                         </section>
                         <section className="feed-section">
                             <div className="section-header">
-                                <h2 className="section-title"><span className="RVWS">RVWS</span> favoritas para ti</h2>
+                                <h2 className="section-title"><span className="RVWS">ЯVWS</span> favoritas para ti</h2>
                                 <Button variant="text">Ver más</Button>
                             </div>
                             <div className="media-cards-row">
@@ -129,7 +129,7 @@ export default async function Feed({ searchParams }: { searchParams: Promise<{ t
                         </section>
                         <section className="feed-section">
                             <div className="section-header">
-                                <h2 className="section-title"><span className="RVWS">RVWS</span> favoritas de la semana</h2>
+                                <h2 className="section-title"><span className="RVWS">ЯVWS</span> favoritas de la semana</h2>
                                 <Button variant="text">Ver más</Button>
                             </div>
                             <div className="media-cards-row">
@@ -160,7 +160,7 @@ export default async function Feed({ searchParams }: { searchParams: Promise<{ t
                         </section>
                         <section className="feed-section">
                             <div className="section-header">
-                                <h2 className="section-title"><span className="RVWS">RVWS</span> que podrían gustarte</h2>
+                                <h2 className="section-title"><span className="RVWS">ЯVWS</span> que podrían gustarte</h2>
                                 <Button variant="text">Ver más</Button>
                             </div>
                             <ReviewBigCard

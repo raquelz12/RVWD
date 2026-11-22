@@ -132,12 +132,12 @@ export default function ReviewBigCard({
                         {profile && (
                         <div className="review-big-card-score">
                             <div className="review-big-card-score-wrapper">
-                                <p className="review-big-card-score-text">Tu <span className="RVWS">RVW</span> score</p>
+                                <p className="review-big-card-score-text">Tu <span className="RVWS">ЯVW</span> score</p>
                                 <Score variant="red" input={false} score={parseFloat(score?.toString() || '0')} />
                             </div>
                             <div className="review-big-card-score-wrapper">
                             <p className="review-big-card-score-text">
-                                    <span className="RVWS">RVWD</span> score
+                                    <span className="RVWS">ЯVWD</span> score
                                 </p>
                                 <Score variant="white" input={false} score={parseFloat(pageScore?.toString() || '0')} />
                             </div>

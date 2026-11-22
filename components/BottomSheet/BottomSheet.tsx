@@ -32,7 +32,11 @@ export default function BottomSheet({
     useEffect(() => {
         if (!open) return;
 
+        // Con overflow-x: hidden en html (globals.css) quien scrollea es <html>, no <body>: se bloquean los dos
+        const html = document.documentElement;
+        const prevHtmlOverflow = html.style.overflow;
         const prevOverflow = document.body.style.overflow;
+        html.style.overflow = 'hidden';
         document.body.style.overflow = 'hidden';
 
         const handleKey = (e: KeyboardEvent) => {
@@ -47,6 +51,7 @@ export default function BottomSheet({
         wide?.addEventListener('change', handleResize);
 
         return () => {
+            html.style.overflow = prevHtmlOverflow;
             document.body.style.overflow = prevOverflow;
             document.removeEventListener('keydown', handleKey);
             wide?.removeEventListener('change', handleResize);

@@ -30,12 +30,17 @@ export default function Home() {
   return (
     <main className="body-landing-page">
       <div className="head">
-        <h1 className="head-text head-title">Descubre tus nuevos gustos</h1>
-        <p className="head-text">Comparte tus opiniones con la comunidad</p>
-        <p className="head-text">Escribe <span className="RVWS">RVWS</span> de tus artistas, álbumes y canciones favoritas</p>
-        <Button variant="primary" onClick={() => openModal('register') }>
-          Empieza aquí
-        </Button>
+        <h1 className="head-text head-title">Tu opinión sobre música, en una <span className="RVWS">ЯVW</span></h1>
+        <p className="head-text">Puntúa canciones, álbumes y artistas, y comparte tus <span className="RVWS">ЯVWS</span> con la comunidad</p>
+        <p className="head-text">Descubre música nueva a través de lo que escuchan los demás</p>
+        <div className="head-actions">
+          <Button type="button" variant="primary" onClick={() => openModal('register')}>
+            Empieza aquí
+          </Button>
+          <Button type="button" variant="outline" onClick={() => openModal('login')}>
+            Inicia sesión
+          </Button>
+        </div>
       </div>
       <div className="new">
         <h2 className="new-title section-title">Novedades</h2>
@@ -55,32 +60,32 @@ export default function Home() {
         <SearchBar placeholder="Buscar..." value="" onChange={(): void => {}} />
       </div>
       <div className="info-wrapper">
-        <h2 className="info-title section-title">¿Qué puedes hacer en <span className="RVWS">RVWD</span>?</h2>
+        <h2 className="info-title section-title">¿Qué puedes hacer en <span className="RVWS">ЯVWD</span>?</h2>
         <div className="info">
           <div className="info-card">
             <p className="info-card-text">
-              Escribe <span className="RVWS">RVWS</span> de artistas, álbumes y canciones 
+              Escribe <span className="RVWS">ЯVWS</span> de artistas, álbumes y canciones 
               y compártelas con tus amigos.
             </p>
           </div>
           <div className="info-card">
             <p className="info-card-text">
-              Sigue a tus artistas favoritos y mira sus <span className="RVWS">RVWS</span>.
+              Sigue a tus artistas favoritos y mira sus <span className="RVWS">ЯVWS</span>.
             </p>
           </div>
           <div className="info-card">
             <p className="info-card-text">
-              Escribe comentarios sobre otras <span className="RVWS">RVWS</span> e inicia conversaciones. 
+              Escribe comentarios sobre otras <span className="RVWS">ЯVWS</span> e inicia conversaciones. 
             </p>
           </div>
           <div className="info-card">
             <p className="info-card-text">
-              Sigue a tus amigos y entérate de sus últimas <span className="RVWS">RVWS</span>.
+              Sigue a tus amigos y entérate de sus últimas <span className="RVWS">ЯVWS</span>.
             </p>
           </div>
           <div className="info-card">
             <p className="info-card-text">
-              Visualiza las mejores <span className="RVWS">RVWS</span> de tus artistas o álbumes favoritos.
+              Visualiza las mejores <span className="RVWS">ЯVWS</span> de tus artistas o álbumes favoritos.
             </p>
           </div>
         </div>
