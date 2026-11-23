@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, Suspense } from 'react';
+import { useState, useEffect, useId, useRef, Suspense } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import './BottomNav.css';
@@ -14,14 +14,18 @@ function BottomNavContent() {
     const { openModal } = useModal();
     const pathname = usePathname();
 
-    const [isNotifOpen, setIsNotifOpen] = useState(false);
+    // Se guarda la ruta en la que se abrieron las notificaciones: al cambiar de página dejan de coincidir y quedan cerradas
+    const [notifOpenOn, setNotifOpenOn] = useState<string | null>(null);
+    const isNotifOpen = notifOpenOn !== null && notifOpenOn === pathname;
+    const setIsNotifOpen = (open: boolean) => setNotifOpenOn(open ? pathname : null);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const navRef = useRef<HTMLElement>(null);
     const searchPanelRef = useRef<HTMLDivElement>(null);
+    const notifButtonRef = useRef<HTMLButtonElement>(null);
+    const notifMenuId = useId();
 
-    const toggleNotifMenu = (e: React.MouseEvent) => {
-        e.stopPropagation();
+    const toggleNotifMenu = () => {
         setIsSearchOpen(false);
         setIsNotifOpen(!isNotifOpen);
     };
@@ -132,12 +136,12 @@ function BottomNavContent() {
             </button>
             <button
                 type="button"
+                ref={notifButtonRef}
                 className={`bottom-item ${isNotifOpen || isActive('/notifications') ? 'active' : ''}`}
                 onClick={toggleNotifMenu}
-                // Sin esto, el clic "fuera" del desplegable lo cerraría y el propio clic lo volvería a abrir
-                onMouseDown={(e) => e.stopPropagation()}
                 aria-label="Notificaciones"
                 aria-expanded={isNotifOpen}
+                aria-controls={notifMenuId}
             >
                 <span className="icon-bell"></span>
             </button>
@@ -151,7 +155,11 @@ function BottomNavContent() {
             </Link>
             {/* Se abre encima de la barra, con su mismo ancho (igual que la búsqueda) */}
             {isNotifOpen && (
-                <NotificationDropdown onClose={() => setIsNotifOpen(false)} />
+                <NotificationDropdown
+                    id={notifMenuId}
+                    triggerRef={notifButtonRef}
+                    onClose={() => setIsNotifOpen(false)}
+                />
             )}
 
         </nav>

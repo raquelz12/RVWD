@@ -24,27 +24,21 @@
     margin: 0;
 }
 
-/* Columnas */
+/* Columnas: notificaciones + solicitudes (SideDrawer) */
 .notifications-columns-wrapper {
     display: flex;
     flex-direction: row;
     gap: 8rem;
     width: 100%;
-    justify-content: space-between;
     padding-bottom: 4rem;
 }
 
 .notifications-main-column {
     flex: 1.2;
+    min-width: 0;
     display: flex;
     flex-direction: column;
     gap: 4rem;
-}
-
-.notifications-side-column {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
 }
 
 .notifications-column-section {
@@ -54,6 +48,9 @@
 }
 
 .notifications-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
     display: flex;
     flex-direction: column;
     gap: 3rem;
@@ -96,12 +93,13 @@
     display: flex;
     flex-direction: column;
     gap: 0.8rem;
-    height: 100%;
-    justify-content: space-evenly;
+    flex: 1;
+    min-width: 0;
 }
 
 .notifications-container .notif-item-header {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: 1rem;
 }
@@ -111,16 +109,23 @@
     height: 2.4rem;
     border-radius: 50%;
     object-fit: cover;
+    flex-shrink: 0;
 }
 
 .notifications-container .notif-username {
     font-size: 1.3rem;
     color: var(--primary-white);
+    overflow-wrap: anywhere;
 }
 
 .notifications-container .notif-date {
     font-size: 1.2rem;
     color: var(--text-secondary);
+}
+
+/* Punto de no leída: a la derecha, igual que en el desplegable */
+.notifications-container .notif-unread {
+    margin-left: auto;
 }
 
 .notifications-container .notif-text {
@@ -134,12 +139,15 @@
     font-weight: 600;
 }
 
-/* Solicitudes de Seguimiento */
+/* Solicitudes de seguimiento (dentro de SideDrawer) */
+.notifications-requests-list {
+    width: 100%;
+}
+
 .follow-request-item {
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    margin-left: 2rem;
 }
 
 .follow-request-text {
@@ -149,33 +157,43 @@
 
 .follow-request-actions {
     display: flex;
+    flex-wrap: wrap;
     gap: 1.5rem;
     margin-left: 3.4rem;
     margin-top: 0.5rem;
 }
 
-.follow-request-actions .btn-small {
+.follow-request-actions .follow-request-button {
     padding: 0.6rem 2rem;
     font-size: 1.3rem;
-    min-width: auto;
-    width: auto;
 }
 
-/* Responsive */
+/* Escritorio: el SideDrawer es la columna derecha, con el título alineado como los de la izquierda */
+@media (min-width: 1025px) {
+    .notifications-columns-wrapper .side-drawer {
+        flex: 1;
+        min-width: 0;
+    }
 
-.mobile-follow-requests,
-.mobile-back-requests {
-    display: none;
+    .notifications-columns-wrapper .side-drawer-header {
+        justify-content: flex-start;
+    }
+
+    .notifications-columns-wrapper .side-drawer-title {
+        margin: 0 0 2.5rem;
+        text-align: left;
+    }
+
+    .follow-request-item {
+        margin-left: 2rem;
+    }
 }
 
-@media (max-width: 900px) {
+/* Hasta 1024px las solicitudes van en el cajón: queda una sola columna */
+@media (max-width: 1024px) {
     .notifications-columns-wrapper {
         flex-direction: column;
-        gap: 5rem;
-    }
-    
-    .follow-request-item {
-        margin-left: 0;
+        gap: 0;
     }
 }
 
@@ -183,44 +201,13 @@
     .notifications-container {
         padding: 2rem 1.5rem;
     }
-    
+
     .notifications-header {
         margin-bottom: 2rem;
         align-items: center;
     }
 
-    .hide-on-mobile {
-        display: none !important;
-    }
-
-    .desktop-only-title {
-        display: none;
-    }
-
-    .mobile-follow-requests,
-    .mobile-back-requests {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 1rem;
-        margin-bottom: 3rem;
-        text-decoration: none;
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 3rem;
-        padding: 1.2rem 2rem;
-        color: var(--primary-white);
-        font-size: 1.6rem;
-        font-family: inherit;
-        cursor: pointer;
-        width: 100%;
-    }
-
     .notifications-column-title {
         text-align: center;
-    }
-
-    .notifications-list {
-        align-items: center;
     }
 }

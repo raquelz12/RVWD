@@ -71,6 +71,19 @@
         filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(103%) contrast(103%);
     }
 
+    /* Aviso de novedades: en la esquina, con borde claro para que se vea sobre el botón rojo */
+    .side-drawer-dot {
+        position: absolute;
+        top: -0.3rem;
+        left: 0.4rem;
+    }
+
+    .side-drawer-dot .dot {
+        width: 1.2rem;
+        height: 1.2rem;
+        box-shadow: 0 0 0 0.2rem var(--primary-white);
+    }
+
     .side-drawer.is-open .side-drawer-open-btn {
         opacity: 0;
         pointer-events: none;

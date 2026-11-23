@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useId } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import NotificationDropdown from '../NotificationDropdown/NotificationDropdown';
@@ -14,6 +14,8 @@ interface Props {
 export default function AdminHeader({ pathname }: Props) {
     const router = useRouter();
     const [isNotifOpen, setIsNotifOpen] = useState(false);
+    const notifButtonRef = useRef<HTMLButtonElement>(null);
+    const notifMenuId = useId();
     const [isAccountOpen, setIsAccountOpen] = useState(false);
     const accountRef = useRef<HTMLDivElement>(null);
 
@@ -60,16 +62,23 @@ export default function AdminHeader({ pathname }: Props) {
             <div className="admin-header-actions">
                 <div style={{ position: 'relative' }}>
                     <button
-                        className="nav-button"
+                        type="button"
+                        ref={notifButtonRef}
+                        className={`nav-button ${isNotifOpen ? 'active' : ''}`}
                         aria-label="Notificaciones"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            setIsNotifOpen(!isNotifOpen);
-                        }}
+                        aria-expanded={isNotifOpen}
+                        aria-controls={notifMenuId}
+                        onClick={() => setIsNotifOpen((open) => !open)}
                     >
                         <span className="icon-bell"></span>
                     </button>
-                    {isNotifOpen && <NotificationDropdown onClose={() => setIsNotifOpen(false)} />}
+                    {isNotifOpen && (
+                        <NotificationDropdown
+                            id={notifMenuId}
+                            triggerRef={notifButtonRef}
+                            onClose={() => setIsNotifOpen(false)}
+                        />
+                    )}
                 </div>
                 <div className="admin-account" ref={accountRef}>
                     <button

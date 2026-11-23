@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useId, useState } from 'react';
+import Dot from '../Dot/Dot';
 import './SideDrawer.css';
 
 interface SideDrawerProps {
@@ -8,11 +9,13 @@ interface SideDrawerProps {
     title: string;
     /** Icono del botón flotante que abre el cajón en móvil / tablet */
     icon: string;
+    /** Punto rojo en el botón flotante: hay algo nuevo dentro (solo móvil / tablet, que es donde se ve el botón) */
+    dot?: boolean;
     children: React.ReactNode;
 }
 
 // En escritorio es una columna lateral fija; en móvil / tablet se abre como cajón desde la derecha
-export default function SideDrawer({ title, icon, children }: SideDrawerProps) {
+export default function SideDrawer({ title, icon, dot = false, children }: SideDrawerProps) {
     const [open, setOpen] = useState(false);
     const panelId = useId();
 
@@ -32,11 +35,16 @@ export default function SideDrawer({ title, icon, children }: SideDrawerProps) {
                 type="button"
                 className="side-drawer-open-btn"
                 onClick={() => setOpen(true)}
-                aria-label={`Abrir ${title.toLowerCase()}`}
+                aria-label={`Abrir ${title.toLowerCase()}${dot ? ' (hay nuevas)' : ''}`}
                 aria-expanded={open}
                 aria-controls={panelId}
             >
                 <img src={icon} alt="" />
+                {dot && (
+                    <span className="side-drawer-dot">
+                        <Dot type="filled" />
+                    </span>
+                )}
             </button>
             <div className="side-drawer-overlay" onClick={() => setOpen(false)} aria-hidden="true" />
             <div className="side-drawer-panel" id={panelId}>

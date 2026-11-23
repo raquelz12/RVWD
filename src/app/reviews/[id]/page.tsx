@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import { useCallback, useEffect, useState, useSyncExternalStore, Suspense } from 'react';
+import { useCallback, useEffect, useState, Suspense } from 'react';
 import ReviewBigCard from '../../../../components/ReviewBigCard/ReviewBigCard';
 import Button from '../../../../components/Button/Button';
 import TextArea from '../../../../components/TextArea/TextArea';
@@ -14,6 +14,7 @@ import MoreMenu, { type MoreMenuItem } from '../../../../components/MoreMenu/Mor
 import Rvw from '../../../../components/Rvw/Rvw';
 import { useModal } from '@/context/ModalContext';
 import { formatRelativeDate } from '@/app/lib/adminFilters';
+import { useNowMinute } from '@/app/lib/useNowMinute';
 import '@/styles/media-detail.css';
 import './review.css';
 
@@ -69,17 +70,6 @@ const COMMENTS: ReviewComment[] = [
 
 const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
 
-
-const subscribeMinute = (onChange: () => void) => {
-    const timer = setInterval(onChange, 60_000);
-    return () => clearInterval(timer);
-};
-const getMinute = () => Math.floor(Date.now() / 60_000);
-const getServerMinute = () => null;
-
-function useNowMinute() {
-    return useSyncExternalStore(subscribeMinute, getMinute, getServerMinute);
-}
 
 function CommentDate({ iso, nowMinute, className }: { iso: string; nowMinute: number | null; className?: string }) {
     return (
