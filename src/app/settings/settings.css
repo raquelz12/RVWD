@@ -154,8 +154,15 @@
     gap: 1.4rem;
 }
 
+/* min-width: 0 para que mande el ancho (Select trae min-width: 20rem) */
 .settings-inline-select {
     width: 17rem;
+    min-width: 0;
+}
+
+/* Menos relleno que un Select de formulario, para que «180 días» o «10 denuncias» quepan */
+.settings-inline-select .custom-select-trigger {
+    padding: 0 1.6rem;
 }
 
 /* --- Bloques con más contenido (tabla de avisos, listas...) --- */
@@ -432,7 +439,7 @@
     }
 
     .settings-inline-select {
-        width: 13rem;
+        width: 15rem;
     }
 
     .settings-block-head {

@@ -475,8 +475,9 @@ function AdminContentDetail({ initial, initialAuthor }: { initial: AdminContent;
                 onConfirm={handleAddSanction}
             >
                 <div className="modal-field">
-                    <span className="admin-dialog-label">Motivo</span>
+                    <span id="content-dialog-motivo-label" className="admin-dialog-label">Motivo</span>
                     <Select
+                        labelledBy="content-dialog-motivo-label"
                         options={SANCTION_REASONS}
                         value={sanctionReason}
                         onChange={(val) => {

@@ -10,11 +10,13 @@ export interface ModalProps {
   children: React.ReactNode;
   /** id del título del modal, para que el lector de pantalla lo anuncie al abrir */
   labelledBy?: string;
+  /** Clase extra para el panel (p. ej. uno más ancho, como el editor de textos legales) */
+  className?: string;
 }
 
 const FOCUSABLE = 'input, select, textarea, button, a[href], [tabindex]:not([tabindex="-1"])';
 
-export default function Modal({ isOpen, onClose, children, labelledBy }: ModalProps) {
+export default function Modal({ isOpen, onClose, children, labelledBy, className = '' }: ModalProps) {
   const overlayRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   // Si el clic empezó dentro (p. ej. seleccionando texto) y se suelta fuera, no se cierra
@@ -133,7 +135,7 @@ export default function Modal({ isOpen, onClose, children, labelledBy }: ModalPr
     >
       <div
         ref={dialogRef}
-        className="modal-content"
+        className={`modal-content ${className}`.trim()}
         role="dialog"
         aria-modal="true"
         aria-labelledby={labelledBy}

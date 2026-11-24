@@ -141,6 +141,7 @@ export default function SettingsPage() {
                         control={
                             <Select
                                 className="settings-inline-select"
+                                ariaLabel="Privacidad de la cuenta"
                                 options={PRIVACY_OPTIONS}
                                 value={privacy}
                                 onChange={(v) => {

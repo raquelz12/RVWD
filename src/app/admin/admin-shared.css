@@ -413,14 +413,6 @@
     opacity: 1;
 }
 
-.visually-hidden {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip: rect(0 0 0 0);
-    white-space: nowrap;
-}
 /* pestañas de un listado (p. ej. Bandeja: Todo / Contacto / Sugerencias) */
 .admin-tabs {
     display: flex;
@@ -1049,63 +1041,7 @@
     color: rgba(255, 255, 255, 0.7);
 }
 
-/* Modales */
-.admin-modal-overlay {
-    position: fixed;
-    inset: 0;
-    background-color: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(4px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 100;
-    padding: 2rem;
-}
-
-.admin-modal-card {
-    position: relative;
-    width: 100%;
-    max-width: 40rem;
-    background: linear-gradient(180deg, rgba(44, 52, 56, 0.96) 0%, rgba(56, 68, 72, 0.96) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    border-radius: 2rem;
-    padding: 3.2rem;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    gap: 1.8rem;
-    color: var(--primary-white);
-}
-
-.modal-close-btn {
-    position: absolute;
-    top: 1.8rem;
-    right: 2rem;
-    background: none;
-    border: none;
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 1.8rem;
-    cursor: pointer;
-    transition: color 0.2s ease;
-}
-
-.modal-close-btn:hover {
-    color: #ffffff;
-}
-
-.admin-modal-card h3 {
-    font-size: 2.2rem;
-    font-weight: 500;
-    margin: 0;
-    padding-right: 2rem;
-}
-
-.modal-subtitle {
-    font-size: 1.3rem;
-    color: rgba(255, 255, 255, 0.7);
-    margin: -1.2rem 0 0 0;
-}
-
+/* Piezas del contenido de los modales (AdminDialog, sobre components/Modal) */
 .modal-field {
     display: flex;
     flex-direction: column;
@@ -1206,21 +1142,6 @@
     .sanction-btn {
         flex: 1;
     }
-
-    /* Modales seguros en pantallas pequeñas o con teclado abierto */
-    .admin-modal-overlay {
-        padding: 1.6rem;
-    }
-
-    .admin-modal-card {
-        padding: 2.4rem 2rem;
-        max-height: 90dvh;
-        overflow-y: auto;
-    }
-
-    .admin-modal-card h3 {
-        font-size: 2rem;
-    }
 }
 
 @media (max-width: 480px) {
@@ -1244,9 +1165,16 @@
 /* aviso breve (p. ej. "ID copiado") */
 .admin-toast {
     position: fixed;
-    left: 50%;
+    /* Centrado con left/right + margin: con left: 50% solo podía ocupar media pantalla y
+       los avisos largos se partían en muchas líneas */
+    left: 0;
+    right: 0;
     bottom: 3rem;
-    transform: translateX(-50%);
+    width: fit-content;
+    max-width: calc(100% - 3.2rem);
+    margin: 0 auto;
+    box-sizing: border-box;
+    text-align: center;
     padding: 1rem 1.8rem;
     border-radius: 1rem;
     background-color: var(--bg-elevated);

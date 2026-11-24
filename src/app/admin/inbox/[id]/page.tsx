@@ -240,6 +240,7 @@ function AdminInboxDetail({ initial }: { initial: InboxMessage }) {
                 <div className="admin-detail-actions inbox-detail-actions">
                     <Select
                         className="inbox-status-select"
+                        ariaLabel="Cambiar estado del mensaje"
                         options={statusOptions}
                         value={message.status}
                         onChange={(val) => changeStatus(val as InboxStatus)}
@@ -284,6 +285,7 @@ function AdminInboxDetail({ initial }: { initial: InboxMessage }) {
                             <h3 id={REPLY_TITLE_ID}>Responder a {message.email}</h3>
                             <Select
                                 className="inbox-template-select"
+                                ariaLabel="Usar plantilla"
                                 options={REPLY_TEMPLATES[message.type].map(({ value, label }) => ({ value, label }))}
                                 value={replyTemplate}
                                 onChange={applyTemplate}
@@ -306,8 +308,9 @@ function AdminInboxDetail({ initial }: { initial: InboxMessage }) {
                         </p>
                         <div className="inbox-reply-footer">
                             <div className="inbox-reply-status">
-                                <span>Al enviar, cambiar estado a</span>
+                                <span id="inbox-reply-status-label">Al enviar, cambiar estado a</span>
                                 <Select
+                                    labelledBy="inbox-reply-status-label"
                                     options={statusOptions}
                                     value={replyStatus}
                                     onChange={(val) => setReplyStatus(val as InboxStatus)}
@@ -391,11 +394,8 @@ function AdminInboxDetail({ initial }: { initial: InboxMessage }) {
                 </div>
             </div>
 
-            {toast && (
-                <div className="admin-toast" role="status">
-                    {toast}
-                </div>
-            )}
+            {/* Siempre en el DOM: los lectores de pantalla solo anuncian cambios en una región que ya existía */}
+            <div role="status">{toast && <div className="admin-toast">{toast}</div>}</div>
         </div>
     );
 }

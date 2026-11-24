@@ -318,8 +318,9 @@ function AdminUserDetail({ initial }: { initial: AdminUser }) {
                 onConfirm={handleAddSanction}
             >
                 <div className="modal-field">
-                    <span className="admin-dialog-label">Motivo</span>
+                    <span id="user-dialog-motivo-label" className="admin-dialog-label">Motivo</span>
                     <Select
+                        labelledBy="user-dialog-motivo-label"
                         options={SANCTION_REASONS}
                         value={sanctionReason}
                         onChange={(val) => {
@@ -376,8 +377,9 @@ function AdminUserDetail({ initial }: { initial: AdminUser }) {
                 onConfirm={handleConfirmBan}
             >
                 <div className="modal-field">
-                    <span className="admin-dialog-label">Motivo</span>
+                    <span id="user-dialog-motivo-2-label" className="admin-dialog-label">Motivo</span>
                     <Select
+                        labelledBy="user-dialog-motivo-2-label"
                         options={BAN_REASONS}
                         value={banReason}
                         onChange={(val) => {
@@ -410,8 +412,9 @@ function AdminUserDetail({ initial }: { initial: AdminUser }) {
                 onConfirm={handleConfirmSuspend}
             >
                 <div className="modal-field">
-                    <span className="admin-dialog-label">Duración</span>
+                    <span id="user-dialog-duracion-label" className="admin-dialog-label">Duración</span>
                     <Select
+                        labelledBy="user-dialog-duracion-label"
                         options={SUSPEND_DURATIONS}
                         value={suspendDuration}
                         onChange={setSuspendDuration}
@@ -440,8 +443,9 @@ function AdminUserDetail({ initial }: { initial: AdminUser }) {
                 onConfirm={handleSaveRole}
             >
                 <div className="modal-field">
-                    <span className="admin-dialog-label">Nuevo rol</span>
+                    <span id="user-dialog-nuevo-rol-label" className="admin-dialog-label">Nuevo rol</span>
                     <Select
+                        labelledBy="user-dialog-nuevo-rol-label"
                         options={ROLE_OPTIONS}
                         value={selectedRole}
                         onChange={(val) => setSelectedRole(val as UserRole)}

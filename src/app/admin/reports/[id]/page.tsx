@@ -418,8 +418,9 @@ function AdminReportDetail({ initialReport, initialUser }: { initialReport: Admi
                 onConfirm={handleAddSanction}
             >
                 <div className="modal-field">
-                    <span className="admin-dialog-label">Motivo</span>
+                    <span id="report-dialog-motivo-label" className="admin-dialog-label">Motivo</span>
                     <Select
+                        labelledBy="report-dialog-motivo-label"
                         options={SANCTION_REASONS}
                         value={sanctionReason}
                         onChange={(val) => {
@@ -457,8 +458,9 @@ function AdminReportDetail({ initialReport, initialUser }: { initialReport: Admi
                 onConfirm={handleConfirmResolve}
             >
                 <div className="modal-field">
-                    <span className="admin-dialog-label">Resolución</span>
+                    <span id="report-dialog-resolucion-label" className="admin-dialog-label">Resolución</span>
                     <Select
+                        labelledBy="report-dialog-resolucion-label"
                         options={RESOLUTION_OPTIONS}
                         value={resolution}
                         onChange={(val) => {
@@ -558,8 +560,9 @@ function AdminReportDetail({ initialReport, initialUser }: { initialReport: Admi
                 onConfirm={handleConfirmSuspend}
             >
                 <div className="modal-field">
-                    <span className="admin-dialog-label">Duración</span>
+                    <span id="report-dialog-duracion-label" className="admin-dialog-label">Duración</span>
                     <Select
+                        labelledBy="report-dialog-duracion-label"
                         options={SUSPEND_DURATIONS}
                         value={suspendDuration}
                         onChange={setSuspendDuration}
@@ -591,8 +594,9 @@ function AdminReportDetail({ initialReport, initialUser }: { initialReport: Admi
                 onConfirm={handleConfirmBan}
             >
                 <div className="modal-field">
-                    <span className="admin-dialog-label">Motivo</span>
+                    <span id="report-dialog-motivo-2-label" className="admin-dialog-label">Motivo</span>
                     <Select
+                        labelledBy="report-dialog-motivo-2-label"
                         options={BAN_REASONS}
                         value={banReason}
                         onChange={(val) => {
