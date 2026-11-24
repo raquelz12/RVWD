@@ -47,7 +47,13 @@ export function StatCard({ label, value, previous, decimals = 0, suffix = '', in
                         className={`stat-delta ${tone}`}
                         title={comparedTo ? `Frente a ${comparedTo}: ${formatNumber(previous ?? 0, decimals)}${suffix}` : undefined}
                     >
-                        {rounded > 0 ? '↑' : rounded < 0 ? '↓' : '='} {Math.abs(rounded)} %
+                        <span aria-hidden="true">
+                            {rounded > 0 ? '↑' : rounded < 0 ? '↓' : '='} {Math.abs(rounded)} %
+                        </span>
+                        <span className="sr-only">
+                            {rounded === 0 ? 'Igual que' : `${Math.abs(rounded)} % ${rounded > 0 ? 'más' : 'menos'} que`}{' '}
+                            {comparedTo ?? 'el periodo anterior'}
+                        </span>
                     </span>
                 )}
                 {hint && <span className="stat-card-hint">{hint}</span>}
@@ -94,11 +100,12 @@ interface BarChartProps {
 export function BarChart({ data, labelEvery = 1, highlightMax = true, unit = '' }: BarChartProps) {
     const max = Math.max(...data.map((d) => d.value), 1);
     const maxIndex = data.findIndex((d) => d.value === max);
+    const tip = (d: { label: string; value: number }) => `${d.label}: ${formatNumber(d.value)}${unit}`;
     return (
-        <div className="stats-bars" role="img" aria-label={data.map((d) => `${d.label}: ${d.value}`).join(', ')}>
+        <div className="stats-bars" role="img" aria-label={data.map(tip).join(', ')}>
             <div className="stats-bars-plot">
                 {data.map((d, i) => (
-                    <div key={i} className="stats-bar-col" data-tip={`${d.label}: ${formatNumber(d.value)}${unit}`}>
+                    <div key={i} className="stats-bar-col" data-tip={tip(d)}>
                         <div
                             className={`stats-bar ${highlightMax && i === maxIndex ? 'peak' : ''}`}
                             style={{ height: `${Math.max(2, (d.value / max) * 100)}%` }}
@@ -131,7 +138,10 @@ export function LineChart({ labels, series, labelEvery = 1 }: LineChartProps) {
     const max = Math.max(...series.flatMap((s) => s.values), 1) * 1.1;
     const x = (i: number) => (labels.length === 1 ? W / 2 : (i / (labels.length - 1)) * W);
     const y = (v: number) => H - (v / max) * H;
-    const gridValues = [0.25, 0.5, 0.75, 1].map((f) => Math.round(max * f));
+    // líneas guía al 25, 50, 75 y 100 % de la escala, cada una a su altura real
+    const gridLines = [0.25, 0.5, 0.75, 1];
+    const sum = (values: number[]) => values.reduce((a, b) => a + b, 0);
+    const label = series.map((s) => `${s.name}: ${formatNumber(sum(s.values))} en total`).join('; ');
 
     return (
         <div className="stats-line">
@@ -144,11 +154,13 @@ export function LineChart({ labels, series, labelEvery = 1 }: LineChartProps) {
             </div>
             <div className="stats-line-plot">
                 <div className="stats-line-grid" aria-hidden="true">
-                    {[...gridValues].reverse().map((v) => (
-                        <span key={v}>{formatNumber(v)}</span>
+                    {gridLines.map((f) => (
+                        <span key={f} style={{ bottom: `${f * 100}%` }}>
+                            {formatNumber(Math.round(max * f))}
+                        </span>
                     ))}
                 </div>
-                <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" role="img" aria-label={series.map((s) => s.name).join(' y ')}>
+                <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" role="img" aria-label={label}>
                     {series.map((s, si) => {
                         const points = s.values.map((v, i) => `${x(i)},${y(v)}`).join(' ');
                         return (
@@ -190,7 +202,8 @@ interface RankListProps {
 }
 
 export function RankList({ items, unit = '', decimals = 0, max, numbered }: RankListProps) {
-    const top = max ?? Math.max(...items.map((i) => i.value), 1);
+    // nunca 0: con un máximo 0 las barras saldrían con ancho NaN
+    const top = Math.max(max ?? Math.max(...items.map((i) => i.value)), 1);
     return (
         <ol className={`stats-rank ${numbered ? 'numbered' : ''}`}>
             {items.map((item) => {

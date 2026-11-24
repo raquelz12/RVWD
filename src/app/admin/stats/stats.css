@@ -176,10 +176,6 @@
     gap: 0.4rem 1.2rem;
 }
 
-.stats-panel-head .section-heading {
-    margin: 0;
-}
-
 .stats-panel-sub {
     font-size: 1.3rem;
     color: var(--text-secondary);
@@ -263,7 +259,9 @@
     font-size: 1.2rem;
     color: var(--text-secondary);
     white-space: nowrap;
-    overflow: visible;
+    /* flex para que el texto quede centrado aunque sea más ancho que su columna */
+    display: flex;
+    justify-content: center;
 }
 
 /* líneas */
@@ -284,13 +282,16 @@
 .stats-line-grid {
     position: absolute;
     inset: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
     pointer-events: none;
 }
 
+/* cada línea se coloca con bottom (en el TSX) y baja su propio alto para que
+   la raya quede justo a esa altura y el número debajo */
 .stats-line-grid span {
+    position: absolute;
+    left: 0;
+    right: 0;
+    transform: translateY(100%);
     border-top: 1px dashed rgba(255, 255, 255, 0.1);
     font-size: 1.1rem;
     color: rgba(255, 255, 255, 0.4);
@@ -325,13 +326,13 @@
     flex: 0 0 0;
 }
 
+/* la primera y la última se pegan al borde en vez de salirse de la gráfica */
 .stats-line-axis .stats-axis-label:first-child {
-    text-align: left;
+    justify-content: flex-start;
 }
 
 .stats-line-axis .stats-axis-label:last-child {
-    text-align: right;
-    direction: rtl;
+    justify-content: flex-end;
 }
 
 /* leyenda */
@@ -412,6 +413,11 @@
 
 a.stats-rank-row:hover {
     background-color: rgba(255, 255, 255, 0.06);
+}
+
+a.stats-rank-row:focus-visible {
+    outline: 2px solid var(--primary-red-hover);
+    outline-offset: 2px;
 }
 
 .stats-rank-text {
@@ -527,6 +533,11 @@ a.stats-rank-row:hover {
         grid-template-columns: repeat(2, 1fr);
     }
 
+    /* 3 tarjetas en 2 columnas: la última ocupa toda la fila para no dejar hueco */
+    .stats-cards.three > :last-child {
+        grid-column: 1 / -1;
+    }
+
     .stats-panel {
         padding: 1.8rem 1.6rem;
     }
@@ -542,7 +553,7 @@ a.stats-rank-row:hover {
     }
 
     .stat-card {
-        padding: 1.4rem 1.4rem;
+        padding: 1.4rem;
     }
 
     .stat-card-value {
