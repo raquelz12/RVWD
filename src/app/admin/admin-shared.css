@@ -120,8 +120,8 @@
     gap: 0.8rem;
 }
 
-.admin-filters-group .placeholder-text,
-.admin-filters-group .selected-text {
+.admin-filters-group .custom-select-placeholder,
+.admin-filters-group .custom-select-value {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

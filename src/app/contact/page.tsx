@@ -6,106 +6,123 @@ import Button from '../../../components/Button/Button';
 import Input from '../../../components/Input/Input';
 import TextArea from '../../../components/TextArea/TextArea';
 import Select from '../../../components/Select/Select';
+import '@/styles/text-page.css';
 import '@/styles/forms.css';
 import './contact.css';
+
+const MOTIVOS = [
+    { value: 'duda', label: 'Duda' },
+    { value: 'problema', label: 'Problema con mi cuenta' },
+    { value: 'colaboracion', label: 'Colaboración' },
+    { value: 'queja', label: 'Queja' },
+    { value: 'otra', label: 'Otra' },
+];
 
 export default function ContactPage() {
     const [mensaje, setMensaje] = useState('');
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
     const [motivo, setMotivo] = useState('');
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    // El aviso de enviado se queda hasta que se vuelve a escribir
+    const [sent, setSent] = useState(false);
+
+    const canSubmit = Boolean(name.trim() && email.trim() && motivo && mensaje.trim());
+
+    // Cualquier cambio en un campo quita el aviso de enviado
+    const edit = <T,>(setter: (value: T) => void) => (value: T) => {
+        setter(value);
+        setSent(false);
+    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        setIsSubmitting(true);
+        if (!canSubmit) return;
+        // TODO: enviar el mensaje cuando haya backend
 
         setMensaje('');
         setEmail('');
         setName('');
         setMotivo('');
-
-        setTimeout(() => {
-            setIsSubmitting(false);
-        }, 5000);
-
-        // Aquí en el futuro enviarás esto a tu backend
+        setSent(true);
     };
 
     return (
-        <div className="contact-container">
-            <div className="contact-header">
+        <div className="text-page">
+            <div className="text-page-header">
                 <h1 className="page-title">Contacto</h1>
-                <p className="contact-description">
+                <p className="text-page-intro">
                     ¿Tienes alguna duda, problema con tu cuenta o simplemente quieres comentarnos algo? Escríbenos e intentaremos responderte lo antes posible.
                 </p>
             </div>
-            <div className="contact-column-wrapper">
-                <div className="contact-column">
-                    <form onSubmit={handleSubmit} className="contact-form">
+            <div className="form-page-columns">
+                <div className="form-page-column">
+                    <form onSubmit={handleSubmit} className="form-page-form">
                         <div className="form-group">
-                            <label htmlFor="name" className="form-label">Nombre*</label>
+                            <label htmlFor="contact-name" className="form-label">Nombre*</label>
                             <Input
-                                id="name"
+                                id="contact-name"
                                 type="text"
+                                autoComplete="name"
+                                aria-required="true"
                                 placeholder="María García"
                                 value={name}
-                                onChange={(e) => setName(e.target.value)}
+                                onChange={(e) => edit(setName)(e.target.value)}
                             />
                         </div>
                         <div className="form-group">
-                            <label htmlFor="email" className="form-label">Email*</label>
+                            <label htmlFor="contact-email" className="form-label">Email*</label>
                             <Input
-                                id="email"
+                                id="contact-email"
                                 type="email"
+                                autoComplete="email"
+                                aria-required="true"
                                 placeholder="email@email.com"
                                 value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                onChange={(e) => edit(setEmail)(e.target.value)}
                             />
                         </div>
                         <div className="form-group">
-                            <span className="form-label">Motivo*</span>
+                            <span id="contact-reason-label" className="form-label">Motivo*</span>
                             <Select
-                                options={[
-                                    { value: 'duda', label: 'Duda' },
-                                    { value: 'problema', label: 'Problema con mi cuenta' },
-                                    { value: 'colaboracion', label: 'Colaboración' },
-                                    { value: 'queja', label: 'Queja' },
-                                    { value: 'otra', label: 'Otra' },
-                                ]}
+                                labelledBy="contact-reason-label"
+                                options={MOTIVOS}
                                 value={motivo}
-                                onChange={(value) => setMotivo(value)}
+                                onChange={edit(setMotivo)}
                                 placeholder="Selecciona un motivo"
                             />
                         </div>
                         <div className="form-group">
-                            <label htmlFor="message" className="form-label">Escribe tu mensaje*</label>
+                            <label htmlFor="contact-message" className="form-label">Escribe tu mensaje*</label>
                             <TextArea
-                                id="message"
+                                id="contact-message"
+                                aria-required="true"
                                 placeholder="Cuéntanos de qué trata tu mensaje de forma breve..."
                                 value={mensaje}
-                                onChange={(e) => setMensaje(e.target.value)}
-                                className="form-textarea"
+                                onChange={(e) => edit(setMensaje)(e.target.value)}
                             />
                         </div>
                         <p className="terms-conditions">
                             Al enviar este mensaje, aceptas las <a href="/legal" target="_blank" rel="noopener noreferrer" className="inline-link">condiciones de uso</a> y la <a href="/privacy" target="_blank" rel="noopener noreferrer" className="inline-link">política de privacidad</a>.
                         </p>
                         <p className="required-fields-note">* Campos obligatorios</p>
-                        <Button type="submit" className="submit-button">Enviar mensaje</Button>
-                        {isSubmitting && (
-                            <span className="success-message" role="status">
-                                ¡Gracias por tu mensaje! Te contestaremos lo antes posible.
-                            </span>
-                        )}
+                        <Button type="submit" className="form-page-submit" disabled={!canSubmit}>Enviar mensaje</Button>
+                        {/* Siempre en el DOM: los lectores de pantalla solo anuncian cambios en una región que ya existía */}
+                        <div role="status">
+                            {sent && (
+                                <p className="success-message">
+                                    ¡Gracias por tu mensaje! Te contestaremos lo antes posible.
+                                </p>
+                            )}
+                        </div>
                     </form>
                 </div>
-                <div className="contact-column">
-                    <h2 className="block-title">Si lo prefieres puedes contactarnos mandando un email a:</h2>
-                    <a href="mailto:rvwd@gmail.com" className="contact-column-email inline-link">rvwd@gmail.com</a>
-                    <p className="contact-column-text">Si quieres denunciar contenido o a otro usuario, usa la opción de “Denunciar” de la publicación o el perfil. Así lo revisamos antes.</p>
-                    <p className="contact-column-text">Y si tienes cualquier sugerencia que pueda ser útil te animamos a hacerlo desde el <Link href="/suggestions" className="inline-link">buzón de sugerencias</Link>.</p>
-                </div>
+                <section className="form-page-column" aria-labelledby="contact-email-title">
+                    <h2 id="contact-email-title" className="block-title">¿Prefieres el email?</h2>
+                    <p className="contact-text">Si lo prefieres, puedes contactarnos mandando un email a:</p>
+                    <a href="mailto:rvwd@gmail.com" className="contact-email inline-link">rvwd@gmail.com</a>
+                    <p className="contact-text">Si quieres denunciar contenido o a otro usuario, usa la opción de “Denunciar” de la publicación o el perfil. Así lo revisamos antes.</p>
+                    <p className="contact-text">Y si tienes cualquier sugerencia que pueda ser útil te animamos a hacerlo desde el <Link href="/suggestions" className="inline-link">buzón de sugerencias</Link>.</p>
+                </section>
             </div>
         </div>
     );
