@@ -1,11 +1,6 @@
 /* Detalle de contenido: solo lo propio de esta página.
-   Estructura de detalle, menú de 3 puntos, historial (estilo sanciones) y modales
-   en ../../admin-shared.css; estados y punto de pendientes en ../content.css */
-
-.content-detail-empty {
-    font-size: 1.6rem;
-    color: var(--text-secondary);
-}
+   Estructura de detalle, historial (estilo sanciones) y modales en ../../admin-shared.css;
+   estados y vista previa del modal en ../content.css */
 
 /* franja de oculto / eliminado */
 .content-status-banner {
@@ -34,6 +29,7 @@
     flex-basis: 100%;
     color: rgba(255, 255, 255, 0.75);
     font-style: italic;
+    overflow-wrap: anywhere;
 }
 
 /* botones: el de sanción es más largo */
@@ -57,8 +53,9 @@
     min-width: 0;
 }
 
-/* tarjeta con el contenido completo */
+/* tarjeta con el contenido completo; corta las URLs largas (spam) para que no desborde en móvil */
 .content-detail-card {
+    overflow-wrap: anywhere;
     display: flex;
     flex-direction: column;
     gap: 1.8rem;
@@ -251,16 +248,13 @@ a.content-context:hover {
     font-size: 1.5rem;
 }
 
-/* historial: mismo aspecto que las sanciones */
+/* historial: mismo aspecto que las sanciones (.sanctions-list), algo más junto */
 .content-history-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
     gap: 2.2rem;
 }
 
 @media (max-width: 1100px) {
-    .admin-detail-grid:has(.content-detail-main) {
+    .content-detail-grid {
         grid-template-columns: 1fr;
         gap: 4rem;
     }
@@ -272,7 +266,18 @@ a.content-context:hover {
         gap: 3.5rem;
     }
 
-    /* sanción a lo ancho; ocultar y eliminar debajo, a medias */
+    .content-detail-card {
+        padding: 1.6rem;
+    }
+
+    .content-rvw-title {
+        font-size: 1.8rem;
+    }
+}
+
+/* sanción a lo ancho; ocultar y eliminar debajo, a medias.
+   En ≤480 mandan los estilos compartidos: todos en columna */
+@media (min-width: 481px) and (max-width: 850px) {
     .content-detail-actions {
         flex-wrap: wrap;
     }
@@ -285,15 +290,12 @@ a.content-context:hover {
         width: auto;
         flex: 1;
     }
+}
 
-    .content-detail-card {
-        padding: 1.6rem;
+@media (max-width: 480px) {
+    .content-detail-actions .admin-detail-action-btn:not(.content-sanction-btn) {
+        width: auto;
     }
-
-    .content-rvw-title {
-        font-size: 1.8rem;
-    }
-
 }
 
 @media (max-width: 480px) {

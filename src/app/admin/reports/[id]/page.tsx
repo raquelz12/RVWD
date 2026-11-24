@@ -268,10 +268,10 @@ function AdminReportDetail({ initialReport, initialUser }: { initialReport: Admi
                 <div className="admin-detail-person">
                     <img src={user.avatar} alt="" className="admin-detail-avatar" />
                     <div className="admin-detail-info">
-                        <p className="report-eyebrow">Denuncia a</p>
+                        <p className="admin-detail-eyebrow">Denuncia a</p>
                         <div className="admin-detail-name-row">
                             <h1 className="page-title">
-                                <Link href={`/admin/users/${user.id}`} className="report-user-link">
+                                <Link href={`/admin/users/${user.id}`} className="admin-detail-person-link">
                                     {user.name}
                                 </Link>
                             </h1>

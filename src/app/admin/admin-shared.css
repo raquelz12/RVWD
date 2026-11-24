@@ -845,7 +845,25 @@
     color: var(--danger-red);
 }
 
-/* ficha de usuario: el nombre es el h1 (.page-title) y no un enlace */
+/* texto pequeño encima del nombre en las fichas de denuncia y contenido ("Denuncia a", "RVW de") */
+.admin-detail-eyebrow {
+    margin: 0;
+    font-size: 1.5rem;
+    color: var(--text-secondary);
+}
+
+/* en denuncia y contenido el nombre (h1) enlaza a la ficha del usuario */
+.admin-detail-person-link {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.admin-detail-person-link:hover {
+    color: var(--primary-red);
+}
+
+/* el nombre es el h1 (.page-title) */
 .admin-detail-name-row .page-title {
     line-height: 1.1;
     min-width: 0;
@@ -929,6 +947,10 @@
     }
 
     .admin-detail-status {
+        font-size: 1.4rem;
+    }
+
+    .admin-detail-eyebrow {
         font-size: 1.4rem;
     }
 
@@ -1240,24 +1262,6 @@
     font-size: 1.35rem;
     color: rgba(255, 255, 255, 0.85);
     cursor: pointer;
-}
-
-.modal-submit-btn {
-    width: 100%;
-    padding: 1.2rem;
-    border-radius: 3rem;
-    border: none;
-    background-color: var(--primary-red);
-    color: #ffffff;
-    font-size: 1.5rem;
-    font-weight: 500;
-    font-family: inherit;
-    cursor: pointer;
-    transition: opacity 0.2s ease;
-}
-
-.modal-submit-btn:hover {
-    opacity: 0.9;
 }
 
 .modal-error-text {

@@ -2,23 +2,7 @@
    Estructura de detalle (barra, cabecera, botones, columnas), sanciones y modales en ../../admin-shared.css;
    color del estado de la denuncia en ../reports.css */
 
-/* "Denuncia a" encima del nombre del usuario denunciado */
-.report-eyebrow {
-    margin: 0;
-    font-size: 1.5rem;
-    color: var(--text-secondary);
-}
-
-/* el nombre (h1) enlaza a la ficha del usuario */
-.report-user-link {
-    color: inherit;
-    text-decoration: none;
-    transition: color 0.2s ease;
-}
-
-.report-user-link:hover {
-    color: var(--primary-red);
-}
+/* "Denuncia a" y el enlace del nombre: .admin-detail-eyebrow y .admin-detail-person-link en admin-shared.css */
 
 /* vista previa del contenido denunciado */
 .report-content-preview {
@@ -49,10 +33,4 @@
     line-clamp: 4;
     -webkit-box-orient: vertical;
     overflow: hidden;
-}
-
-@media (max-width: 850px) {
-    .report-eyebrow {
-        font-size: 1.4rem;
-    }
 }

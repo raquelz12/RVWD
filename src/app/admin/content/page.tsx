@@ -1,14 +1,15 @@
 'use client';
 
-import { useState, useRef, useEffect, useCallback, Suspense } from 'react';
+import { useState, useCallback, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import SearchBar from '../../../../components/SearchBar/SearchBar';
 import Select from '../../../../components/Select/Select';
 import FilterSheet from '../../../../components/FilterSheet/FilterSheet';
+import MoreMenu, { type MoreMenuItem } from '../../../../components/MoreMenu/MoreMenu';
 import ModerateContentModal, { type ModerationAction, type ModerationResult } from './ModerateContentModal';
-import { MOCK_CONTENT, STATUS_CLASS, formatDate, publicHref, type AdminContent, type ContentStatus } from './mockContent';
-import { DATE_OPTIONS, matchesDate } from '@/app/lib/adminFilters';
+import { MOCK_CONTENT, STATUS_CLASS, publicHref, type AdminContent, type ContentStatus } from './mockContent';
+import { DATE_OPTIONS, formatDate, matchesDate } from '@/app/lib/adminFilters';
 import '../admin-shared.css';
 import './content.css';
 
@@ -100,22 +101,8 @@ function AdminContentList({ initialQuery, reviewId }: { initialQuery: string; re
     const [showMobileFilters, setShowMobileFilters] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
 
-    // menú de 3 puntos por fila
-    const [openMenuId, setOpenMenuId] = useState<string | null>(null);
-    const menuRef = useRef<HTMLDivElement>(null);
-
     // modal de ocultar / eliminar
     const [modal, setModal] = useState<{ action: ModerationAction; item: AdminContent } | null>(null);
-
-    useEffect(() => {
-        const handleClickOutside = (e: MouseEvent) => {
-            if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-                setOpenMenuId(null);
-            }
-        };
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
 
     const search = searchQuery.trim().toLowerCase();
     const visibleItems = items
@@ -143,6 +130,7 @@ function AdminContentList({ initialQuery, reviewId }: { initialQuery: string; re
         });
 
     const activeFiltersCount = [statusFilter, reportsFilter, typeFilter, dateFilter].filter(Boolean).length;
+    const pendingCount = items.filter((item) => item.pendingReports > 0).length;
 
     // Quita ?review= conservando la búsqueda si la había
     const clearReviewFilter = () => {
@@ -167,10 +155,7 @@ function AdminContentList({ initialQuery, reviewId }: { initialQuery: string; re
         setItems((prev) => prev.map((item) => (item.id === id ? { ...item, status } : item)));
     };
 
-    const openModal = (action: ModerationAction, item: AdminContent) => {
-        setOpenMenuId(null);
-        setModal({ action, item });
-    };
+    const openModal = (action: ModerationAction, item: AdminContent) => setModal({ action, item });
 
     const closeModal = () => setModal(null);
 
@@ -189,21 +174,45 @@ function AdminContentList({ initialQuery, reviewId }: { initialQuery: string; re
     };
 
     // Mostrar y Restaurar deshacen una acción, así que se aplican sin confirmar
-    const handleRestore = (item: AdminContent) => {
-        setStatus(item.id, 'Publicado');
-        setOpenMenuId(null);
-    };
+    const handleRestore = (item: AdminContent) => setStatus(item.id, 'Publicado');
 
-    const renderContentCell = (item: AdminContent) => (
-        <div className="user-names content-cell">
-            <span className="user-fullname content-excerpt">
+    // La fila ya lleva al detalle, así que el menú no repite "Ver contenido"
+    const menuItems = (item: AdminContent): MoreMenuItem[] => [
+        ...(item.status !== 'Eliminado' ? [{ label: 'Ver en la web', href: publicHref(item) }] : []),
+        { label: 'Ver autor', href: `/admin/users/${item.authorId}` },
+        ...(item.reports > 0
+            ? [{ label: `Ver denuncias (${item.reports})`, href: `/admin/reports?content=${encodeURIComponent(item.id)}` }]
+            : []),
+        'divider',
+        ...(item.status === 'Publicado' ? [{ label: 'Ocultar', warning: true, onClick: () => openModal('hide', item) }] : []),
+        ...(item.status === 'Oculto' ? [{ label: 'Mostrar', onClick: () => handleRestore(item) }] : []),
+        item.status === 'Eliminado'
+            ? { label: 'Restaurar', onClick: () => handleRestore(item) }
+            : { label: 'Eliminar', danger: true, onClick: () => openModal('delete', item) },
+    ];
+
+    // En la tabla, el extracto es el enlace que cubre la fila (.admin-row-link); en móvil la fila entera es el enlace
+    const renderContentCell = (item: AdminContent, asLink = false) => {
+        const text = (
+            <>
                 <span className="content-type">{item.type}</span>
                 {' · '}
                 {item.subject}: «{item.excerpt}»
-            </span>
-            <span className="user-handle">{item.authorUsername}</span>
-        </div>
-    );
+            </>
+        );
+        return (
+            <div className="user-names content-cell">
+                {asLink ? (
+                    <Link href={`/admin/content/${item.id}`} className="user-fullname content-excerpt admin-row-link">
+                        {text}
+                    </Link>
+                ) : (
+                    <span className="user-fullname content-excerpt">{text}</span>
+                )}
+                <span className="user-handle">{item.authorUsername}</span>
+            </div>
+        );
+    };
 
     const renderReports = (item: AdminContent) => (
         <span
@@ -212,7 +221,7 @@ function AdminContentList({ initialQuery, reviewId }: { initialQuery: string; re
         >
             {item.pendingReports > 0 && <span className="pending-dot" aria-hidden="true" />}
             {item.reports}
-            {item.pendingReports > 0 && <span className="visually-hidden"> ({item.pendingReports} pendientes)</span>}
+            {item.pendingReports > 0 && <span className="sr-only"> ({item.pendingReports} pendientes)</span>}
         </span>
     );
 
@@ -225,8 +234,11 @@ function AdminContentList({ initialQuery, reviewId }: { initialQuery: string; re
     return (
         <div className="admin-list-container">
             <header className="admin-list-header">
-                <h1>Contenido</h1>
-                <p>{visibleItems.length} en total</p>
+                <h1 className="page-title">Contenido</h1>
+                <p>
+                    {items.length} publicaciones en total
+                    {pendingCount > 0 && ` · ${pendingCount} con denuncias pendientes`}
+                </p>
             </header>
             <section className="admin-list-toolbar">
                 <div className="search-and-mobile-filter">
@@ -236,11 +248,13 @@ function AdminContentList({ initialQuery, reviewId }: { initialQuery: string; re
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />
                     <button
+                        type="button"
                         className={`mobile-filter-btn ${activeFiltersCount > 0 ? 'active' : ''}`}
                         onClick={() => setShowMobileFilters(true)}
                         aria-label="Mostrar filtros"
+                        aria-expanded={showMobileFilters}
                     >
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                             <path d="M3 4a1 1 0 0 1 1-1h16a1 1 0 0 1 .8 1.6L14 13.33V20a1 1 0 0 1-1.45.89l-2-1A1 1 0 0 1 10 19v-5.67L3.2 4.6A1 1 0 0 1 3 4z" />
                         </svg>
                         {activeFiltersCount > 0 && <span className="mobile-filter-badge">{activeFiltersCount}</span>}
@@ -310,7 +324,7 @@ function AdminContentList({ initialQuery, reviewId }: { initialQuery: string; re
                     <div className="admin-active-chip">
                         <span>
                             Comentarios de{' '}
-                            <Link href={`/admin/content/${reviewId}`} className="admin-active-chip-link">
+                            <Link href={`/admin/content/${encodeURIComponent(reviewId)}`} className="admin-active-chip-link">
                                 esta RVW
                             </Link>
                         </span>
@@ -350,83 +364,29 @@ function AdminContentList({ initialQuery, reviewId }: { initialQuery: string; re
                             </span>
                         );
                     })}
-                    <span></span>
+                    <span>
+                        <span className="sr-only">Acciones</span>
+                    </span>
                 </div>
                 <div className="admin-table-body">
                     {visibleItems.map((item) => (
+                        // Fila con ⋮: el enlace del extracto cubre toda la fila (.admin-row-link) y el menú queda encima
                         <div
                             key={item.id}
                             className={`admin-table-row content-grid ${item.status === 'Eliminado' ? 'is-deleted' : ''}`}
-                            onClick={() => router.push(`/admin/content/${item.id}`)}
                         >
-                            {renderContentCell(item)}
+                            {renderContentCell(item, true)}
                             <span className={`center-col cell-text content-status ${STATUS_CLASS[item.status]}`}>
                                 {item.status}
                             </span>
                             <span className="center-col cell-text">{item.likes}</span>
                             <span className="center-col cell-text">{renderReports(item)}</span>
                             <span className="center-col cell-text col-date">{formatDate(item.createdAt)}</span>
-                            <div
-                                className="row-menu-wrapper"
-                                ref={openMenuId === item.id ? menuRef : null}
-                                onClick={(e) => e.stopPropagation()}
-                            >
-                                <button
-                                    className="more-menu-btn"
-                                    onClick={() => setOpenMenuId(openMenuId === item.id ? null : item.id)}
-                                    aria-label="Acciones de contenido"
-                                >
-                                    ⋮
-                                </button>
-                                {openMenuId === item.id && (
-                                    <div className="more-menu-dropdown align-right">
-                                        <Link href={`/admin/content/${item.id}`} className="dropdown-item">
-                                            Ver contenido
-                                        </Link>
-                                        {item.status !== 'Eliminado' && (
-                                            <a
-                                                href={publicHref(item)}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="dropdown-item"
-                                            >
-                                                Ver en la web ↗
-                                            </a>
-                                        )}
-                                        <Link href={`/admin/users/${item.authorId}`} className="dropdown-item">
-                                            Ver autor
-                                        </Link>
-                                        {item.reports > 0 && (
-                                            <Link
-                                                href={`/admin/reports?content=${encodeURIComponent(item.id)}`}
-                                                className="dropdown-item"
-                                            >
-                                                Ver denuncias ({item.reports})
-                                            </Link>
-                                        )}
-                                        <div className="dropdown-divider" />
-                                        {item.status === 'Publicado' && (
-                                            <button className="dropdown-item warning" onClick={() => openModal('hide', item)}>
-                                                Ocultar
-                                            </button>
-                                        )}
-                                        {item.status === 'Oculto' && (
-                                            <button className="dropdown-item" onClick={() => handleRestore(item)}>
-                                                Mostrar
-                                            </button>
-                                        )}
-                                        {item.status === 'Eliminado' ? (
-                                            <button className="dropdown-item" onClick={() => handleRestore(item)}>
-                                                Restaurar
-                                            </button>
-                                        ) : (
-                                            <button className="dropdown-item danger" onClick={() => openModal('delete', item)}>
-                                                Eliminar
-                                            </button>
-                                        )}
-                                    </div>
-                                )}
-                            </div>
+                            <MoreMenu
+                                className="admin-row-menu"
+                                items={menuItems(item)}
+                                label={`Acciones de ${item.type === 'RVW' ? 'la RVW' : 'el comentario'} de ${item.authorUsername}`}
+                            />
                         </div>
                     ))}
                     {visibleItems.length === 0 && emptyMessage}
@@ -450,31 +410,42 @@ function AdminContentList({ initialQuery, reviewId }: { initialQuery: string; re
                                     {item.reports} {item.reports === 1 ? 'denuncia' : 'denuncias'}
                                 </span>
                             </div>
-                            <span className="mobile-chevron">›</span>
+                            <span className="mobile-chevron" aria-hidden="true">›</span>
                         </div>
                     </Link>
                 ))}
                 {visibleItems.length === 0 && emptyMessage}
             </section>
+            {/* TODO: paginación de maqueta hasta que haya backend */}
             <nav className="admin-pagination" aria-label="Paginación de contenido">
                 <button
+                    type="button"
                     className="page-btn"
                     onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                     disabled={currentPage === 1}
+                    aria-label="Página anterior"
                 >
                     ‹
                 </button>
                 {[1, 2, 3].map((page) => (
                     <button
+                        type="button"
                         key={page}
                         className={`page-btn ${currentPage === page ? 'active' : ''}`}
                         onClick={() => setCurrentPage(page)}
+                        aria-label={`Página ${page}`}
+                        aria-current={currentPage === page ? 'page' : undefined}
                     >
                         {page}
                     </button>
                 ))}
-                <span className="page-dots">..</span>
-                <button className="page-btn" onClick={() => setCurrentPage((p) => p + 1)}>
+                <span className="page-dots" aria-hidden="true">..</span>
+                <button
+                    type="button"
+                    className="page-btn"
+                    onClick={() => setCurrentPage((p) => p + 1)}
+                    aria-label="Página siguiente"
+                >
                     ›
                 </button>
             </nav>

@@ -1,5 +1,5 @@
 // Datos de prueba de usuarios: los usan el listado y la ficha de admin.
-// Mismos ids y handles que Contenido (AUTHORS), Bandeja y Estadísticas.
+// Mismos ids y handles que Contenido (que saca de aquí sus autores), Bandeja y Estadísticas.
 import { addDays } from '@/app/lib/adminFilters';
 import { MOCK_REPORTS } from '../reports/mockReports';
 
@@ -67,7 +67,7 @@ export const MOCK_USERS: AdminUser[] = [
         status: 'Activo', role: 'Usuario', rvwsCount: 127, reportsReceived: reportsFor('3'), reportsMade: 2,
         createdAt: '2025-06-21', lastLogin: '2026-11-18',
         sanctions: [
-            { id: 's3', daysAgo: 19, reason: 'Contenido inapropiado', type: 'Aviso al usuario', internalNote: 'RVW eliminada: insultos al artista.', contentId: 'post127' },
+            { id: 's3', daysAgo: 19, reason: 'Spam', type: 'Aviso al usuario', internalNote: 'Mismo texto publicado en 20 álbumes.', contentId: 'post127' },
         ],
     },
     {
