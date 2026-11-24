@@ -1,31 +1,5 @@
-.privacy-page-container {
-    display: flex;
-    flex-direction: column;
-    padding: 4rem 2rem;
-    width: 100%;
-    max-width: 120rem;
-    margin: 0 auto;
-    box-sizing: border-box;
-    justify-content: center;
-    gap: 2rem;
-}
+/* El contenedor, la cabecera y los bloques de texto están en src/styles/text-page.css */
 
-/* cabecera */
-/* Junto al gap del contenedor deja 4rem bajo la cabecera, como el resto de páginas */
-.privacy-header-section {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    padding-bottom: 2rem;
-}
-
-.privacy-main-intro {
-    font-size: 2rem;
-    line-height: 1.6;
-    margin: 0;
-}
-
-/* sections */
 .privacy-content {
     display: flex;
     flex-direction: column;
@@ -38,18 +12,7 @@
     gap: 2.5rem;
 }
 
-.privacy-list {
-    margin: 0;
-    padding-left: 2rem;
-    font-size: 1.4rem;
-    line-height: 1.6;
-}
-
-.privacy-list li {
-    margin-bottom: 0.8rem;
-}
-
-/* tables */
+/* tablas */
 .table-responsive {
     width: 100%;
     overflow-x: auto;
@@ -60,52 +23,98 @@
 .privacy-table {
     width: 100%;
     border-collapse: collapse;
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: color-mix(in srgb, var(--primary-white) 5%, transparent);
     text-align: left;
 }
 
-.privacy-table th, 
+.privacy-table th,
 .privacy-table td {
     padding: 1.2rem 2rem;
     font-size: 1.4rem;
     line-height: 1.5;
 }
 
-.privacy-table th {
-    background-color: rgba(255, 255, 255, 0.08);
+.privacy-table thead th {
+    background-color: color-mix(in srgb, var(--primary-white) 8%, transparent);
     color: var(--primary-white);
     font-weight: 500;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid color-mix(in srgb, var(--primary-white) 10%, transparent);
 }
 
+/* Primera celda de cada fila en las tablas que la marcan como cabecera de fila */
+.privacy-table tbody th,
 .privacy-table td {
-    color: rgba(255, 255, 255, 0.7);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    color: color-mix(in srgb, var(--primary-white) 70%, transparent);
+    font-weight: 400;
+    border-bottom: 1px solid color-mix(in srgb, var(--primary-white) 3%, transparent);
 }
 
-.privacy-table tbody tr:last-child td {
+.privacy-table tbody tr:last-child > * {
     border-bottom: none;
 }
 
-.table-note {
-    font-size: 1.3rem !important;
-    color: rgba(255, 255, 255, 0.5) !important;
-    margin-top: -1rem !important;
+/* Más específico que .text-block p, así no hace falta !important */
+.text-block .table-note {
+    font-size: 1.3rem;
+    color: color-mix(in srgb, var(--primary-white) 50%, transparent);
+    margin-top: -1rem;
     font-style: italic;
 }
 
 /* responsive */
 @media (max-width: 768px) {
-    .privacy-page-container {
-        padding: 4rem 1.5rem;
-    }
-    
-    .privacy-header-section {
-        padding-bottom: 0;
-    }
-    
-    .privacy-table th, 
+    .privacy-table th,
     .privacy-table td {
         padding: 1rem 1.2rem;
+    }
+
+    /* Tabla apilada: cada fila es un bloque y cada dato lleva su etiqueta delante */
+    .privacy-table-stack thead {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+    }
+
+    .privacy-table-stack,
+    .privacy-table-stack tbody,
+    .privacy-table-stack tr,
+    .privacy-table-stack tbody th,
+    .privacy-table-stack td {
+        display: block;
+    }
+
+    .privacy-table-stack tr {
+        padding: 1.2rem 1.6rem;
+        border-bottom: 1px solid color-mix(in srgb, var(--primary-white) 10%, transparent);
+    }
+
+    .privacy-table-stack tr:last-child {
+        border-bottom: none;
+    }
+
+    .privacy-table-stack tbody th,
+    .privacy-table-stack td {
+        padding: 0.3rem 0;
+        border-bottom: none;
+    }
+
+    .privacy-table-stack tbody th {
+        color: var(--primary-white);
+        font-weight: 500;
+        padding-bottom: 0.6rem;
+    }
+
+    .privacy-table-stack td {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .privacy-table-stack td::before {
+        content: attr(data-label);
+        flex: 0 0 12rem;
+        color: var(--primary-white);
     }
 }

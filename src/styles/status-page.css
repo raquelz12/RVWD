@@ -1,0 +1,52 @@
+/* =========================================
+   PÁGINAS DE ESTADO
+   Común a 404 y mantenimiento: contenido centrado en vertical
+   ========================================= */
+
+.status-page {
+    display: flex;
+    flex-direction: column;
+    padding: 4rem 2rem;
+    width: 100%;
+    max-width: 100rem;
+    margin: 0 auto;
+    /* min-height en vez de height: en pantallas bajas el contenido crece en vez de cortarse */
+    min-height: 70vh;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.status-description {
+    font-size: 2rem;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.status-helper-text {
+    margin: 0;
+    font-size: 1.6rem;
+    line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+    .status-page {
+        padding: 3rem 2rem 6rem;
+        gap: 1.6rem;
+    }
+
+    .status-description {
+        font-size: 1.7rem;
+    }
+
+    .status-helper-text {
+        font-size: 1.4rem;
+    }
+}
+
+/* Móvil en horizontal: poca altura, sin centrar en vertical */
+@media (max-height: 500px) {
+    .status-page {
+        min-height: 0;
+        justify-content: flex-start;
+    }
+}

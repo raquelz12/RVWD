@@ -1,14 +1,21 @@
-import '@/styles/legal-text.css';
+import '@/styles/text-page.css';
 import './privacy.css';
 import Rvw from '../../../components/Rvw/Rvw';
+import { CONTACT_EMAIL } from '@/app/lib/siteSettings';
+
+const COOKIES = [
+    { type: 'Necesarias', purpose: 'Iniciar sesión y mantener la seguridad', duration: 'Sesión', consent: 'No' },
+    { type: 'Preferencias', purpose: 'Recordar idioma o tema', duration: '1 año', consent: 'Sí' },
+    { type: 'Analíticas', purpose: 'Entender cómo se usa la web', duration: '1 año', consent: 'Sí' },
+];
 
 export default function PrivacyPage() {
     return (
-        <div className="privacy-page-container">
+        <div className="text-page">
             
-            <div className="privacy-header-section">
+            <div className="text-page-header">
                 <h1 className="page-title">Política de privacidad y cookies</h1>
-                <p className="privacy-main-intro">
+                <p className="text-page-intro">
                     Guardamos solo los datos necesarios para que tu cuenta funcione y para moderar la comunidad. No los vendemos. Puedes pedirnos que los borremos cuando quieras. Usamos pocas cookies y solo tú decides cuáles aceptar.
                 </p>
             </div>
@@ -16,12 +23,12 @@ export default function PrivacyPage() {
                 <section className="privacy-section">
                     <h2 className="section-title">Privacidad</h2>
                     <div className="text-block">
-                        <h3>Responsable de tus datos</h3>
-                        <p>Raquel. rvwd@gmail.com</p>
+                        <h3 className="block-title">Responsable de tus datos</h3>
+                        <p>Raquel · <a href={`mailto:${CONTACT_EMAIL}`} className="inline-link">{CONTACT_EMAIL}</a></p>
                     </div>
                     <div className="text-block">
-                        <h3>Qué datos recogemos</h3>
-                        <ul className="privacy-list">
+                        <h3 className="block-title">Qué datos recogemos</h3>
+                        <ul>
                             <li><strong>Al registrarte:</strong> nombre de usuario, correo electrónico y contraseña (guardada de forma cifrada).</li>
                             <li><strong>Al usar la red social:</strong> tu perfil, publicaciones, comentarios e interacciones.</li>
                             <li><strong>Al escribirnos:</strong> lo que indiques en los formularios de contacto y sugerencias (nombre, correo y mensaje).</li>
@@ -29,13 +36,13 @@ export default function PrivacyPage() {
                         </ul>
                     </div>
                     <div className="text-block">
-                        <h3>Para qué los usamos y con qué base legal</h3>
+                        <h3 className="block-title">Para qué los usamos y con qué base legal</h3>
                         <div className="table-responsive">
                             <table className="privacy-table">
                                 <thead>
                                     <tr>
-                                        <th>Finalidad</th>
-                                        <th>Base legal</th>
+                                        <th scope="col">Finalidad</th>
+                                        <th scope="col">Base legal</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -64,70 +71,61 @@ export default function PrivacyPage() {
                         </div>
                     </div>
                     <div className="text-block">
-                        <h3>Cuánto tiempo guardamos tus datos</h3>
+                        <h3 className="block-title">Cuánto tiempo guardamos tus datos</h3>
                         <p>Mientras tengas cuenta. Si decides eliminarla, borramos tus datos, salvo los que debamos conservar por obligación legal. Los mensajes de contacto y las sugerencias se conservan 12 meses.</p>
                     </div>
                     <div className="text-block">
-                        <h3>Con quién compartimos tus datos</h3>
+                        <h3 className="block-title">Con quién compartimos tus datos</h3>
                         <p>No vendemos tus datos a nadie. Solo los compartimos con proveedores necesarios para el servicio, que actúan bajo contrato, o con autoridades cuando la ley lo exija.</p>
                     </div>
                     <div className="text-block">
-                        <h3>Tus derechos</h3>
-                        <p>Puedes pedir acceso, rectificación, supresión, oposición, limitación y portabilidad escribiendo a rvwd@gmail.com. Si crees que no hemos tratado bien tus datos, puedes reclamar ante la Agencia Española de Protección de Datos (aepd.es).</p>
+                        <h3 className="block-title">Tus derechos</h3>
+                        <p>Puedes pedir acceso, rectificación, supresión, oposición, limitación y portabilidad escribiendo a <a href={`mailto:${CONTACT_EMAIL}`} className="inline-link">{CONTACT_EMAIL}</a>. Si crees que no hemos tratado bien tus datos, puedes reclamar ante la Agencia Española de Protección de Datos (<a href="https://www.aepd.es" target="_blank" rel="noopener noreferrer" className="inline-link">aepd.es</a>).</p>
                     </div>
                     <div className="text-block">
-                        <h3>Menores</h3>
+                        <h3 className="block-title">Menores</h3>
                         <p>Para usar <Rvw>RVWD</Rvw> debes tener al menos 14 años. Si descubrimos una cuenta de una persona menor de esa edad, la cerraremos.</p>
                     </div>
                 </section>
                 <section className="privacy-section">
                     <h2 className="section-title">Cookies</h2>
                     <div className="text-block">
-                        <h3>Qué son</h3>
+                        <h3 className="block-title">Qué son</h3>
                         <p>Son pequeños archivos que se guardan en tu dispositivo para que la web funcione, recuerde tus preferencias o mida cómo se usa.</p>
                     </div>
                     <div className="text-block">
-                        <h3>Qué cookies usamos</h3>
+                        <h3 className="block-title">Qué cookies usamos</h3>
                         <div className="table-responsive">
-                            <table className="privacy-table">
+                            {/* En móvil cada fila se apila: el tipo hace de título y cada dato lleva su etiqueta (data-label) */}
+                            <table className="privacy-table privacy-table-stack">
                                 <thead>
                                     <tr>
-                                        <th>Tipo</th>
-                                        <th>Para qué</th>
-                                        <th>Duración</th>
-                                        <th>¿Pide consentimiento?</th>
+                                        <th scope="col">Tipo</th>
+                                        <th scope="col">Para qué</th>
+                                        <th scope="col">Duración</th>
+                                        <th scope="col">¿Pide consentimiento?</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>Necesarias</td>
-                                        <td>Iniciar sesión y mantener la seguridad</td>
-                                        <td>Sesión</td>
-                                        <td>No</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Preferencias</td>
-                                        <td>Recordar idioma o tema</td>
-                                        <td>1 año</td>
-                                        <td>Sí</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Analíticas</td>
-                                        <td>Entender cómo se usa la web</td>
-                                        <td>1 año</td>
-                                        <td>Sí</td>
-                                    </tr>
+                                    {COOKIES.map((cookie) => (
+                                        <tr key={cookie.type}>
+                                            <th scope="row">{cookie.type}</th>
+                                            <td data-label="Para qué">{cookie.purpose}</td>
+                                            <td data-label="Duración">{cookie.duration}</td>
+                                            <td data-label="Consentimiento">{cookie.consent}</td>
+                                        </tr>
+                                    ))}
                                 </tbody>
                             </table>
                         </div>
                         <p className="table-note">No usamos cookies de publicidad.</p>
                     </div>
                     <div className="text-block">
-                        <h3>Cómo gestionarlas</h3>
+                        <h3 className="block-title">Cómo gestionarlas</h3>
                         <p>Al entrar por primera vez puedes aceptarlas, rechazarlas o configurarlas. Puedes cambiar tu decisión cuando quieras o borrarlas desde los ajustes de tu navegador. No usamos cookies de terceros.</p>
                     </div>
                     <div className="text-block">
-                        <h3>Cambios</h3>
+                        <h3 className="block-title">Cambios</h3>
                         <p>Si cambiamos esta política de forma importante, por ejemplo al añadir nuevas cookies o proveedores, te lo diremos y volveremos a pedir tu consentimiento cuando sea necesario.</p>
                     </div>
                 </section>

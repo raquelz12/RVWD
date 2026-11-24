@@ -1,5 +1,6 @@
 'use client';
 
+import '@/styles/text-page.css';
 import './about.css';
 import Button from '../../../components/Button/Button';
 import { useModal } from '@/context/ModalContext';
@@ -10,10 +11,10 @@ export default function About() {
     const { openModal } = useModal();
 
     return (
-        <div className="about-container">
-            <div className="about-header">
+        <div className="text-page">
+            <div className="text-page-header">
                 <h1 className="page-title">Sobre nosotros</h1>
-                <p className="about-text">
+                <p className="text-page-intro">
                 <Rvw>RVWD</Rvw> es una red social pensada para conectar y compartir tus gustos musicales con personas que disfrutan de la música igual que tú.
                 </p>
             </div>

@@ -10,6 +10,7 @@ import TextArea from '../../../../components/TextArea/TextArea';
 import { REPLY_SIGNATURE, REPLY_TEMPLATES, TYPE_LABEL, type InboxType } from '../inbox/mockInbox';
 import { MAX_SANCTIONS } from '@/app/lib/adminModeration';
 import { formatDate, MOCK_TODAY } from '@/app/lib/adminFilters';
+import { DEFAULT_MAINTENANCE } from '@/app/lib/siteSettings';
 import OptionRow from '../../settings/OptionRow';
 import SettingsShell from '../../settings/SettingsShell';
 import LegalEditor from './LegalEditor';
@@ -806,12 +807,6 @@ const NOTICE_TONES = [
 ];
 
 type SiteModal = 'maintenance-on' | 'maintenance-edit' | 'registration-off' | 'notice' | null;
-
-// Lo que se ve en /maintenance (mensaje y hora aproximada de vuelta)
-const DEFAULT_MAINTENANCE = {
-    message: 'Estamos actualizando la página para que funcione mejor.',
-    returnTime: '18:00',
-};
 
 function SiteSection({ notify }: { notify: Notify }) {
     const [maintenance, setMaintenance] = useState(false);

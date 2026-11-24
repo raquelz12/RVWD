@@ -1,60 +1,7 @@
-.legal-page-container {
-    display: flex;
-    flex-direction: column;
-    padding: 4rem 2rem;
-    width: 100%;
-    max-width: 120rem;
-    margin: 0 auto;
-    box-sizing: border-box;
-    justify-content: center;
-    gap: 2rem;
-}
-
-/* Junto al gap del contenedor deja 4rem bajo la cabecera, como el resto de páginas */
-.legal-header-section {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-}
-
-.legal-main-intro {
-    font-size: 2rem;
-    line-height: 1.6;
-    margin: 0;
-}
+/* El contenedor, la cabecera y los bloques de texto están en src/styles/text-page.css */
 
 .legal-content {
     display: flex;
     flex-direction: column;
     gap: 3rem;
-}
-
-.legal-content .RVWS {
-    font-size: 1.6rem;
-}
-
-.legal-list {
-    margin: 0;
-    padding-left: 2rem;
-    font-size: 1.4rem;
-    line-height: 1.6;
-}
-
-.legal-list li {
-    margin-bottom: 0.5rem;
-}
-
-.legal-list li:last-child {
-    margin-bottom: 0;
-}
-
-@media (max-width: 768px) {
-    .legal-page-container {
-        padding: 4rem 1.5rem;
-    }
-    
-    .legal-header-section {
-        margin-bottom: 0;
-    }
 }
