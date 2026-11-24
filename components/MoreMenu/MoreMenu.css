@@ -59,6 +59,10 @@
     color: var(--danger-red);
 }
 
+.more-menu-item.warning {
+    color: var(--warning);
+}
+
 .more-menu-divider {
     height: 1px;
     background-color: rgba(255, 255, 255, 0.12);

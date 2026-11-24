@@ -333,6 +333,18 @@
     flex-shrink: 0;
 }
 
+/* "Ordenar por" solo existe en el panel de filtros de móvil: en escritorio se ordena con las cabeceras */
+.admin-sort-field {
+    display: none !important;
+}
+
+@media (max-width: 850px) {
+    .admin-sort-field {
+        display: flex !important;
+        flex-direction: column;
+    }
+}
+
 /* cabeceras de columna ordenables */
 .sort-header-btn {
     display: inline-flex;
@@ -781,12 +793,22 @@
     font-size: 1.4rem;
 }
 
+/* estado de la cuenta: en la ficha de usuario va en .admin-detail-status, en el resto en .admin-detail-user-status */
+.admin-detail-status.status-suspendido,
 .admin-detail-user-status.status-suspendido {
     color: var(--warning);
 }
 
+.admin-detail-status.status-baneado,
 .admin-detail-user-status.status-baneado {
     color: var(--danger-red);
+}
+
+/* ficha de usuario: el nombre es el h1 (.page-title) y no un enlace */
+.admin-detail-name-row .page-title {
+    line-height: 1.1;
+    min-width: 0;
+    overflow-wrap: anywhere;
 }
 
 .admin-detail-actions {
@@ -1018,6 +1040,10 @@
     display: flex;
     flex-direction: column;
     gap: 2.6rem;
+    /* si es un <ul> */
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
 .empty-sanctions {
@@ -1195,6 +1221,40 @@
     justify-content: flex-end;
     gap: 1.2rem;
     margin-top: 0.4rem;
+}
+
+/* Contenido de los modales de admin hechos con components/Modal (ficha de usuario),
+   con la misma estructura que los de Ajustes de usuario */
+.admin-dialog {
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+    padding: 1rem;
+}
+
+.admin-dialog-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    /* deja sitio a la ✕ del modal */
+    padding-right: 3rem;
+}
+
+.admin-dialog-text {
+    margin: 0;
+    font-size: 1.4rem;
+    color: var(--text-secondary);
+}
+
+.admin-dialog-label {
+    font-size: 1.4rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.admin-dialog-error {
+    margin: 0;
+    font-size: 1.4rem;
+    color: var(--danger-red);
 }
 
 /* responsive */

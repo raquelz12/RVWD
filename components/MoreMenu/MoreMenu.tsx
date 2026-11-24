@@ -14,6 +14,8 @@ export type MoreMenuItem =
           copyPath?: string;
           onClick?: () => void;
           danger?: boolean;
+          /** Acción delicada pero reversible (p. ej. suspender), en ámbar */
+          warning?: boolean;
       };
 
 interface MoreMenuProps {
@@ -80,7 +82,7 @@ export default function MoreMenu({ items, label = 'Más opciones', className = '
                 <div className="more-menu-list" role="menu">
                     {items.map((item, i) => {
                         if (item === 'divider') return <div key={`divider-${i}`} className="more-menu-divider" />;
-                        const itemClass = `more-menu-item ${item.danger ? 'danger' : ''}`;
+                        const itemClass = `more-menu-item ${item.danger ? 'danger' : item.warning ? 'warning' : ''}`;
                         if (item.href) {
                             return (
                                 <Link key={item.label} href={item.href} className={itemClass} role="menuitem">

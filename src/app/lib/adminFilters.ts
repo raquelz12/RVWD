@@ -42,3 +42,10 @@ export const formatRelativeDate = (iso: string, now: number) => {
 };
 
 export const timeAgo =(days: number) => (days === 0 ? 'Hoy' : days === 1 ? 'Ayer' : `Hace ${days} días`);
+
+/** Fecha ISO (YYYY-MM-DD) a `days` días de MOCK_TODAY (negativo: hacia atrás) */
+export const addDays = (days: number) => {
+    const date = new Date(MOCK_TODAY.getTime() + days * DAY_MS);
+    const pad = (n: number) => String(n).padStart(2, '0');
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+};

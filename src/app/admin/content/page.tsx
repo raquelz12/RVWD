@@ -290,7 +290,7 @@ function AdminContentList({ initialQuery, reviewId }: { initialQuery: string; re
                             />
                         </div>
                         {/* solo en móvil: en escritorio se ordena con las cabeceras */}
-                        <div className="admin-filter-field content-sort-field">
+                        <div className="admin-filter-field admin-sort-field">
                             <span className="admin-filter-label">Ordenar por</span>
                             <Select
                                 options={SORT_OPTIONS}

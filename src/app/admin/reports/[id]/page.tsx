@@ -7,7 +7,7 @@ import Dot from '../../../../../components/Dot/Dot';
 import Select from '../../../../../components/Select/Select';
 import TextArea from '../../../../../components/TextArea/TextArea';
 import Button from '../../../../../components/Button/Button';
-import { SANCTION_REASONS, REPORT_TO_SANCTION_REASON } from '@/app/lib/adminModeration';
+import { BAN_REASONS, SANCTION_REASONS, SUSPEND_DURATIONS, REPORT_TO_SANCTION_REASON } from '@/app/lib/adminModeration';
 import '../../admin-shared.css';
 import './report.css';
 
@@ -59,20 +59,6 @@ const MOCK_REPORTS: ReportDetail[] = [
     { id: '4', status: 'En revisión', reason: 'Spam', createdAt: '12/03/2027', contentType: 'RVW', contentId: 'post126', contentPreview: 'Compra seguidores baratos en mi web, 100% reales.', reporter: { id: '4', username: '@marcos_rvw' }, reportedUser: REPORTED_USER },
     { id: '5', status: 'Aplicada', reason: 'Spam', createdAt: '12/03/2027', contentType: 'RVW', contentId: 'post127', contentPreview: 'Mismo texto publicado en 20 álbumes distintos.', reporter: { id: '3', username: '@lucia.music' }, reportedUser: REPORTED_USER },
     { id: '6', status: 'En revisión', reason: 'Mal uso', createdAt: '12/03/2027', contentType: 'RVW', contentId: 'post128', contentPreview: 'Reseña de 0 estrellas sin escuchar el álbum, solo para bajar la nota.', reporter: { id: '4', username: '@marcos_rvw' }, reportedUser: REPORTED_USER },
-];
-
-const BAN_REASONS = [
-    { value: '3 strikes', label: '3 strikes' },
-    { value: 'Discurso de odio', label: 'Discurso de odio' },
-    { value: 'Amenazas / Estafa', label: 'Amenazas o estafa' },
-    { value: 'Bots / Review bombing', label: 'Bots / Review bombing' },
-];
-
-const SUSPEND_DURATIONS = [
-    { value: '3 días', label: '3 días' },
-    { value: '7 días', label: '7 días' },
-    { value: '15 días', label: '15 días' },
-    { value: '30 días', label: '30 días' },
 ];
 
 const RESOLUTION_OPTIONS = [
