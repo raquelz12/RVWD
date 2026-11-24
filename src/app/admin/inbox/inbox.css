@@ -1,4 +1,4 @@
-/* Bandeja: solo lo propio de esta página (listados, pestañas y menú en ../admin-shared.css) */
+/* Bandeja: solo lo propio de esta página (listados, pestañas, menú y colores de estado en ../admin-shared.css) */
 
 .admin-table-header.inbox-grid,
 .admin-table-row.inbox-grid {
@@ -78,23 +78,6 @@
 .admin-list-container .inbox-type {
     font-size: 1.4rem;
     color: rgba(255, 255, 255, 0.7);
-}
-
-/* estados */
-.inbox-status.is-new {
-    color: var(--primary-white);
-}
-
-.inbox-status.is-progress {
-    color: var(--warning);
-}
-
-.inbox-status.is-done {
-    color: var(--success);
-}
-
-.inbox-status.is-dismissed {
-    color: rgba(255, 255, 255, 0.45);
 }
 
 /* fila seleccionada */

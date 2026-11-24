@@ -7,31 +7,10 @@ import SearchBar from '../../../../components/SearchBar/SearchBar';
 import Select from '../../../../components/Select/Select';
 import FilterSheet from '../../../../components/FilterSheet/FilterSheet';
 import Dot from '../../../../components/Dot/Dot';
+import { formatDate } from '@/app/lib/adminFilters';
+import { MOCK_REPORTS, type AdminReport } from './mockReports';
 import '../admin-shared.css';
 import './reports.css';
-
-interface AdminReport {
-    id: string;
-    userId: string;
-    contentId: string;
-    name: string;
-    username: string;
-    avatar: string;
-    status: 'En revisión' | 'Descartada' | 'Suspendido' | 'Aplicada';
-    reason: 'Spam' | 'Palabras inapropiadas' | 'Mal uso' | 'Acoso';
-    sanctions: number;
-    contentType: 'Comentario' | 'RVW' | 'Perfil';
-    createdAt: string;
-}
-
-const MOCK_REPORTS: AdminReport[] = [
-    { id: '1', userId: '1', contentId: 'post123', name: 'Raquel Arnaiz', username: '@raquelz.12204', avatar: '/placeholderCards.png', status: 'En revisión', reason: 'Spam', sanctions: 2, contentType: 'Comentario', createdAt: '12/03/2027' },
-    { id: '2', userId: '1', contentId: 'post124', name: 'Raquel Arnaiz', username: '@raquelz.12204', avatar: '/placeholderCards.png', status: 'Descartada', reason: 'Palabras inapropiadas', sanctions: 2, contentType: 'RVW', createdAt: '12/03/2027' },
-    { id: '3', userId: '1', contentId: 'post125', name: 'Raquel Arnaiz', username: '@raquelz.12204', avatar: '/placeholderCards.png', status: 'Suspendido', reason: 'Mal uso', sanctions: 2, contentType: 'Comentario', createdAt: '12/03/2027' },
-    { id: '4', userId: '1', contentId: 'post126', name: 'Raquel Arnaiz', username: '@raquelz.12204', avatar: '/placeholderCards.png', status: 'En revisión', reason: 'Spam', sanctions: 2, contentType: 'RVW', createdAt: '12/03/2027' },
-    { id: '5', userId: '1', contentId: 'post127', name: 'Raquel Arnaiz', username: '@raquelz.12204', avatar: '/placeholderCards.png', status: 'Aplicada', reason: 'Spam', sanctions: 2, contentType: 'RVW', createdAt: '12/03/2027' },
-    { id: '6', userId: '1', contentId: 'post128', name: 'Raquel Arnaiz', username: '@raquelz.12204', avatar: '/placeholderCards.png', status: 'En revisión', reason: 'Mal uso', sanctions: 2, contentType: 'RVW', createdAt: '12/03/2027' },
-];
 
 const STATUS_OPTIONS = [
     { value: 'all', label: 'Todos' },
@@ -291,7 +270,7 @@ function AdminReportsContent({ initialQuery, contentId }: { initialQuery: string
                             <span className="center-col cell-text">{report.reason}</span>
                             <div className="center-col">{renderSanctions(report.sanctions)}</div>
                             <span className="center-col cell-text">{report.contentType}</span>
-                            <span className="center-col cell-text col-date">{report.createdAt}</span>
+                            <span className="center-col cell-text col-date">{formatDate(report.createdAt)}</span>
                             <div
                                 className="row-menu-wrapper"
                                 ref={openMenuId === report.id ? menuRef : null}

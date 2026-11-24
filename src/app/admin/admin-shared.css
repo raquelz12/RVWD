@@ -1289,3 +1289,21 @@
         bottom: 9rem; /* por encima de la barra inferior */
     }
 }
+
+/* color del estado de un mensaje o sugerencia (statusClass() de inbox/mockInbox.ts):
+   lo usan Bandeja, su detalle y el dashboard */
+.inbox-status.is-new {
+    color: var(--primary-white);
+}
+
+.inbox-status.is-progress {
+    color: var(--warning);
+}
+
+.inbox-status.is-done {
+    color: var(--success);
+}
+
+.inbox-status.is-dismissed {
+    color: rgba(255, 255, 255, 0.45);
+}

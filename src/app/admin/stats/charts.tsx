@@ -25,15 +25,17 @@ interface StatCardProps {
     trend?: number[];
     hint?: string;
     comparedTo?: string;
+    /** Con href, toda la tarjeta es un enlace (p. ej. en el dashboard, a su listado) */
+    href?: string;
 }
 
-export function StatCard({ label, value, previous, decimals = 0, suffix = '', invert, trend, hint, comparedTo }: StatCardProps) {
+export function StatCard({ label, value, previous, decimals = 0, suffix = '', invert, trend, hint, comparedTo, href }: StatCardProps) {
     const change = previous === undefined ? null : percentChange(value, previous);
     const rounded = change === null ? 0 : Math.round(change);
     const tone = rounded === 0 ? 'neutral' : (rounded > 0) !== Boolean(invert) ? 'good' : 'bad';
 
-    return (
-        <div className="stat-card">
+    const content = (
+        <>
             <span className="stat-card-label">{label}</span>
             <span className="stat-card-value">
                 {formatNumber(value, decimals)}
@@ -51,7 +53,15 @@ export function StatCard({ label, value, previous, decimals = 0, suffix = '', in
                 {hint && <span className="stat-card-hint">{hint}</span>}
                 {trend && trend.length > 1 && <Sparkline values={trend} />}
             </div>
-        </div>
+        </>
+    );
+
+    return href ? (
+        <Link href={href} className="stat-card stat-card-link">
+            {content}
+        </Link>
+    ) : (
+        <div className="stat-card">{content}</div>
     );
 }
 
