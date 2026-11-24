@@ -22,9 +22,11 @@
     margin: 0;
 }
 
-/* buscador + filtros: todo en una fila y a la misma altura (4.4rem, la del Select) */
+/* buscador + filtros: en una fila y a la misma altura (4.4rem, la del Select).
+   Si no caben (muchos filtros en tablet), los filtros bajan a una segunda fila */
 .admin-list-toolbar {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: 1.2rem;
 }
@@ -33,7 +35,8 @@
     display: flex;
     align-items: center;
     gap: 1.2rem;
-    flex: 1 1 26rem;
+    /* base = mínimo: crece hasta llenar la fila y los filtros solo bajan cuando no cabría */
+    flex: 1 1 20rem;
     min-width: 20rem;
 }
 
@@ -239,6 +242,44 @@
     font-size: 1.6rem;
     color: var(--text-secondary);
     padding: 2rem 0;
+}
+
+/* Fila con menú ⋮ (MoreMenu): no puede ser un enlace entero porque llevaría botones dentro.
+   El enlace principal (.admin-row-link) cubre toda la fila con ::after y el menú queda por encima */
+.admin-table-row:has(.admin-row-link) {
+    position: relative;
+}
+
+.admin-row-link {
+    color: inherit;
+    text-decoration: none;
+}
+
+.admin-row-link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+}
+
+.admin-row-link:focus-visible {
+    outline: none;
+}
+
+.admin-row-link:focus-visible::after {
+    outline: 2px solid var(--primary-red-hover);
+    outline-offset: -2px;
+}
+
+.admin-row-menu {
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+}
+
+/* el desplegable abierto, por encima del ⋮ de las filas siguientes */
+.admin-row-menu.is-open {
+    z-index: 2;
 }
 
 /* menú de 3 puntos dentro de una fila */
@@ -923,6 +964,17 @@
 
     .admin-next-link {
         font-size: 1.4rem;
+    }
+
+    /* uno debajo de otro: lado a lado, el texto largo ("Resolver denuncia") pasa a dos líneas
+       y ese botón queda más alto que el otro */
+    .admin-detail-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .admin-detail-action-btn {
+        flex: none;
     }
 }
 .back-btn {

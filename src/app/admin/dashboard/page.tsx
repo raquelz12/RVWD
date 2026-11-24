@@ -3,6 +3,7 @@ import { BarChart, StatCard } from '../stats/charts';
 import { PERIODS, getStats } from '../stats/mockStats';
 import { MOCK_INBOX, isOpen, statusClass } from '../inbox/mockInbox';
 import { MOCK_REPORTS } from '../reports/mockReports';
+import { MOCK_USERS } from '../users/mockUsers';
 import { formatDate } from '@/app/lib/adminFilters';
 import '../admin-shared.css';
 import '../stats/stats.css';
@@ -10,7 +11,9 @@ import './dashboard.css';
 
 const MAX_ROWS = 5;
 
-const byNewest = (a: { createdAt: string }, b: { createdAt: string }) => b.createdAt.localeCompare(a.createdAt);
+const usernameOf = (userId: string) => MOCK_USERS.find((u) => u.id === userId)?.username ?? '';
+
+const byNewest =(a: { createdAt: string }, b: { createdAt: string }) => b.createdAt.localeCompare(a.createdAt);
 
 // Resumen del panel: todo sale de los mismos datos de prueba que Denuncias, Bandeja y Estadísticas
 export default function AdminDashboard() {
@@ -59,7 +62,7 @@ export default function AdminDashboard() {
                                         <span className="dash-row-info">
                                             <span className="dash-row-title">{r.reason}</span>
                                             <span className="dash-row-meta">
-                                                {r.contentType} de {r.username} · {formatDate(r.createdAt)}
+                                                {r.contentType} de {usernameOf(r.userId)} · {formatDate(r.createdAt)}
                                             </span>
                                         </span>
                                         <span className="admin-chevron" aria-hidden="true">›</span>

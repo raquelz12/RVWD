@@ -1,15 +1,15 @@
 'use client';
 
-import { useState, Suspense, type ReactNode } from 'react';
+import { useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import Select from '../../../../../components/Select/Select';
 import TextArea from '../../../../../components/TextArea/TextArea';
 import Button from '../../../../../components/Button/Button';
-import Modal from '../../../../../components/Modal/Modal';
 import MoreMenu, { type MoreMenuItem } from '../../../../../components/MoreMenu/MoreMenu';
 import Rvw from '../../../../../components/Rvw/Rvw';
 import SanctionDots from '../../SanctionDots';
+import AdminDialog, { NotifyCheckbox } from '../../AdminDialog';
 import { addDays, formatDate, timeAgo } from '@/app/lib/adminFilters';
 import {
     AUTO_SUSPEND_DAYS,
@@ -18,6 +18,8 @@ import {
     SANCTION_EXPIRY_DAYS,
     SANCTION_REASONS,
     SUSPEND_DURATIONS,
+    nextSanction,
+    sanctionHint,
 } from '@/app/lib/adminModeration';
 import { MOCK_USERS, STATUS_CLASS, type AdminUser, type UserRole, type UserSanction } from '../mockUsers';
 import '../../admin-shared.css';
@@ -67,70 +69,6 @@ function UserNotFound() {
     );
 }
 
-// Modal de confirmación de la ficha: título, texto, campos y Cancelar / Confirmar
-function UserDialog({
-    isOpen,
-    title,
-    text,
-    children,
-    confirmLabel,
-    danger = false,
-    error,
-    onClose,
-    onConfirm,
-}: {
-    isOpen: boolean;
-    title: string;
-    text?: ReactNode;
-    children?: ReactNode;
-    confirmLabel: string;
-    danger?: boolean;
-    error?: string;
-    onClose: () => void;
-    onConfirm: () => void;
-}) {
-    return (
-        <Modal isOpen={isOpen} onClose={onClose} labelledBy="user-dialog-title">
-            <form
-                className="admin-dialog"
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    onConfirm();
-                }}
-                noValidate
-            >
-                <div className="admin-dialog-header">
-                    <h2 className="section-title" id="user-dialog-title">{title}</h2>
-                    {text && <p className="admin-dialog-text">{text}</p>}
-                </div>
-                {children}
-                {error && (
-                    <p className="admin-dialog-error" role="alert">
-                        {error}
-                    </p>
-                )}
-                <div className="modal-actions-row">
-                    <Button type="button" variant="text" onClick={onClose}>
-                        Cancelar
-                    </Button>
-                    <Button type="submit" variant={danger ? 'danger' : 'primary'}>
-                        {confirmLabel}
-                    </Button>
-                </div>
-            </form>
-        </Modal>
-    );
-}
-
-function NotifyCheckbox({ checked, onChange }: { checked: boolean; onChange: (value: boolean) => void }) {
-    return (
-        <label className="modal-checkbox">
-            <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} />
-            <span>Avisar al usuario por correo.</span>
-        </label>
-    );
-}
-
 function AdminUserDetail({ initial }: { initial: AdminUser }) {
     const router = useRouter();
     const [user, setUser] = useState<AdminUser>(initial);
@@ -173,19 +111,13 @@ function AdminUserDetail({ initial }: { initial: AdminUser }) {
             setError('Debes completar todos los campos para añadir la sanción.');
             return;
         }
-        const count = sanctions.length + 1;
-        const banned = count >= MAX_SANCTIONS;
-        const suspended = !banned && count === MAX_SANCTIONS - 1;
+        const { banned, suspended, type } = nextSanction(sanctions.length);
 
         const newSanction: UserSanction = {
             id: `s-${Date.now()}`,
             daysAgo: 0,
             reason: sanctionReason,
-            type: banned
-                ? `Baneo (${MAX_SANCTIONS} sanciones)`
-                : suspended
-                  ? `Suspensión temporal (${AUTO_SUSPEND_DAYS} días)`
-                  : 'Aviso al usuario',
+            type,
             internalNote: sanctionNote.trim(),
         };
         setSanctions((prev) => [newSanction, ...prev]);
@@ -254,13 +186,6 @@ function AdminUserDetail({ initial }: { initial: AdminUser }) {
             : []),
         { label: 'Eliminar cuenta', danger: true, onClick: () => openModal('delete') },
     ];
-
-    const sanctionHint =
-        sanctions.length === MAX_SANCTIONS - 1
-            ? `Con esta se baneará la cuenta de ${firstName}.`
-            : sanctions.length === MAX_SANCTIONS - 2
-              ? `Con esta se suspenderá la cuenta ${AUTO_SUSPEND_DAYS} días.`
-              : 'Selecciona el motivo y añade una nota interna.';
 
     return (
         <div className="admin-detail-container">
@@ -383,10 +308,10 @@ function AdminUserDetail({ initial }: { initial: AdminUser }) {
                 </section>
             </div>
 
-            <UserDialog
+            <AdminDialog
                 isOpen={activeModal === 'sanction'}
                 title={`Añadir sanción a ${firstName}`}
-                text={`${sanctions.length}/${MAX_SANCTIONS} · ${sanctionHint}`}
+                text={`${sanctions.length}/${MAX_SANCTIONS} · ${sanctionHint(sanctions.length, firstName)}`}
                 confirmLabel="Añadir sanción"
                 error={error}
                 onClose={closeModal}
@@ -420,9 +345,9 @@ function AdminUserDetail({ initial }: { initial: AdminUser }) {
                     />
                 </div>
                 <NotifyCheckbox checked={notify} onChange={setNotify} />
-            </UserDialog>
+            </AdminDialog>
 
-            <UserDialog
+            <AdminDialog
                 isOpen={activeModal === 'removeSanction' && !!sanctionToRemove}
                 title="¿Quitar esta sanción?"
                 text={
@@ -438,9 +363,9 @@ function AdminUserDetail({ initial }: { initial: AdminUser }) {
                 onConfirm={handleConfirmRemoveSanction}
             >
                 <NotifyCheckbox checked={notify} onChange={setNotify} />
-            </UserDialog>
+            </AdminDialog>
 
-            <UserDialog
+            <AdminDialog
                 isOpen={activeModal === 'ban'}
                 title={`¿Banear a ${firstName}?`}
                 text="No podrá iniciar sesión hasta que se desbanee la cuenta."
@@ -463,9 +388,9 @@ function AdminUserDetail({ initial }: { initial: AdminUser }) {
                     />
                 </div>
                 <NotifyCheckbox checked={notify} onChange={setNotify} />
-            </UserDialog>
+            </AdminDialog>
 
-            <UserDialog
+            <AdminDialog
                 isOpen={activeModal === 'unban'}
                 title={`¿Desbanear a ${firstName}?`}
                 text="La cuenta volverá a estar activa y el usuario podrá iniciar sesión, publicar y comentar de nuevo."
@@ -474,9 +399,9 @@ function AdminUserDetail({ initial }: { initial: AdminUser }) {
                 onConfirm={reactivate}
             >
                 <NotifyCheckbox checked={notify} onChange={setNotify} />
-            </UserDialog>
+            </AdminDialog>
 
-            <UserDialog
+            <AdminDialog
                 isOpen={activeModal === 'suspend'}
                 title={`Suspender a ${firstName}`}
                 text="El usuario no podrá publicar ni comentar durante el periodo elegido."
@@ -494,9 +419,9 @@ function AdminUserDetail({ initial }: { initial: AdminUser }) {
                     />
                 </div>
                 <NotifyCheckbox checked={notify} onChange={setNotify} />
-            </UserDialog>
+            </AdminDialog>
 
-            <UserDialog
+            <AdminDialog
                 isOpen={activeModal === 'liftSuspension'}
                 title={`¿Levantar la suspensión de ${firstName}?`}
                 text="La cuenta volverá a estar activa antes de que acabe el periodo de suspensión."
@@ -505,9 +430,9 @@ function AdminUserDetail({ initial }: { initial: AdminUser }) {
                 onConfirm={reactivate}
             >
                 <NotifyCheckbox checked={notify} onChange={setNotify} />
-            </UserDialog>
+            </AdminDialog>
 
-            <UserDialog
+            <AdminDialog
                 isOpen={activeModal === 'role'}
                 title={`Cambiar rol de ${firstName}`}
                 confirmLabel="Guardar rol"
@@ -523,9 +448,9 @@ function AdminUserDetail({ initial }: { initial: AdminUser }) {
                         placeholder="Seleccionar rol"
                     />
                 </div>
-            </UserDialog>
+            </AdminDialog>
 
-            <UserDialog
+            <AdminDialog
                 isOpen={activeModal === 'delete'}
                 title={`¿Eliminar la cuenta de ${firstName}?`}
                 text="Se borrarán la cuenta y todas sus RVWs y comentarios. No se puede deshacer."

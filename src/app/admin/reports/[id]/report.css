@@ -1,14 +1,23 @@
 /* Detalle de denuncia: solo lo propio de esta página.
-   Estructura de detalle (barra, cabecera, botones, columnas), menú de 3 puntos,
-   sanciones y modales en ../../admin-shared.css */
+   Estructura de detalle (barra, cabecera, botones, columnas), sanciones y modales en ../../admin-shared.css;
+   color del estado de la denuncia en ../reports.css */
 
-/* estados de la denuncia */
-.admin-detail-status.status-aplicada {
-    color: var(--success);
+/* "Denuncia a" encima del nombre del usuario denunciado */
+.report-eyebrow {
+    margin: 0;
+    font-size: 1.5rem;
+    color: var(--text-secondary);
 }
 
-.admin-detail-status.status-descartada {
-    color: rgba(255, 255, 255, 0.45);
+/* el nombre (h1) enlaza a la ficha del usuario */
+.report-user-link {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.report-user-link:hover {
+    color: var(--primary-red);
 }
 
 /* vista previa del contenido denunciado */
@@ -20,6 +29,7 @@
 }
 
 .report-preview-label {
+    margin: 0;
     font-size: 1.4rem;
     color: rgba(255, 255, 255, 0.65);
 }
@@ -33,9 +43,16 @@
     font-size: 1.5rem;
     line-height: 1.5;
     color: rgba(255, 255, 255, 0.9);
+    overflow-wrap: anywhere;
     display: -webkit-box;
     -webkit-line-clamp: 4;
     line-clamp: 4;
     -webkit-box-orient: vertical;
     overflow: hidden;
+}
+
+@media (max-width: 850px) {
+    .report-eyebrow {
+        font-size: 1.4rem;
+    }
 }

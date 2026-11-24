@@ -38,3 +38,25 @@ export const SANCTION_EXPIRY_DAYS = 90;
 
 // Días de suspensión automática con la penúltima sanción
 export const AUTO_SUSPEND_DAYS = 7;
+
+/** Qué supone añadir una sanción a quien ya tiene `count` activas:
+ *  la penúltima suspende la cuenta unos días y la última la banea */
+export const nextSanction = (count: number) => {
+    const total = count + 1;
+    const banned = total >= MAX_SANCTIONS;
+    const suspended = !banned && total === MAX_SANCTIONS - 1;
+    const type = banned
+        ? `Baneo (${MAX_SANCTIONS} sanciones)`
+        : suspended
+          ? `Suspensión temporal (${AUTO_SUSPEND_DAYS} días)`
+          : 'Aviso al usuario';
+    return { banned, suspended, type };
+};
+
+/** Texto del modal de añadir sanción: avisa de lo que pasará con la cuenta */
+export const sanctionHint = (count: number, firstName: string) => {
+    const { banned, suspended } = nextSanction(count);
+    if (banned) return `Con esta se baneará la cuenta de ${firstName}.`;
+    if (suspended) return `Con esta se suspenderá la cuenta ${AUTO_SUSPEND_DAYS} días.`;
+    return 'Selecciona el motivo y añade una nota interna.';
+};
