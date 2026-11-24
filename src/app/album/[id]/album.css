@@ -1,5 +1,4 @@
 /* escritorio */
-
 .mobile-album-view {
     display: none;
 }
@@ -20,7 +19,7 @@
     gap: 4rem;
     align-items: center;
     padding-bottom: 4rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid color-mix(in srgb, var(--primary-white) 10%, transparent);
     margin-bottom: 4rem;
 }
 
@@ -37,6 +36,7 @@
     flex-direction: column;
     justify-content: space-between;
     flex: 1;
+    min-width: 0;
     padding: 1rem 0;
     gap: 3rem;
 }
@@ -45,22 +45,11 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-}
-
-.album-title {
-    font-size: 3.6rem;
-    margin: 0 0 0.5rem 0;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    font-family: var(--font-heading);
-    /* Anton solo tiene un grosor: sin esto el h1 la pondría en negrita simulada */
-    font-weight: 400;
+    gap: 2rem;
 }
 
 .album-artist {
     font-size: 2rem;
-    margin: 0;
     text-decoration: none;
     color: inherit;
     transition: color 0.3s ease;
@@ -68,12 +57,6 @@
 
 .album-artist:hover {
     color: var(--primary-red);
-}
-
-.album-score-action {
-    display: flex;
-    align-items: center;
-    gap: 3rem;
 }
 
 /* Estadísticas (Minutos, Canciones...) */
@@ -96,27 +79,43 @@
     gap: 2rem;
 }
 
+/* tablet: la info no cabía en una fila al lado de la portada */
+@media (max-width: 1024px) {
+    .album-header-desktop {
+        gap: 3rem;
+    }
+
+    .album-cover-desktop {
+        width: 18rem;
+        height: 18rem;
+    }
+
+    .album-stats-row {
+        flex-wrap: wrap;
+        gap: 2rem;
+    }
+}
+
 /* movil */
 @media (max-width: 768px) {
     .desktop-album-view {
         display: none;
     }
-    
+
     .mobile-album-view {
         display: flex;
         flex-direction: column;
     }
-    
+
+    /* El hueco de la barra inferior ya lo deja el Footer */
     .album-page-container {
-        padding: 0;
-        overflow-x: hidden;
-        padding-bottom: 10rem;
+        padding: 0 0 4rem;
     }
 
     /* Hero Inmersivo */
     .mobile-album-hero {
         position: relative;
-        width: 100vw;
+        width: 100%;
         height: 100vw;
         max-height: 50vh;
     }
@@ -132,12 +131,6 @@
         gap: 3rem;
     }
 
-    .mobile-album-title .album-title {
-        font-size: 3rem;
-        line-height: 1.1;
-        justify-content: space-between;
-    }
-
     /* Carrusel de tarjetas en móvil */
     .album-sections-mobile {
         display: flex;
@@ -148,8 +141,5 @@
 
     .album-section-title {
         text-align: center;
-        display: block;
-        width: 100%;
-        margin-bottom: 2rem;
     }
 }

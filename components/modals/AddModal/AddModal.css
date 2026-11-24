@@ -131,6 +131,33 @@
     background-color: var(--primary-red-hover);
 }
 
+/* Aviso de RVW a medias al abrir desde una ficha (artista, álbum o canción) de otra cosa */
+.add-modal-draft {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    margin: 0 1rem 1rem;
+    padding: 1.6rem;
+    border: 0.1rem solid color-mix(in srgb, var(--primary-white) 20%, transparent);
+    border-radius: 1.6rem;
+    background-color: color-mix(in srgb, var(--primary-white) 8%, transparent);
+}
+
+.add-modal-draft-text {
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.add-modal-draft-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.add-modal-draft-actions .custom-button {
+    flex: 1 1 auto;
+}
+
 /* Nota */
 .add-modal-score {
     display: flex;

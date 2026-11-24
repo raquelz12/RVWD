@@ -11,12 +11,15 @@ import SearchResults from '../../SearchResults/SearchResults';
 import Rvw from '../../Rvw/Rvw';
 import { mockAlbums, mockArtists, mockSongs } from '@/app/lib/mockData';
 import type { Review } from '@/types/music';
+import type { AddTarget } from '@/context/ModalContext';
 import '@/styles/forms.css';
 import './AddModal.css';
 
 export interface AddModalProps {
     isOpen: boolean;
     onClose: () => void;
+    /** Abierto desde una ficha: lo que se reseña ya viene elegido */
+    target?: AddTarget | null;
 }
 
 type ReviewType = Review['type'];
@@ -43,6 +46,9 @@ const SEARCH_SOURCE: Record<ReviewType, SelectedItem[]> = {
     artista: mockArtists.map((a) => ({ key: `artista-${a.id}`, title: a.name, subtitle: 'Artista', imageUrl: a.pictureUrl })),
 };
 
+const findItem = (target: AddTarget) =>
+    SEARCH_SOURCE[target.type].find((item) => item.key === `${target.type}-${target.id}`) ?? null;
+
 const searchItems = (type: ReviewType, query: string) => {
     const q = query.trim().toLowerCase();
     return SEARCH_SOURCE[type].filter(
@@ -58,7 +64,7 @@ const REVEAL_SUBMIT = 3;
 
 const SEARCH_ID = 'add-search';
 
-export default function AddModal({ isOpen, onClose }: AddModalProps) {
+export default function AddModal({ isOpen, onClose, target = null }: AddModalProps) {
     const [type, setType] = useState<ReviewType | null>(null);
     const [searchText, setSearchText] = useState('');
     const [selectedItem, setSelectedItem] = useState<SelectedItem | null>(null);
@@ -66,9 +72,53 @@ export default function AddModal({ isOpen, onClose }: AddModalProps) {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [revealed, setRevealed] = useState(0);
+    // Abierto desde una ficha con una RVW a medias de otra cosa: se pregunta antes de cambiarla
+    const [pendingTarget, setPendingTarget] = useState<{ type: ReviewType; item: SelectedItem } | null>(null);
+    const [wasOpen, setWasOpen] = useState(false);
 
     const scoreRef = useRef<HTMLDivElement>(null);
     const searchRef = useRef<HTMLDivElement>(null);
+    const typesRef = useRef<HTMLDivElement>(null);
+
+    const hasDraft = score !== '' || title.trim() !== '' || description.trim() !== '';
+
+    const startWith = (newType: ReviewType, item: SelectedItem) => {
+        setType(newType);
+        setSelectedItem(item);
+        setSearchText('');
+        setScore('');
+        setTitle('');
+        setDescription('');
+        setRevealed(0);
+    };
+
+    // Al abrirse desde una ficha (se ajusta en el render, sin esperar a un efecto, para que no se vea
+    // un fotograma con el formulario anterior). Si el borrador ya es de eso, se deja tal cual
+    if (isOpen !== wasOpen) {
+        setWasOpen(isOpen);
+        const item = isOpen && target ? findItem(target) : null;
+        if (target && item && selectedItem?.key !== item.key) {
+            if (hasDraft) setPendingTarget({ type: target.type, item });
+            else startWith(target.type, item);
+        }
+    }
+
+    // Tras elegir en el aviso, este desaparece: el foco pasa al primer botón de tipo
+    const focusTypes = () => {
+        requestAnimationFrame(() => typesRef.current?.querySelector<HTMLElement>('button')?.focus({ preventScroll: true }));
+    };
+
+    const keepDraft = () => {
+        setPendingTarget(null);
+        focusTypes();
+    };
+
+    const startPending = () => {
+        if (!pendingTarget) return;
+        startWith(pendingTarget.type, pendingTarget.item);
+        setPendingTarget(null);
+        focusTypes();
+    };
     // Al quitar la selección, el foco vuelve al buscador (el botón ✕ desaparece)
     const focusSearchAfterRemove = useRef(false);
 
@@ -123,6 +173,8 @@ export default function AddModal({ isOpen, onClose }: AddModalProps) {
     // El borrador se conserva al cerrar (un clic fuera no debe borrar la reseña); solo se vacía la búsqueda
     const handleClose = () => {
         setSearchText('');
+        // Cerrar sin elegir en el aviso deja el borrador como estaba
+        setPendingTarget(null);
         onClose();
     };
 
@@ -155,6 +207,20 @@ export default function AddModal({ isOpen, onClose }: AddModalProps) {
                 <p>Comparte tu opinión con la comunidad de <Rvw>RVWD</Rvw></p>
             </div>
 
+            {pendingTarget && (
+                <div className="add-modal-draft" role="group" aria-labelledby="add-draft-text">
+                    <p id="add-draft-text" className="add-modal-draft-text">
+                        Tienes una <Rvw>RVW</Rvw> a medias{selectedItem ? <> de <strong>{selectedItem.title}</strong></> : null}.
+                    </p>
+                    <div className="add-modal-draft-actions">
+                        <Button type="button" variant="outline" onClick={keepDraft}>Seguir con esa</Button>
+                        <Button type="button" variant="primary" onClick={startPending}>
+                            Empezar una de {pendingTarget.item.title}
+                        </Button>
+                    </div>
+                </div>
+            )}
+
             <form
                 onSubmit={handleSubmit}
                 onFocus={revealNextBlock}
@@ -163,7 +229,7 @@ export default function AddModal({ isOpen, onClose }: AddModalProps) {
             >
                 <fieldset className="add-modal-fieldset">
                     <legend className="form-label">¿De qué quieres hacer una RVW?</legend>
-                    <div className="add-modal-types">
+                    <div className="add-modal-types" ref={typesRef}>
                         {TYPE_ORDER.map((t) => (
                             <button
                                 key={t}

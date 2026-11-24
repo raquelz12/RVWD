@@ -7,7 +7,7 @@ import AddModal from './modals/AddModal/AddModal';
 import ReportModal from './modals/ReportModal/ReportModal';
 
 export default function GlobalModals() {
-  const { activeModal, closeModal, reportTarget } = useModal();
+  const { activeModal, closeModal, reportTarget, addTarget } = useModal();
 
   return (
     <>
@@ -24,6 +24,7 @@ export default function GlobalModals() {
       <AddModal
         isOpen={activeModal === 'add'}
         onClose={closeModal}
+        target={addTarget}
       />
 
       <ReportModal
