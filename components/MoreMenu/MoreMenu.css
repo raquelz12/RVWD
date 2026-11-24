@@ -1,4 +1,4 @@
-/* Menú ⋮: mismo aspecto que el de las tablas de admin (.more-menu-btn / .more-menu-dropdown) */
+/* Menú ⋮: el mismo en las tablas y fichas de admin y en las páginas públicas */
 .more-menu {
     position: relative;
 }
@@ -61,6 +61,23 @@
 
 .more-menu-item.warning {
     color: var(--warning);
+}
+
+/* opción elegida de un grupo (checked): en rojo y con ✓ a la derecha */
+.more-menu-item.is-checked {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    color: var(--primary-red-hover);
+}
+
+.more-menu-heading {
+    display: block;
+    padding: 0.6rem 1.2rem 0.2rem;
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
 }
 
 .more-menu-divider {

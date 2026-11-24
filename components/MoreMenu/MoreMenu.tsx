@@ -6,6 +6,8 @@ import './MoreMenu.css';
 
 export type MoreMenuItem =
     | 'divider'
+    /** Título pequeño de una sección del menú (p. ej. "Cambiar estado") */
+    | { heading: string }
     | {
           label: string;
           /** Enlace a otra página */
@@ -16,6 +18,8 @@ export type MoreMenuItem =
           danger?: boolean;
           /** Acción delicada pero reversible (p. ej. suspender), en ámbar */
           warning?: boolean;
+          /** Opción de un grupo en el que solo vale una (p. ej. estados): muestra ✓ en la elegida */
+          checked?: boolean;
       };
 
 interface MoreMenuProps {
@@ -82,7 +86,14 @@ export default function MoreMenu({ items, label = 'Más opciones', className = '
                 <div className="more-menu-list" role="menu">
                     {items.map((item, i) => {
                         if (item === 'divider') return <div key={`divider-${i}`} className="more-menu-divider" />;
-                        const itemClass = `more-menu-item ${item.danger ? 'danger' : item.warning ? 'warning' : ''}`;
+                        if ('heading' in item) {
+                            return (
+                                <span key={`heading-${i}`} className="more-menu-heading" role="presentation">
+                                    {item.heading}
+                                </span>
+                            );
+                        }
+                        const itemClass = `more-menu-item ${item.danger ? 'danger' : item.warning ? 'warning' : ''} ${item.checked ? 'is-checked' : ''}`;
                         if (item.href) {
                             return (
                                 <Link key={item.label} href={item.href} className={itemClass} role="menuitem">
@@ -98,18 +109,25 @@ export default function MoreMenu({ items, label = 'Más opciones', className = '
                                 </button>
                             );
                         }
+                        const isRadio = item.checked !== undefined;
                         return (
                             <button
                                 key={item.label}
                                 type="button"
                                 className={itemClass}
-                                role="menuitem"
+                                role={isRadio ? 'menuitemradio' : 'menuitem'}
+                                aria-checked={isRadio ? item.checked : undefined}
                                 onClick={() => {
                                     item.onClick?.();
                                     setOpen(false);
                                 }}
                             >
                                 {item.label}
+                                {item.checked && (
+                                    <span className="more-menu-check" aria-hidden="true">
+                                        ✓
+                                    </span>
+                                )}
                             </button>
                         );
                     })}

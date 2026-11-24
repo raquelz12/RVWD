@@ -282,13 +282,6 @@
     z-index: 2;
 }
 
-/* menú de 3 puntos dentro de una fila */
-.admin-list-container .row-menu-wrapper {
-    position: relative;
-    display: flex;
-    justify-content: center;
-}
-
 /* sanciones (puntos + x/3) en filas */
 .admin-list-container .sanctions-wrapper {
     display: flex;
@@ -746,18 +739,6 @@
     color: var(--primary-red);
 }
 
-.admin-detail-header {
-    display: flex;
-    flex-direction: column;
-    gap: 2.4rem;
-}
-
-.admin-detail-title {
-    font-size: 2.6rem;
-    font-weight: 500;
-    margin: 0;
-}
-
 .admin-detail-header-row {
     display: flex;
     justify-content: space-between;
@@ -772,12 +753,6 @@
     gap: 2.2rem;
 }
 
-.admin-detail-avatar-link {
-    display: block;
-    flex-shrink: 0;
-    border-radius: 50%;
-}
-
 .admin-detail-avatar {
     display: block;
     width: 11rem;
@@ -785,10 +760,6 @@
     border-radius: 50%;
     object-fit: cover;
     transition: opacity 0.2s ease;
-}
-
-.admin-detail-avatar-link:hover .admin-detail-avatar {
-    opacity: 0.85;
 }
 
 .admin-detail-info {
@@ -801,23 +772,6 @@
     display: flex;
     align-items: center;
     gap: 1rem;
-}
-
-.admin-detail-name-link {
-    color: inherit;
-    text-decoration: none;
-}
-
-.admin-detail-name-link h2 {
-    font-size: 3.6rem;
-    font-weight: 500;
-    margin: 0;
-    line-height: 1.1;
-    transition: color 0.2s ease;
-}
-
-.admin-detail-name-link:hover h2 {
-    color: var(--primary-red);
 }
 
 .admin-detail-handle {
@@ -905,14 +859,6 @@
         gap: 3rem;
     }
 
-    .admin-detail-header {
-        gap: 1.8rem;
-    }
-
-    .admin-detail-title {
-        font-size: 2.2rem;
-    }
-
     .admin-detail-header-row {
         gap: 2.2rem;
     }
@@ -935,11 +881,6 @@
     .admin-detail-name-row {
         justify-content: space-between;
         width: 100%;
-    }
-
-    .admin-detail-name-link h2 {
-        font-size: 2.6rem;
-        word-break: break-word;
     }
 
     .admin-detail-handle {
@@ -980,10 +921,6 @@
         height: 6.8rem;
     }
 
-    .admin-detail-name-link h2 {
-        font-size: 2.2rem;
-    }
-
     .admin-next-link {
         font-size: 1.4rem;
     }
@@ -1008,81 +945,6 @@
     font-size: 2rem;
     font-weight: 500;
     margin: 0 0 1.8rem 0;
-}
-
-/* Menú de 3 puntos */
-.more-menu-wrapper {
-    position: relative;
-}
-
-.more-menu-btn {
-    background: none;
-    border: none;
-    color: var(--primary-white);
-    font-size: 2.6rem;
-    line-height: 1;
-    cursor: pointer;
-    padding: 0.2rem 0.6rem;
-    border-radius: 0.6rem;
-    transition: background-color 0.2s ease;
-}
-
-.more-menu-btn:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-.more-menu-dropdown {
-    position: absolute;
-    top: calc(100% + 0.6rem);
-    left: 0;
-    min-width: 19rem;
-    background-color: var(--bg-elevated);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 1.2rem;
-    padding: 0.6rem;
-    display: flex;
-    flex-direction: column;
-    z-index: 40;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
-}
-
-/* desplegable alineado a la derecha (p. ej. en filas de tabla) */
-.more-menu-dropdown.align-right {
-    left: auto;
-    right: 0;
-    text-align: left;
-}
-
-.more-menu-dropdown .dropdown-item {
-    background: none;
-    border: none;
-    color: var(--primary-white);
-    text-decoration: none;
-    font-size: 1.4rem;
-    font-family: inherit;
-    text-align: left;
-    padding: 0.9rem 1.2rem;
-    border-radius: 0.8rem;
-    cursor: pointer;
-    transition: background-color 0.15s ease;
-}
-
-.more-menu-dropdown .dropdown-item:hover {
-    background-color: rgba(255, 255, 255, 0.08);
-}
-
-.more-menu-dropdown .dropdown-item.warning {
-    color: #fbbf24;
-}
-
-.more-menu-dropdown .dropdown-item.danger {
-    color: var(--danger-red);
-}
-
-.more-menu-dropdown .dropdown-divider {
-    height: 1px;
-    background-color: rgba(255, 255, 255, 0.12);
-    margin: 0.4rem 0.6rem;
 }
 
 /* Sanciones */
@@ -1315,12 +1177,6 @@
 
 /* responsive */
 @media (max-width: 850px) {
-    /* Evita que el desplegable de 3 puntos se salga por la derecha */
-    .more-menu-dropdown {
-        left: auto;
-        right: 0;
-    }
-
     .sanction-row {
         flex-direction: column;
         align-items: flex-start;

@@ -1,4 +1,5 @@
-/* Bandeja: solo lo propio de esta página (listados, pestañas, menú y colores de estado en ../admin-shared.css) */
+/* Bandeja: solo lo propio de esta página (listados, pestañas y colores de estado en ../admin-shared.css,
+   menú ⋮ en components/MoreMenu) */
 
 .admin-table-header.inbox-grid,
 .admin-table-row.inbox-grid {
@@ -14,8 +15,10 @@
     text-align: left;
 }
 
-/* casillas */
+/* casillas: por encima del enlace que cubre la fila (.admin-row-link) */
 .inbox-check-cell {
+    position: relative;
+    z-index: 1;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -45,20 +48,17 @@
     color: rgba(255, 255, 255, 0.8);
 }
 
-.admin-list-container .inbox-sender .user-fullname {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-}
-
 /* no leídos: en negrita, como en el correo */
 .is-unread .user-fullname,
 .is-unread .inbox-excerpt {
     font-weight: 700;
 }
 
+/* en línea con el nombre para que este se pueda recortar con … */
 .inbox-unread-dot {
     display: inline-block;
+    margin-right: 0.6rem;
+    vertical-align: middle;
 }
 
 .admin-list-container .inbox-excerpt {
@@ -88,26 +88,6 @@
 
 .admin-table-row.is-selected:hover {
     background-color: color-mix(in srgb, var(--primary-red) 26%, transparent);
-}
-
-/* menú: estados como sección dentro del ⋮ */
-.inbox-menu .dropdown-label {
-    display: block;
-    padding: 0.6rem 1.2rem 0.2rem;
-    font-size: 1.2rem;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-}
-
-.inbox-menu .dropdown-item {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-}
-
-.inbox-menu .dropdown-item.is-current {
-    color: var(--primary-red-hover);
 }
 
 /* barra de acciones de los seleccionados */
@@ -194,15 +174,16 @@
     user-select: none;
 }
 
-.inbox-mobile-row .user-fullname {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-}
-
 .inbox-mobile-status {
     align-items: flex-end;
     max-width: 14rem;
+}
+
+/* el motivo más largo ("Problema con mi cuenta") no cabe en 14rem */
+.inbox-mobile-status .mobile-status-text {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .inbox-mobile-state {
@@ -210,16 +191,18 @@
     white-space: nowrap;
 }
 
+/* círculo de marcado: mismo tamaño que el avatar al que sustituye */
 .inbox-mobile-check {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 2.4rem;
-    height: 2.4rem;
+    width: 3.8rem;
+    height: 3.8rem;
+    box-sizing: border-box;
     flex-shrink: 0;
     border-radius: 50%;
     border: 2px solid rgba(255, 255, 255, 0.4);
-    font-size: 1.3rem;
+    font-size: 1.6rem;
     font-weight: 700;
 }
 

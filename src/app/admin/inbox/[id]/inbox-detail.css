@@ -1,11 +1,6 @@
 /* Mensaje de la bandeja: solo lo propio de esta página.
-   Estructura de detalle, menú, historial (estilo sanciones) y aviso en ../../admin-shared.css;
-   colores de estado en ../inbox.css */
-
-.inbox-detail-empty {
-    font-size: 1.6rem;
-    color: var(--text-secondary);
-}
+   Estructura de detalle, historial (estilo sanciones), aviso y colores de estado en ../../admin-shared.css;
+   menú ⋮ en components/MoreMenu */
 
 /* cabecera: inicial cuando no es un usuario registrado */
 .inbox-detail-initial {
@@ -17,14 +12,6 @@
     font-size: 4.4rem;
     font-weight: 600;
     color: rgba(255, 255, 255, 0.8);
-}
-
-.inbox-detail-name {
-    font-size: 3.6rem;
-    font-weight: 500;
-    margin: 0;
-    line-height: 1.1;
-    word-break: break-word;
 }
 
 .inbox-detail-actions .inbox-status-select {
@@ -69,7 +56,7 @@
 .inbox-msg.is-reply {
     margin-left: 3rem;
     border-left: 3px solid var(--primary-red);
-    background-color: rgba(148, 49, 79, 0.1);
+    background-color: color-mix(in srgb, var(--primary-red) 10%, transparent);
 }
 
 .inbox-msg-head {
@@ -188,22 +175,14 @@
     margin-bottom: 2.4rem;
 }
 
-.inbox-note-form .textarea {
-    width: 100%;
-    box-sizing: border-box;
-}
-
 .inbox-activity-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
     gap: 2rem;
 }
 
 .inbox-activity.is-note {
     padding: 1rem 1.2rem;
     border-radius: 1rem;
-    background-color: rgba(245, 158, 11, 0.08);
+    background-color: color-mix(in srgb, var(--warning) 8%, transparent);
     border-left: 3px solid var(--warning);
 }
 
@@ -227,10 +206,6 @@
 @media (max-width: 850px) {
     .inbox-detail-initial {
         font-size: 3.2rem;
-    }
-
-    .inbox-detail-name {
-        font-size: 2.6rem;
     }
 
     .inbox-detail-actions .inbox-status-select {
@@ -260,9 +235,5 @@
 @media (max-width: 480px) {
     .inbox-detail-initial {
         font-size: 2.6rem;
-    }
-
-    .inbox-detail-name {
-        font-size: 2.2rem;
     }
 }
