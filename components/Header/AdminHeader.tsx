@@ -1,9 +1,8 @@
 'use client';
 
-import { useState, useRef, useEffect, useId } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import NotificationDropdown from '../NotificationDropdown/NotificationDropdown';
 import { ADMIN_LINKS, ADMIN_SETTINGS_LINK, getBadge, isActivePath } from '@/app/lib/adminNav';
 import './Header.css';
 
@@ -13,9 +12,6 @@ interface Props {
 
 export default function AdminHeader({ pathname }: Props) {
     const router = useRouter();
-    const [isNotifOpen, setIsNotifOpen] = useState(false);
-    const notifButtonRef = useRef<HTMLButtonElement>(null);
-    const notifMenuId = useId();
     const [isAccountOpen, setIsAccountOpen] = useState(false);
     const accountRef = useRef<HTMLDivElement>(null);
 
@@ -59,27 +55,8 @@ export default function AdminHeader({ pathname }: Props) {
                 })}
             </nav>
 
+            {/* Sin campana: lo que el admin tiene que atender ya lo marcan Denuncias y Bandeja */}
             <div className="admin-header-actions">
-                <div style={{ position: 'relative' }}>
-                    <button
-                        type="button"
-                        ref={notifButtonRef}
-                        className={`nav-button ${isNotifOpen ? 'active' : ''}`}
-                        aria-label="Notificaciones"
-                        aria-expanded={isNotifOpen}
-                        aria-controls={notifMenuId}
-                        onClick={() => setIsNotifOpen((open) => !open)}
-                    >
-                        <span className="icon-bell"></span>
-                    </button>
-                    {isNotifOpen && (
-                        <NotificationDropdown
-                            id={notifMenuId}
-                            triggerRef={notifButtonRef}
-                            onClose={() => setIsNotifOpen(false)}
-                        />
-                    )}
-                </div>
                 <div className="admin-account" ref={accountRef}>
                     <button
                         className={`nav-button ${isActivePath(pathname, ADMIN_SETTINGS_LINK.href) ? 'active' : ''}`}

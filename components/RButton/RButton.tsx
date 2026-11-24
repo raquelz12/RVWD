@@ -5,8 +5,10 @@ import { usePathname } from 'next/navigation';
 import './RButton.css';
 
 import { useModal } from '@/context/ModalContext';
+import { isAdminPath } from '@/app/lib/adminNav';
 
-/* Páginas donde no tiene sentido el botón de crear RVW (en el onboarding ya se crea una en el paso 3) */
+/* Páginas donde no tiene sentido el botón de crear RVW (en el onboarding ya se crea una en el paso 3;
+   en /admin el admin no publica RVWs) */
 const HIDDEN_PATHS = ['/onboarding'];
 
 function RButtonView() {
@@ -22,15 +24,16 @@ function RButtonView() {
 function RButtonContent() {
     const pathname = usePathname();
 
-    if (pathname && HIDDEN_PATHS.some((path) => pathname.startsWith(path))) return null;
+    if (isAdminPath(pathname) || (pathname && HIDDEN_PATHS.some((path) => pathname.startsWith(path)))) return null;
 
     return <RButtonView />;
 }
 
-// usePathname con cacheComponents necesita un Suspense en rutas dinámicas (como Header y BottomNav)
+// usePathname con cacheComponents necesita un Suspense en rutas dinámicas (como Header y BottomNav).
+// Sin fallback: hasta saber la ruta no se sabe si toca mostrarlo (en /admin no)
 export default function RButton() {
     return (
-        <Suspense fallback={<RButtonView />}>
+        <Suspense fallback={null}>
             <RButtonContent />
         </Suspense>
     );
