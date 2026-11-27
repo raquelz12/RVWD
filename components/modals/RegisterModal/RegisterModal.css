@@ -13,3 +13,13 @@
     margin: 0.2rem 0 0;
     cursor: pointer;
 }
+
+/* Aviso de «Revisa tu correo»: recibe el foco por código para que se lea; no es interactivo, no hace falta marcarlo */
+.register-sent:focus {
+    outline: none;
+}
+
+/* Un correo largo no debe desbordar el panel en móvil */
+.register-email {
+    overflow-wrap: anywhere;
+}

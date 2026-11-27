@@ -1,6 +1,6 @@
 /* =========================================
    PÁGINAS DE ESTADO
-   Común a 404 y mantenimiento: contenido centrado en vertical
+   Común a 404, mantenimiento, reset-password y verify-email: contenido centrado en vertical
    ========================================= */
 
 .status-page {
@@ -28,10 +28,30 @@
     line-height: 1.5;
 }
 
+/* Más estrecha que el 404: páginas con un texto o formulario corto (reset-password, verify-email) */
+.status-page.status-page-narrow {
+    max-width: 60rem;
+}
+
+/* Botón (o enlace con aspecto de botón) que mide lo que su texto; en móvil, todo el ancho */
+.custom-button.status-action {
+    align-self: flex-start;
+    text-decoration: none;
+}
+
+/* Título que recibe el foco por código al cambiar de estado; no es interactivo, no hace falta marcarlo */
+.status-focus-title:focus {
+    outline: none;
+}
+
 @media (max-width: 768px) {
     .status-page {
         padding: 3rem 2rem 6rem;
         gap: 1.6rem;
+    }
+
+    .custom-button.status-action {
+        align-self: stretch;
     }
 
     .status-description {

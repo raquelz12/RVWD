@@ -11,7 +11,7 @@ type SearchParams = Promise<{ token?: string | string[] }>;
 export default function ResetPasswordPage({ searchParams }: { searchParams: SearchParams }) {
     // Con cacheComponents, los searchParams solo se conocen en runtime, así que van dentro de un Suspense
     return (
-        <main className="status-page reset-password-page">
+        <main className="status-page status-page-narrow">
             <Suspense fallback={<p className="status-description" role="status">Comprobando el enlace…</p>}>
                 <ResetPasswordContent searchParams={searchParams} />
             </Suspense>

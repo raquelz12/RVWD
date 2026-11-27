@@ -48,7 +48,7 @@ export default function ResetPasswordForm({ status }: { status: ResetTokenStatus
             <>
                 <h1 className="page-title">{title}</h1>
                 <p className="status-description">{text}</p>
-                <Button type="button" className="reset-password-action" onClick={() => openModal('forgot')}>
+                <Button type="button" className="status-action" onClick={() => openModal('forgot')}>
                     Pedir un enlace nuevo
                 </Button>
                 {help}
@@ -59,9 +59,9 @@ export default function ResetPasswordForm({ status }: { status: ResetTokenStatus
     if (saved) {
         return (
             <>
-                <h1 ref={titleRef} className="page-title reset-password-title" tabIndex={-1}>Contraseña cambiada</h1>
+                <h1 ref={titleRef} className="page-title status-focus-title" tabIndex={-1}>Contraseña cambiada</h1>
                 <p className="status-description">Ya puedes iniciar sesión con tu contraseña nueva.</p>
-                <Button type="button" className="reset-password-action" onClick={() => openModal('login')}>
+                <Button type="button" className="status-action" onClick={() => openModal('login')}>
                     Iniciar sesión
                 </Button>
             </>
@@ -126,7 +126,7 @@ export default function ResetPasswordForm({ status }: { status: ResetTokenStatus
                     </p>
                 )}
                 <p className="required-fields-note">* Campos obligatorios</p>
-                <Button type="submit" className="reset-password-action">Guardar contraseña</Button>
+                <Button type="submit" className="status-action">Guardar contraseña</Button>
             </form>
             {help}
         </>

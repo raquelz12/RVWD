@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
 import Modal from '../../Modal/Modal';
 import Button from '../../Button/Button';
 import Input from '../../Input/Input';
 import { useModal } from '@/context/ModalContext';
+import { VERIFY_LINK_DURATION } from '@/app/lib/emailVerification';
 import '@/styles/forms.css';
 import './RegisterModal.css';
 import Rvw from '../../Rvw/Rvw';
@@ -17,12 +17,21 @@ export interface RegisterModalProps {
 
 export default function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
   const { openModal } = useModal();
-  const router = useRouter();
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordRepeat, setPasswordRepeat] = useState('');
   const [acceptedTerms, setAcceptedTerms] = useState(false);
+  // Al registrarse se ve el aviso de «Revisa tu correo» en vez del formulario (el enlace del correo lleva a /verify-email)
+  const [sentTo, setSentTo] = useState<string | null>(null);
+  // Cuántas veces se ha reenviado: cambia el texto del aviso y vuelve a llevar el foco a él
+  const [resendCount, setResendCount] = useState(0);
+  const sentRef = useRef<HTMLParagraphElement>(null);
+
+  // Al enviar desaparece el botón que tenía el foco: se lleva al aviso (y el lector lo lee). Al reenviar, se vuelve a leer
+  useEffect(() => {
+    if (sentTo !== null) sentRef.current?.focus({ preventScroll: true });
+  }, [sentTo, resendCount]);
 
   // Siempre está montado (GlobalModals): al cerrar se vacía para no dejar la contraseña escrita
   const reset = () => {
@@ -31,6 +40,8 @@ export default function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
     setPassword('');
     setPasswordRepeat('');
     setAcceptedTerms(false);
+    setSentTo(null);
+    setResendCount(0);
   };
 
   const handleClose = () => {
@@ -40,10 +51,44 @@ export default function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: validar y crear la cuenta cuando haya backend
-    handleClose();
-    router.push('/onboarding');
+    // TODO: validar y crear la cuenta cuando haya backend (el backend manda el correo con el enlace a /verify-email)
+    setPassword('');
+    setPasswordRepeat('');
+    setSentTo(email.trim());
   };
+
+  const resend = () => {
+    // TODO: pedir al backend que reenvíe el correo de confirmación (y mostrar su error si falla)
+    setResendCount((n) => n + 1);
+  };
+
+  if (sentTo !== null) {
+    return (
+      <Modal isOpen={isOpen} onClose={handleClose} labelledBy="register-title">
+        <div className="modal-header">
+          <h2 id="register-title" className="section-title">Revisa tu correo</h2>
+        </div>
+        <div className="modal-form">
+          <p ref={sentRef} className="success-message register-sent" tabIndex={-1}>
+            <span>
+              {resendCount > 0 ? 'Te hemos enviado otro enlace' : 'Te hemos enviado un enlace'} a{' '}
+              {/* Sin validación todavía puede llegar vacío */}
+              {sentTo ? <strong className="register-email">{sentTo}</strong> : 'tu correo'} para confirmar tu cuenta.
+              Caduca en {VERIFY_LINK_DURATION}. Si no lo ves, mira también en la carpeta de spam.
+            </span>
+          </p>
+          <div className="button-group">
+            <Button type="button" variant="primary" onClick={handleClose}>
+              Entendido
+            </Button>
+            <Button type="button" variant="text" onClick={resend}>
+              Reenviar correo
+            </Button>
+          </div>
+        </div>
+      </Modal>
+    );
+  }
 
   return (
     <Modal isOpen={isOpen} onClose={handleClose} labelledBy="register-title">
