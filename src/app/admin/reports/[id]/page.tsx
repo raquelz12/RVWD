@@ -31,6 +31,7 @@ import {
     type ReportStatus,
 } from '../mockReports';
 import { markReportSeen } from '../useSeenReports';
+import { userHref } from '@/app/lib/publicUsers';
 import '../../admin-shared.css';
 import '../reports.css';
 import './report.css';
@@ -237,8 +238,7 @@ function AdminReportDetail({ initialReport, initialUser }: { initialReport: Admi
     };
 
     const menuItems: MoreMenuItem[] = [
-        // TODO: enlazar al perfil público de este usuario cuando exista la ruta
-        { label: 'Ver perfil público', href: '/profile' },
+        { label: 'Ver perfil público', href: userHref(user.username) },
         { label: report.contentType === 'Perfil' ? 'Ver perfil denunciado' : 'Ver contenido denunciado', href: contentHref },
         'divider',
         ...(!isResolved ? [{ label: 'Descartar denuncia', onClick: () => openResolveModal('Descartada') }] : []),

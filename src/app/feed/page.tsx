@@ -10,6 +10,15 @@ import SideDrawer from '../../../components/SideDrawer/SideDrawer';
 import Link from 'next/link';
 import { mockAlbums } from '../lib/mockData';
 import Rvw from '../../../components/Rvw/Rvw';
+import { userHref } from '../lib/publicUsers';
+
+// TODO: vendrán del backend
+const SIMILAR_USERS = [
+    { username: '@lucia.music', name: 'Lucía Martín' },
+    { username: '@clarent', name: 'Clarent' },
+    { username: '@juanp', name: 'Juan Pérez' },
+    { username: '@sara.vinilos', name: 'Sara Vidal' },
+];
 
 export const instant = false;
 
@@ -32,7 +41,8 @@ export default async function Feed({ searchParams }: { searchParams: Promise<{ t
                             href="/reviews/123"
                             mediaHref="/album/123"
                             reviewId="123"
-                            username="@raquelz.12204"
+                            username="@clarent"
+                            userHref={userHref('@clarent')}
                             userImageUrl="/placeholderCards.png"
                             followed={true}
                             type="Álbum"
@@ -47,10 +57,7 @@ export default async function Feed({ searchParams }: { searchParams: Promise<{ t
                             favoritesCount={5}
                         />
                         <section className="feed-section">
-                            <div className="section-header">
-                                <h2 className="section-title">Artistas que te podrían gustar</h2>
-                                <Button variant="text">Ver más</Button>
-                            </div>
+                            <h2 className="section-title">Artistas que te podrían gustar</h2>
                             <div className="might-like-cards">
                                 <ArtistCard href="/artist/123" name="Clarent" hasScore={true} showFollow={true} score={8.5} variant="white" />
                                 <ArtistCard href="/artist/123" name="Clarent" hasScore={true} showFollow={true} score={9.5} variant="white" />
@@ -59,10 +66,7 @@ export default async function Feed({ searchParams }: { searchParams: Promise<{ t
                             </div>
                         </section>
                         <section className="feed-section">
-                            <div className="section-header">
-                                <h2 className="section-title"><Rvw>RVWS</Rvw> favoritas para ti</h2>
-                                <Button variant="text">Ver más</Button>
-                            </div>
+                            <h2 className="section-title"><Rvw>RVWS</Rvw> favoritas para ti</h2>
                             <div className="media-cards-row">
                                 <MediaCard href="/reviews/123" type="album" title="No pasa nada hombre" artist="Clarent" imageUrl="/placeholderCards.png" userName="@raquelz.12204" userPicture="/placeholderCards.png" score={8.5} />
                                 <MediaCard href="/reviews/123" type="album" title="No pasa nada hombre" artist="Clarent" imageUrl="/placeholderCards.png" userName="@raquelz.12204" userPicture="/placeholderCards.png" score={8.5} />
@@ -73,7 +77,8 @@ export default async function Feed({ searchParams }: { searchParams: Promise<{ t
                             href="/reviews/123"
                             mediaHref="/album/123"
                             reviewId="123"
-                            username="@raquelz.12204"
+                            username="@sara.vinilos"
+                            userHref={userHref('@sara.vinilos')}
                             userImageUrl="/placeholderCards.png"
                             followed={true}
                             type="Álbum"
@@ -113,10 +118,7 @@ export default async function Feed({ searchParams }: { searchParams: Promise<{ t
                                 <Button variant="outline">Álbumes</Button>
                                 <Button variant="outline">Artistas</Button>
                             </div>
-                            <div className="section-header">
-                                <h2 className="section-title">Top de la semana</h2>
-                                <Button variant="text">Ver más</Button>
-                            </div>
+                            <h2 className="section-title">Top de la semana</h2>
                             <ol className="weekly-top-cards-list">
                                 {[1, 2, 3].map((position) => (
                                     <li key={position} className="weekly-top-card">
@@ -129,10 +131,7 @@ export default async function Feed({ searchParams }: { searchParams: Promise<{ t
                             </ol>
                         </section>
                         <section className="feed-section">
-                            <div className="section-header">
-                                <h2 className="section-title"><Rvw>RVWS</Rvw> favoritas de la semana</h2>
-                                <Button variant="text">Ver más</Button>
-                            </div>
+                            <h2 className="section-title"><Rvw>RVWS</Rvw> favoritas de la semana</h2>
                             <div className="media-cards-row">
                                 <MediaCard href="/reviews/123" type="album" title="No pasa nada hombre" artist="Clarent" imageUrl="/placeholderCards.png" userName="@raquelz.12204" userPicture="/placeholderCards.png" score={8.5} />
                                 <MediaCard href="/reviews/123" type="album" title="No pasa nada hombre" artist="Clarent" imageUrl="/placeholderCards.png" userName="@raquelz.12204" userPicture="/placeholderCards.png" score={8.5} />
@@ -140,18 +139,15 @@ export default async function Feed({ searchParams }: { searchParams: Promise<{ t
                             </div>
                         </section>
                         <section className="feed-section">
-                            <div className="section-header">
-                                <h2 className="section-title">Tienes mucho en común con...</h2>
-                                <Button variant="text">Ver más</Button>
-                            </div>
+                            <h2 className="section-title">Tienes mucho en común con...</h2>
                             <div className="users-cards">
-                                {[1, 2, 3, 4].map((i) => (
-                                    <div key={i} className="user-card">
-                                        <Link href="/profile" className="user-card-link">
+                                {SIMILAR_USERS.map((user) => (
+                                    <div key={user.username} className="user-card">
+                                        <Link href={userHref(user.username)} className="user-card-link">
                                             <img src="/placeholderCards.png" alt="" className="user-image" />
                                             <div className="user-info">
-                                                <span className="username">@raquelz.12204</span>
-                                                <span className="name">Raquel Z.</span>
+                                                <span className="username">{user.username}</span>
+                                                <span className="name">{user.name}</span>
                                             </div>
                                         </Link>
                                         <Button variant="primary">Seguir</Button>
@@ -160,15 +156,13 @@ export default async function Feed({ searchParams }: { searchParams: Promise<{ t
                             </div>
                         </section>
                         <section className="feed-section">
-                            <div className="section-header">
-                                <h2 className="section-title"><Rvw>RVWS</Rvw> que podrían gustarte</h2>
-                                <Button variant="text">Ver más</Button>
-                            </div>
+                            <h2 className="section-title"><Rvw>RVWS</Rvw> que podrían gustarte</h2>
                             <ReviewBigCard
                                 href="/reviews/123"
                                 mediaHref="/album/123"
                                 reviewId="123"
-                                username="@raquelz.12204"
+                                username="@juanp"
+                                userHref={userHref('@juanp')}
                                 userImageUrl="/placeholderCards.png"
                                 followed={false}
                                 type="Álbum"

@@ -12,6 +12,8 @@ import Rvw from '../Rvw/Rvw';
 
 interface ReviewBigCardProps {
     username?: string;
+    /** Perfil del autor: su nombre en la cabecera pasa a ser un enlace */
+    userHref?: string;
     userImageUrl?: string;
     followed?: boolean;
     type?: 'Álbum' | 'Canción' | 'Artista';
@@ -55,6 +57,7 @@ const MEDIA_LABEL: Record<NonNullable<ReviewBigCardProps['type']>, string> = {
 
 export default function ReviewBigCard({
     username,
+    userHref,
     userImageUrl,
     followed,
     type,
@@ -83,6 +86,8 @@ export default function ReviewBigCard({
     // TODO: seguir / dejar de seguir de verdad cuando haya backend
     const [isFollowed, setIsFollowed] = useState(!!followed);
 
+    const showUserHeader = !!(userImageUrl && username && followed !== undefined);
+
     // Opciones del menú ⋮: las de una reseña propia o las de la de otra persona
     const menuItems: MoreMenuItem[] = [
         ...(mediaHref && type ? [{ label: MEDIA_LABEL[type], href: mediaHref }] : []),
@@ -94,10 +99,11 @@ export default function ReviewBigCard({
                   ...(onDelete ? ['divider' as const, { label: 'Eliminar', onClick: onDelete, danger: true }] : []),
               ]
             : [
-                  {
+                  // Sin cabecera (p. ej. en el perfil del autor) seguir ya está en la propia página
+                  ...(showUserHeader ? [{
                       label: isFollowed ? `Dejar de seguir a ${username}` : `Seguir a ${username}`,
                       onClick: () => setIsFollowed((f) => !f),
-                  },
+                  }] : []),
                   'divider' as const,
                   {
                       label: 'Denunciar',
@@ -117,9 +123,8 @@ export default function ReviewBigCard({
         target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
     };
 
-    const showUserHeader =!!(userImageUrl && username && followed !== undefined);
-    // Reseña propia sin cabecera (p. ej. en el perfil): el menú va en la fila del título
-    const showInlineMenu = !showUserHeader && !!ownReview && menuItems.length > 0;
+    // Sin cabecera (p. ej. en un perfil): el menú va en la fila del título
+    const showInlineMenu = !showUserHeader && menuItems.length > 0;
 
     return (
         <div className="review-big-card" onClick={onClick}>
@@ -128,7 +133,11 @@ export default function ReviewBigCard({
                     <div className="review-big-card-user">
                         <img src={userImageUrl} alt="" />
                         <div className="review-big-card-user-info">
-                            <p className="user-name">{username}</p>
+                            <p className="user-name">
+                                {userHref ? (
+                                    <Link href={userHref} className="review-big-card-user-link">{username}</Link>
+                                ) : username}
+                            </p>
                             {!ownReview && (
                                 <p className="user-followed">{isFollowed ? 'Le sigues' : 'No le sigues'}</p>
                             )}

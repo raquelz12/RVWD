@@ -13,6 +13,7 @@ import {
 } from '../lib/mockNotifications';
 import { formatRelativeDate } from '../lib/adminFilters';
 import { useNowMinute } from '../lib/useNowMinute';
+import { userHref } from '../lib/publicUsers';
 import './notifications.css';
 
 function RelativeDate({ iso, nowMinute }: { iso: string; nowMinute: number | null }) {
@@ -106,7 +107,8 @@ export default function Notifications() {
                             <li key={req.id} className="follow-request-item">
                                 <div className="notif-item-header">
                                     <img src="/placeholder.png" alt="" className="notif-avatar" />
-                                    <span className="notif-username">{req.user}</span>
+                                    {/* Para ver su perfil antes de aceptar */}
+                                    <Link href={userHref(req.user)} className="notif-username notif-username-link">{req.user}</Link>
                                     <RelativeDate iso={req.date} nowMinute={nowMinute} />
                                     {!req.read && <UnreadDot label="Nueva" />}
                                 </div>

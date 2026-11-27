@@ -1,0 +1,97 @@
+/* Perfil de otro usuario. La base es profile.css; aquí solo lo que no tiene /profile.
+   El CSS de cada página es global en Next: todo lleva "user-profile" para no chocar */
+
+/* Mismo ancho en Seguir, Siguiendo y Solicitado, para que el ⋮ no se mueva al pulsar */
+.user-profile-follow-btn {
+  min-width: 12rem;
+}
+
+.user-profile-empty {
+  margin: 0;
+  font-size: 1.6rem;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+/* --------------------------CUENTA PRIVADA-------------------------- */
+.user-profile-private {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 4rem 2rem;
+  text-align: center;
+  background-color: var(--bg-card);
+  border-radius: 1.6rem;
+}
+
+.user-profile-private-icon {
+  width: 3.2rem;
+  height: 3.2rem;
+  filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(103%) contrast(103%);
+}
+
+.user-profile-private .block-title {
+  margin: 0;
+}
+
+.user-profile-private-text {
+  margin: 0;
+  max-width: 40rem;
+  font-size: 1.6rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+/* --------------------------CONFIRMAR DEJAR DE SEGUIR--------------------------
+   Mismo aspecto que los modales de confirmación de Ajustes (settings-modal) */
+.user-profile-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+  padding: 1rem;
+}
+
+.user-profile-modal-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  /* Deja sitio a la ✕ del modal */
+  padding-right: 3rem;
+}
+
+/* Un @usuario largo en el título no debe desbordar el modal */
+.user-profile-modal-header .section-title {
+  overflow-wrap: anywhere;
+}
+
+.user-profile-modal-text {
+  margin: 0;
+  font-size: 1.4rem;
+  color: var(--text-secondary);
+}
+
+.user-profile-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+/* --------------------------CUENTA DESACTIVADA-------------------------- */
+/* Un @usuario largo y sin espacios no debe desbordar en móvil */
+.user-profile-unavailable-title {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 768px) {
+  .user-profile-private {
+    margin: 0 2rem 3rem;
+  }
+
+  .user-profile-modal-actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+}

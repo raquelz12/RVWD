@@ -15,6 +15,7 @@ import Rvw from '../../../../components/Rvw/Rvw';
 import { useModal } from '@/context/ModalContext';
 import { formatRelativeDate } from '@/app/lib/adminFilters';
 import { useNowMinute } from '@/app/lib/useNowMinute';
+import { userHref } from '@/app/lib/publicUsers';
 import '@/styles/media-detail.css';
 import './review.css';
 
@@ -198,6 +199,7 @@ function ReviewContent({ reviewId }: { reviewId: string }) {
                     </h1>
                     <ReviewBigCard
                         username={REVIEW.author}
+                        userHref={userHref(REVIEW.author)}
                         userImageUrl={REVIEW.authorImage}
                         followed={false}
                         ownReview={REVIEW.own}
@@ -251,7 +253,7 @@ function ReviewContent({ reviewId }: { reviewId: string }) {
                                         <div className="single-review-comment-head">
                                             <div className="single-review-user">
                                                 <img className="single-review-user-avatar" src={comment.avatar} alt="" />
-                                                <span className="single-review-user-name">{comment.author}</span>
+                                                <Link href={userHref(comment.author)} className="single-review-user-name">{comment.author}</Link>
                                                 <div className="single-review-comment-info">
                                                     <CommentDate iso={comment.date} nowMinute={nowMinute} />
                                                     <span>{plural(comment.replies, 'respuesta', 'respuestas')}</span>
@@ -305,10 +307,10 @@ function ReviewContent({ reviewId }: { reviewId: string }) {
                     <div className="mobile-hero-gradient"></div>
 
                     <div className="mobile-hero-top-bar">
-                        <div className="mobile-hero-user-badge">
+                        <Link href={userHref(REVIEW.author)} className="mobile-hero-user-badge">
                             <img src={REVIEW.authorImage} alt="" />
                             <span>{REVIEW.author}</span>
-                        </div>
+                        </Link>
                         <button type="button" className="single-review-back-btn" onClick={goBack} aria-label="Volver">‹</button>
                     </div>
 
@@ -385,7 +387,7 @@ function ReviewContent({ reviewId }: { reviewId: string }) {
                             <li key={comment.id} data-comment-id={comment.id} className="sheet-comment">
                                 <div className="sheet-comment-user">
                                     <img src={comment.avatar} alt="" />
-                                    <span className="sheet-comment-author">{comment.author}</span>
+                                    <Link href={userHref(comment.author)} className="sheet-comment-author">{comment.author}</Link>
                                     <CommentDate iso={comment.date} nowMinute={nowMinute} className="sheet-comment-date" />
                                     <div className="sheet-comment-actions">
                                         <FavButton count={comment.favs} itemLabel="este comentario" className="single-review-like-button" />

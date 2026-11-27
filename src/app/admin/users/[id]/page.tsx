@@ -22,6 +22,7 @@ import {
     sanctionHint,
 } from '@/app/lib/adminModeration';
 import { MOCK_USERS, STATUS_CLASS, type AdminUser, type UserRole, type UserSanction } from '../mockUsers';
+import { userHref } from '@/app/lib/publicUsers';
 import '../../admin-shared.css';
 
 const ROLE_OPTIONS: { value: UserRole; label: string }[] = [
@@ -168,8 +169,7 @@ function AdminUserDetail({ initial }: { initial: AdminUser }) {
     };
 
     const menuItems: MoreMenuItem[] = [
-        // TODO: enlazar al perfil público de este usuario cuando exista la ruta
-        { label: 'Ver perfil público', href: '/profile' },
+        { label: 'Ver perfil público', href: userHref(user.username) },
         {
             label: 'Cambiar rol',
             onClick: () => {

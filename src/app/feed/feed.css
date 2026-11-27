@@ -78,17 +78,8 @@
     width: 100%;
 }
 
-.section-header {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    width: 100%;
-}
-
 /* Tamaño y peso vienen de .section-title; aquí solo el margen */
-.section-header .section-title {
+.feed-section > .section-title {
     margin: 2rem 0 1rem;
 }
 

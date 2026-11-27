@@ -118,6 +118,14 @@
     overflow-wrap: anywhere;
 }
 
+.notifications-container .notif-username-link {
+    text-decoration: none;
+}
+
+.notifications-container .notif-username-link:hover {
+    text-decoration: underline;
+}
+
 .notifications-container .notif-date {
     font-size: 1.2rem;
     color: var(--text-secondary);
