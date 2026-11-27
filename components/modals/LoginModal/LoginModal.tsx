@@ -68,8 +68,11 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="••••••••"
           />
-          {/* TODO: recuperar contraseña cuando haya backend */}
-          <Button type="button" variant="text">
+          <Button
+            type="button"
+            variant="text"
+            onClick={() => { reset(); openModal('forgot'); }}
+          >
             ¿Olvidaste tu contraseña?
           </Button>
         </div>

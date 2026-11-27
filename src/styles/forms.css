@@ -67,6 +67,14 @@
     margin: 0;
 }
 
+/* Error de validación de un formulario (recuperar contraseña). Va con role="alert" */
+.form-error {
+    margin: 0;
+    font-size: 1.4rem;
+    line-height: 1.5;
+    color: var(--danger-red);
+}
+
 .success-message {
     margin: 0;
     display: flex;

@@ -4,7 +4,7 @@ import { createContext, useContext, useState, ReactNode } from 'react';
 import type { ReportTarget } from '@/app/lib/reports';
 import type { Review } from '@/types/music';
 
-type ModalType = 'register' | 'login' | 'add' | 'report' | null;
+type ModalType = 'register' | 'login' | 'forgot' | 'add' | 'report' | null;
 
 /** Qué se va a reseñar al abrir el modal de crear RVW desde una ficha */
 export interface AddTarget {
