@@ -1,0 +1,24 @@
+/* El contenedor, los textos y los botones (.status-action) están en src/styles/status-page.css */
+
+/* Reintentar + volver: en fila; en móvil, apilados y a todo el ancho (lo hace .status-action) */
+.error-page-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.2rem;
+}
+
+.error-page-code {
+    color: var(--text-secondary);
+}
+
+/* El código es un hash largo: que no desborde en móvil */
+.error-page-code code {
+    font-size: 1.4rem;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 768px) {
+    .error-page-actions {
+        flex-direction: column;
+    }
+}

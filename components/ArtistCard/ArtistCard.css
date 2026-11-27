@@ -14,6 +14,11 @@
   position: relative;
 }
 
+.artist-card-link {
+  text-decoration: none;
+  color: inherit;
+}
+
 .follow-button {
   width: 100%;
 }
@@ -27,6 +32,7 @@
 .artist-image img {
   width: 13rem;
   height: 13rem;
+  object-fit: cover;
   transition: all 0.3s ease;
   border-radius: 9rem;
 }

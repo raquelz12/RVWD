@@ -7,6 +7,15 @@
     grid-template-columns: 1.4fr 1fr 1fr 1fr 1.2fr 1.2fr;
 }
 
+/* color del estado (STATUS_CLASS de mockUsers.ts), como en la ficha */
+.admin-list-container .user-status.status-suspendido {
+    color: var(--warning);
+}
+
+.admin-list-container .user-status.status-baneado {
+    color: var(--danger-red);
+}
+
 /* tablet: sin la columna de fecha */
 @media (max-width: 1100px) {
     .admin-table-header.users-grid,

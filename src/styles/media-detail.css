@@ -20,11 +20,32 @@
     font-size: 2rem;
 }
 
-/* Iconos junto al título */
-.bell-icon {
-    width: 2.4rem;
-    height: 2.4rem;
-    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(103%) contrast(103%);
+/* Enlace con aspecto de botón (un botón dentro de un enlace no es válido) */
+.custom-button.helper-link {
+    text-decoration: none;
+}
+
+/* Nombre (h1) con sus iconos al lado: los iconos van fuera del h1 para que no entren en su nombre */
+.media-name-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Tamaño de .page-title, pero el nombre de la ficha va en la fuente de títulos */
+.media-title {
+    font-family: var(--font-heading);
+    /* Anton solo tiene un grosor: sin esto el h1 la pondría en negrita simulada */
+    font-weight: 400;
+    line-height: 1.1;
+}
+
+.media-title-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-shrink: 0;
 }
 
 /* Estrella de favoritos del título (FavButton) */
@@ -39,6 +60,47 @@
 
 .title-fav-btn:hover {
     color: var(--primary-red);
+}
+
+/* Campana de avisos del artista: se pinta con el color del texto, como la estrella */
+.bell-button {
+    display: inline-flex;
+    padding: 0;
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    transition: color 0.3s ease, opacity 0.3s ease;
+}
+
+.bell-button-icon {
+    display: inline-block;
+    width: 2.4rem;
+    height: 2.4rem;
+    background-color: currentColor;
+    -webkit-mask: url('/bell-regular-full.svg') center / contain no-repeat;
+    mask: url('/bell-regular-full.svg') center / contain no-repeat;
+}
+
+.bell-button:hover:not(:disabled) {
+    color: var(--primary-red);
+}
+
+/* Activada: mismo rosa que la estrella marcada */
+.bell-button[aria-pressed="true"] {
+    color: var(--fav-pink);
+}
+
+/* Solo se puede activar si sigues al artista */
+.bell-button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.bell-button:focus-visible {
+    outline: 2px solid var(--primary-red-hover);
+    outline-offset: 2px;
+    border-radius: 0.4rem;
 }
 
 /* Puntuación RVWD */
@@ -72,19 +134,61 @@
     font-size: 3.2rem;
 }
 
-/* Rejilla de tarjetas (escritorio) */
+/* Rejilla de tarjetas (escritorio y tablet): 4 en fila.
+   Las tarjetas dejan su ancho fijo (26rem) y se encogen con la columna, siempre cuadradas
+   (igual que .media-cards-row del feed); sin esto, por debajo de ~1170px la cuarta se cortaba */
 .cards-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 3rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
 }
 
-.media-card-link {
-    text-decoration: none;
-    color: inherit;
+.cards-grid > li {
+    min-width: 0;
+}
+
+.cards-grid .media-card-link {
+    display: block;
+}
+
+.cards-grid .media-card {
+    width: 100%;
+}
+
+.cards-grid .media-image-container {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+}
+
+.cards-grid .image-wrapper {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.cards-grid .media-image {
+    display: block;
+    width: calc(100% - 2rem);
+    height: auto;
+    aspect-ratio: 1;
+}
+
+@media (max-width: 1024px) {
+    .cards-grid {
+        gap: 2rem;
+    }
 }
 
 @media (max-width: 768px) {
+    /* Nombre a la izquierda, iconos a la derecha */
+    .media-name-row {
+        justify-content: space-between;
+    }
+
     /* Hero inmersivo: el contenedor de cada página le da el tamaño */
     .mobile-hero-bg {
         position: absolute;
@@ -115,6 +219,6 @@
         gap: 3rem;
         padding-bottom: 2rem;
         padding-top: 2rem;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        border-bottom: 1px solid color-mix(in srgb, var(--primary-white) 10%, transparent);
     }
 }

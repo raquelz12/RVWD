@@ -1,23 +1,28 @@
 "use client";
 
 import Link from 'next/link';
-import { useState, Suspense } from 'react';
-import { usePathname } from 'next/navigation';
+import { useState, useId, useRef, Suspense } from 'react';
+import { usePathname, useSearchParams } from 'next/navigation';
 import './Header.css';
-import SearchBar from '../SearchBar/SearchBar';
+import GlobalSearch from '../GlobalSearch/GlobalSearch';
 import NotificationDropdown from '../NotificationDropdown/NotificationDropdown';
 import AdminHeader from './AdminHeader';
 import { isAdminPath } from '@/app/lib/adminNav';
+import { parseSearchQuery } from '@/app/lib/search';
 
 function HeaderContent() {
     const pathname = usePathname();
+    const searchParams = useSearchParams();
+    // En /search el buscador enseña lo buscado; la key lo vacía al irse de ahí o buscar otra cosa
+    const currentQuery = pathname === '/search' ? parseSearchQuery(searchParams.get('q')) : '';
 
-    const [isNotifOpen, setIsNotifOpen] = useState(false);
-
-    const toggleNotifMenu = (e: React.MouseEvent) => {
-        e.stopPropagation();
-        setIsNotifOpen(!isNotifOpen);
-    };
+    // Se guarda la ruta en la que se abrió el desplegable: al cambiar de página
+    // (p. ej. con el botón atrás del navegador) deja de coincidir y queda cerrado
+    const [notifOpenOn, setNotifOpenOn] = useState<string | null>(null);
+    const isNotifOpen = notifOpenOn !== null && notifOpenOn === pathname;
+    const setIsNotifOpen = (open: boolean) => setNotifOpenOn(open ? pathname : null);
+    const notifButtonRef = useRef<HTMLButtonElement>(null);
+    const notifMenuId = useId();
 
     const isActive = (path: string) => !!pathname && pathname.startsWith(path);
     const isFeed = isActive('/feed');
@@ -33,7 +38,7 @@ function HeaderContent() {
             <div className="logo"><Link href="/"><span className="red">Я</span>VWD</Link></div>
             {/* Hasta 1024px todo esto lo da la barra inferior (BottomNav) */}
             <div className="nav-links">
-                <SearchBar placeholder="Busca canciones, usuarios, ..." value="" onChange={(): void => {}} />
+                <GlobalSearch key={currentQuery} initialQuery={currentQuery} />
 
                 <div className="user-profile">
                     <Link
@@ -47,17 +52,21 @@ function HeaderContent() {
                     <div style={{ position: 'relative' }}>
                         <button
                             type="button"
+                            ref={notifButtonRef}
                             className={`nav-button ${isNotifOpen || isActive('/notifications') ? 'active' : ''}`}
                             aria-label="Notificaciones"
                             aria-expanded={isNotifOpen}
-                            onClick={toggleNotifMenu}
-                            // Sin esto, el clic "fuera" del desplegable lo cerraría y el propio clic lo volvería a abrir
-                            onMouseDown={(e) => e.stopPropagation()}
+                            aria-controls={notifMenuId}
+                            onClick={() => setIsNotifOpen(!isNotifOpen)}
                         >
                             <span className="icon-bell"></span>
                         </button>
                         {isNotifOpen && (
-                            <NotificationDropdown onClose={() => setIsNotifOpen(false)} />
+                            <NotificationDropdown
+                                id={notifMenuId}
+                                triggerRef={notifButtonRef}
+                                onClose={() => setIsNotifOpen(false)}
+                            />
                         )}
                     </div>
                     <Link
@@ -74,7 +83,7 @@ function HeaderContent() {
     );
 }
 
-// usePathname con cacheComponents necesita un Suspense en rutas dinámicas
+// usePathname y useSearchParams con cacheComponents necesitan un Suspense en rutas dinámicas
 function HeaderFallback() {
     return (
         <header className="header">

@@ -1,0 +1,223 @@
+/* Resultados de búsqueda (/search) */
+.search-page {
+    display: flex;
+    flex-direction: column;
+    gap: 2.4rem;
+    width: 100%;
+    max-width: 120rem;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+    box-sizing: border-box;
+}
+
+/* Lo buscado puede ser una palabra larguísima sin espacios */
+.search-page-title,
+.search-page-message {
+    overflow-wrap: anywhere;
+}
+
+.search-page-message {
+    margin: 0;
+    font-size: 1.8rem;
+    color: var(--text-secondary);
+}
+
+.search-page-tab-count {
+    font-size: 0.7em;
+    color: var(--text-secondary);
+}
+
+.tab-nav-link.active .search-page-tab-count {
+    color: inherit;
+}
+
+.search-page-section {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.search-page-section-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1.6rem;
+    flex-wrap: wrap;
+}
+
+.search-page-section-header .inline-link {
+    font-size: 1.6rem;
+}
+
+/* Rejilla de tarjetas: las tarjetas dejan su ancho fijo y se encogen con la columna,
+   siempre cuadradas (como .cards-grid de las fichas y .media-cards-row del feed) */
+.search-page-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 3rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.search-page-grid > li {
+    min-width: 0;
+}
+
+.search-page-grid .media-card-link,
+.search-page-grid .artist-card-link {
+    display: block;
+}
+
+.search-page-grid .media-card {
+    width: 100%;
+}
+
+.search-page-grid .media-image-container {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+}
+
+.search-page-grid .image-wrapper {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.search-page-grid .media-image {
+    display: block;
+    width: calc(100% - 2rem);
+    height: auto;
+    aspect-ratio: 1;
+}
+
+.search-page-artists .artist-card {
+    min-width: 0;
+    max-width: none;
+    box-sizing: border-box;
+}
+
+.search-page-artists .artist-image {
+    width: 100%;
+    max-width: 13rem;
+}
+
+.search-page-artists .artist-image img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+}
+
+.search-page-artists .artist-name {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    text-align: center;
+}
+
+/* Usuarios: tarjetas enteras enlazables (sin botones dentro) */
+.search-page-users {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(22rem, 1fr));
+    gap: 1.6rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.search-page-user {
+    display: flex;
+    align-items: center;
+    gap: 1.4rem;
+    padding: 1.2rem 1.6rem;
+    border: 0.2rem solid color-mix(in srgb, var(--primary-white) 30%, transparent);
+    border-radius: 2.4rem;
+    background-color: color-mix(in srgb, var(--primary-white) 15%, transparent);
+    color: inherit;
+    text-decoration: none;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.search-page-user:hover {
+    transform: translateY(-0.2rem);
+    background-color: color-mix(in srgb, var(--primary-white) 30%, transparent);
+}
+
+.search-page-user:focus-visible {
+    outline: 2px solid var(--primary-white);
+    outline-offset: 2px;
+}
+
+.search-page-user-avatar {
+    flex-shrink: 0;
+    width: 5.6rem;
+    height: 5.6rem;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.search-page-user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    min-width: 0;
+}
+
+/* Nombres largos: en una línea con "…" en vez de salirse de la tarjeta */
+.search-page-user-name,
+.search-page-user-username {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.search-page-user-name {
+    font-size: 1.6rem;
+    font-weight: 600;
+}
+
+.search-page-user-username {
+    font-size: 1.4rem;
+    color: var(--text-secondary);
+}
+
+/* Tablet: 3 en fila */
+@media (max-width: 1024px) {
+    .search-page-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 2rem;
+    }
+}
+
+/* Móvil: 2 en fila */
+@media (max-width: 768px) {
+    .search-page {
+        padding: 2.4rem 1.6rem;
+    }
+
+    .search-page-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1.6rem;
+    }
+
+    .search-page-artists .artist-card {
+        padding: 1.2rem;
+    }
+
+    .search-page-users {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .search-page-message {
+        font-size: 1.6rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .search-page-user,
+    .search-page-user:hover {
+        transition: none;
+        transform: none;
+    }
+}

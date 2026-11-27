@@ -2,7 +2,6 @@
     display: flex;
     justify-content: space-between;
     gap: 3rem;
-    min-width: 38rem;
 }
 
 .stat-item {
@@ -10,6 +9,27 @@
     flex-direction: column;
     align-items: center;
     gap: 0.5rem;
+}
+
+/* Seguidores / Siguiendo enlazables: mismo saltito y subrayado que .profile-view-all */
+.stat-item-link {
+    color: inherit;
+    text-decoration: none;
+    border-radius: 0.8rem;
+    transition: transform 0.2s ease;
+}
+
+.stat-item-link:hover {
+    transform: translateY(-0.2rem);
+}
+
+.stat-item-link:hover .stat-label {
+    text-decoration: underline;
+}
+
+.stat-item-link:focus-visible {
+    outline: 2px solid var(--primary-white);
+    outline-offset: 4px;
 }
 
 .stat-value {
@@ -24,5 +44,14 @@
 @media (max-width: 768px) {
     .stats {
         justify-content: space-evenly;
+        min-width: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .stat-item-link,
+    .stat-item-link:hover {
+        transition: none;
+        transform: none;
     }
 }

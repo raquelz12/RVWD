@@ -1,28 +1,4 @@
-.rules-container {
-    display: flex;
-    flex-direction: column;
-    padding: 4rem 2rem;
-    width: 100%;
-    max-width: 120rem;
-    margin: 0 auto;
-    box-sizing: border-box;
-    overflow-x: hidden;
-}
-
-/* cabecera */
-.rules-header-section {
-    margin-bottom: 4rem;
-}
-
-.rules-main-title {
-    margin-bottom: 1.5rem;
-}
-
-.rules-main-intro {
-    font-size: 2rem;
-    line-height: 1.6;
-    margin: 0;
-}
+/* El contenedor, la cabecera y los bloques de texto están en src/styles/text-page.css */
 
 /* columnas */
 .rules-columns-layout {
@@ -33,33 +9,35 @@
 
 .rules-col-title {
     margin-bottom: 3rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid color-mix(in srgb, var(--primary-white) 10%, transparent);
     padding-bottom: 1rem;
 }
 
-/* columna izquierda */
+/* columna izquierda: acordeón de normas */
 .accordion-list {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
 
 .accordion-item {
     border: 0.2rem solid color-mix(in srgb, var(--primary-white) 30%, transparent);
     border-radius: 2.4rem;
     background-color: color-mix(in srgb, var(--primary-white) 15%, transparent);
-    transition: all 0.3s ease;
     overflow: hidden;
     transition: background-color 0.2s;
 }
 
-.accordion-item:hover {
-  background-color: color-mix(in srgb, var(--primary-white) 20%, transparent);
-  cursor: pointer;
+/* El hover y el clic solo en la cabecera, que es lo que se pulsa; se pinta toda la tarjeta */
+.accordion-item:has(.accordion-header:hover) {
+    background-color: color-mix(in srgb, var(--primary-white) 20%, transparent);
 }
 
-.accordion-item:active {
-  background-color: color-mix(in srgb, var(--primary-white) 25%, transparent);
+.accordion-item:has(.accordion-header:active) {
+    background-color: color-mix(in srgb, var(--primary-white) 25%, transparent);
 }
 
 .accordion-header {
@@ -67,6 +45,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 1.5rem;
     padding: 2rem;
     background: none;
     border: none;
@@ -78,17 +57,10 @@
     font-family: inherit;
 }
 
-.accordion-title-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    font-size: 1.6rem;
-}
-
 .accordion-chevron {
     font-size: 1.4rem;
     transition: transform 0.3s ease;
-    color: rgba(255, 255, 255, 0.5);
+    color: color-mix(in srgb, var(--primary-white) 50%, transparent);
 }
 
 /* Animación de apertura */
@@ -115,10 +87,10 @@
     padding: 0 2rem 2rem 2rem;
     font-size: 1.6rem;
     line-height: 1.5;
-    color: rgba(255, 255, 255, 0.7);
+    color: color-mix(in srgb, var(--primary-white) 70%, transparent);
 }
 
-/* columna derecha */
+/* columna derecha: sanciones */
 .sanciones-intro {
     font-size: 1.6rem;
     line-height: 1.5;
@@ -129,39 +101,24 @@
     display: flex;
     flex-direction: column;
     gap: 2rem;
-    margin-bottom: 3rem;
+    list-style: none;
+    margin: 0 0 3rem 0;
+    padding: 0;
 }
 
+/* Tarjetas informativas (sin hover: no se pueden pulsar) */
 .sancion-card {
-  position: relative;
-  overflow: hidden;
-  background: linear-gradient(
-    145deg,
-    rgba(255, 255, 255, 0.07) 0%,
-    rgba(255, 255, 255, 0.02) 100%
-  );
-  border: 0.15rem solid rgba(255, 255, 255, 0.12);
-  border-radius: 2.4rem;
-  padding: 1.6rem 2rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  text-align: left;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
-}
-
-/* Cada tarjeta toma el color de su sanción (el de su distintivo) */
-.sancion-card:has(.badge-aviso) { --sancion-color: var(--text-secondary); }
-.sancion-card:has(.badge-mute) { --sancion-color: var(--warning); }
-.sancion-card:has(.badge-ban) { --sancion-color: var(--danger-red); }
-
-.sancion-card:hover {
-  transform: translateY(-0.6rem);
-  border-color: var(--sancion-color, var(--primary-red));
-  box-shadow: 0 1.2rem 2.8rem rgba(0, 0, 0, 0.15);
+    background: linear-gradient(
+        145deg,
+        color-mix(in srgb, var(--primary-white) 7%, transparent) 0%,
+        color-mix(in srgb, var(--primary-white) 2%, transparent) 100%
+    );
+    border: 0.15rem solid color-mix(in srgb, var(--primary-white) 12%, transparent);
+    border-radius: 2.4rem;
+    padding: 1.6rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
 .sancion-card p {
@@ -170,8 +127,12 @@
     line-height: 1.5;
 }
 
-/* Distintivos: gris → ámbar → rojo, la misma escala que admin
+/* Color de cada sanción: gris → ámbar → rojo, la misma escala que admin
    (suspendido = --warning, baneado = --danger-red) */
+.sancion-aviso { --sancion-color: var(--text-secondary); }
+.sancion-mute { --sancion-color: var(--warning); }
+.sancion-ban { --sancion-color: var(--danger-red); }
+
 .sancion-badge {
     display: inline-block;
     padding: 0.4rem 1.2rem;
@@ -182,51 +143,22 @@
     background: color-mix(in srgb, var(--sancion-color) 18%, transparent);
 }
 
-.badge-aviso { --sancion-color: var(--text-secondary); }
-.badge-mute { --sancion-color: var(--warning); }
-.badge-ban { --sancion-color: var(--danger-red); }
-
-/* Alerta de caducidad */
-.info-alert {
-    display: flex;
-    align-items: center;
-    margin-bottom: 4rem;
-}
-
-.info-alert p {
-    margin: 0;
+.sanciones-note {
+    margin: 0 0 4rem 0;
     font-size: 1.6rem;
 }
 
-/* Bloques extra inferiores */
+/* Bloques extra inferiores (.text-block) */
 .extra-info-blocks {
     display: flex;
     flex-direction: column;
     gap: 2.4rem;
 }
 
-.extra-block h3 {
-    font-weight: 500;
-    margin: 0 0 1rem 0;
-    font-size: 1.6rem;
-}
-
-.extra-block p {
-    line-height: 1.6;
-    margin: 0;
-    font-size: 1.4rem;
-}
-
-/* responsive */
-@media (max-width: 900px) {
+/* responsive: una columna desde tablet */
+@media (max-width: 1024px) {
     .rules-columns-layout {
         grid-template-columns: 1fr;
         gap: 5rem;
-    }
-}
-
-@media (max-width: 768px) {
-    .rules-header-section {
-        margin-bottom: 2rem;
     }
 }

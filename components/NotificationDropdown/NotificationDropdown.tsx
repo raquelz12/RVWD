@@ -1,57 +1,76 @@
 'use client';
 
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, type RefObject } from 'react';
 import Link from 'next/link';
 import './NotificationDropdown.css';
 import Dot from '../Dot/Dot';
+import NotificationText from './NotificationText';
+import { recentNotifications } from '@/app/lib/mockNotifications';
+import { formatRelativeDate } from '@/app/lib/adminFilters';
+import { useNowMinute } from '@/app/lib/useNowMinute';
 
 interface Props {
+    /** id del desplegable: la campana lo apunta con aria-controls */
+    id: string;
+    /** Botón de la campana: su clic no cuenta como "fuera" y recibe el foco al cerrar con Escape */
+    triggerRef: RefObject<HTMLButtonElement | null>;
     onClose: () => void;
 }
 
-export default function NotificationDropdown({ onClose }: Props) {
+export default function NotificationDropdown({ id, triggerRef, onClose }: Props) {
     const menuRef = useRef<HTMLDivElement>(null);
+    const nowMinute = useNowMinute();
+    const titleId = `${id}-title`;
 
-    const recentNotifications = [
-        { id: 1, user: '@raquelz.12204', time: 'Hace 5m', text: <>Puso un comentario en tu <span className="RVWS">RVW</span> de <strong>No pasa nada hombre.</strong></>, read: false },
-        { id: 2, user: '@clarent', time: 'Hace 1h', text: <>Dio fav a tu comentario en tu <span className="RVWS">RVW</span> de <strong>No pasa nada hombre.</strong></>, read: false },
-        { id: 3, user: '@juanp', time: 'Hace 2h', text: <>Dio fav a tu <span className="RVWS">RVW</span> de <strong>No pasa nada hombre.</strong></>, read: true },
-    ];
-
+    // Se cierra al pulsar fuera (la campana ya lo abre y cierra con su clic) o con Escape
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
-            if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-                onClose();
-            }
+            const target = event.target as Node;
+            if (menuRef.current?.contains(target) || triggerRef.current?.contains(target)) return;
+            onClose();
+        };
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key !== 'Escape') return;
+            onClose();
+            triggerRef.current?.focus();
         };
         document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, [onClose]);
+        document.addEventListener('keydown', handleKeyDown);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [onClose, triggerRef]);
 
     return (
-        <div className="notif-dropdown-menu edit-anim" ref={menuRef}>
+        <div className="notif-dropdown-menu" id={id} ref={menuRef} role="region" aria-labelledby={titleId}>
             <div className="notif-header">
-                <h3>Notificaciones</h3>
+                <h2 className="notif-header-title" id={titleId}>Notificaciones</h2>
             </div>
-            <div className="notif-list">
+            <ul className="notif-list">
                 {recentNotifications.map(notif => (
-                    <div key={notif.id} className="notif-item">
-                        <img src="/placeholder.png" alt="Avatar" className="notif-avatar" />
-                        <div className="notif-content-wrapper">
-                            <div className="notif-item-header">
-                                <span className="notif-username">{notif.user}</span>
-                                <span className="notif-time">{notif.time}</span>
-                                {notif.read === false ? (
-                                    <div className="notif-icon">
-                                        <Dot type="filled" />
-                                    </div>
-                                ) : null}
+                    <li key={notif.id}>
+                        <Link href={notif.href} className="notif-item" onClick={onClose}>
+                            <img src="/placeholder.png" alt="" className="notif-avatar" />
+                            <div className="notif-content-wrapper">
+                                <div className="notif-item-header">
+                                    <span className="notif-username">{notif.user}</span>
+                                    <time className="notif-date" dateTime={notif.date}>
+                                        {nowMinute === null ? '' : formatRelativeDate(notif.date, nowMinute * 60_000)}
+                                    </time>
+                                    {!notif.read && (
+                                        <span className="notif-unread">
+                                            <Dot type="filled" />
+                                            <span className="sr-only">No leída</span>
+                                        </span>
+                                    )}
+                                </div>
+                                <NotificationText notif={notif} className="notif-text" />
                             </div>
-                            <p className="notif-text">{notif.text}</p>
-                        </div>
-                    </div>
+                        </Link>
+                    </li>
                 ))}
-            </div>
+            </ul>
             <Link href="/notifications" className="notif-see-all" onClick={onClose}>
                 Ver todas
             </Link>

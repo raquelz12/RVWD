@@ -11,6 +11,7 @@
     border-radius: 2.4rem;
     background-color: color-mix(in srgb, var(--primary-white) 15%, transparent);
     transition: all 0.3s ease;
+    position: relative;
 }
 
 .review-big-card:hover {
@@ -57,12 +58,24 @@
     font-size: 1.4rem;
     font-weight: 600;
     margin: 0;
-    transition: color 0.3s ease;
 }
 
-.review-big-card-user-info .user-name:hover {
-    color: var(--primary-red);
-    cursor: pointer;
+/* Por encima del enlace que cubre toda la tarjeta, como los botones */
+.review-big-card-user-link {
+    position: relative;
+    z-index: 1;
+    color: inherit;
+    text-decoration: none;
+}
+
+.review-big-card-user-link:hover {
+    text-decoration: underline;
+}
+
+.review-big-card-user-link:focus-visible {
+    outline: 2px solid var(--primary-white);
+    outline-offset: 2px;
+    border-radius: 0.2rem;
 }
 
 .review-big-card-user-info .user-followed {
@@ -71,18 +84,47 @@
     margin: 0;
 }
 
-.review-big-card-extra-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: var(--primary-white);
-    font-size: 2rem;
-    transition: color 0.3s ease;
+.review-big-card-extra {
     align-self: flex-start;
 }
 
-.review-big-card-extra-btn:hover {
-    color: var(--primary-red);
+.review-big-card-extra,
+.review-big-card .fav-button {
+    position: relative;
+    z-index: 1;
+}
+
+.review-big-card-header:has(> .review-big-card-extra) {
+    gap: 1rem;
+}
+
+.review-big-card-header:has(> .review-big-card-extra) > .review-big-card-score {
+    margin-left: auto;
+}
+
+.review-big-card:has(.more-menu.is-open) {
+    z-index: 20;
+}
+
+.review-big-card-link {
+    color: inherit;
+    text-decoration: none;
+}
+
+.review-big-card-link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+}
+
+.review-big-card-link:focus-visible {
+    outline: none;
+}
+
+.review-big-card:has(.review-big-card-link:focus-visible) {
+    outline: 0.2rem solid var(--primary-white);
+    outline-offset: 0.2rem;
 }
 
 /* Parte de abajo */
@@ -97,6 +139,13 @@
 }
 
 .review-big-card-image {
+    flex-shrink: 0;
+}
+
+.review-big-card-image img {
+    display: block;
+    width: 23rem;
+    height: 23rem;
     object-fit: cover;
     border-radius: 1.6rem;
 }
@@ -112,14 +161,6 @@
 }
 
 /* Parte de abajo - Info */
-
-.review-big-card-header {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-}
 
 .review-big-card-header-info {
     display: flex;
@@ -166,6 +207,12 @@
     -webkit-box-orient: vertical;
 }
 
+.review-big-card-review.is-full {
+    display: block;
+    overflow: visible;
+    -webkit-line-clamp: unset;
+}
+
 .review-big-card-review .title {
     font-weight: 600;
     font-size: 2.0rem;
@@ -210,6 +257,14 @@
     transition: color 0.3s ease;
 }
 
+.review-big-card-footer-stat {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-size: 1.4rem;
+}
+
+.review-big-card-footer-stat img,
 .review-big-card-footer-btn img {
     padding-left: 0.5rem;
     width: 2rem;
@@ -219,6 +274,29 @@
 
 .review-big-card-footer-btn:hover {
     color: var(--primary-red);
+}
+
+.review-big-card-comments-link {
+    position: relative;
+    z-index: 1;
+    color: var(--primary-white);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.review-big-card-comments-link:hover {
+    color: var(--primary-red);
+}
+
+.review-big-card-comments-icon {
+    display: inline-block;
+    flex-shrink: 0;
+    width: 2rem;
+    height: 2rem;
+    margin-left: 0.5rem;
+    background-color: currentColor;
+    -webkit-mask: url('/comments-solid-full.svg') center / contain no-repeat;
+    mask: url('/comments-solid-full.svg') center / contain no-repeat;
 }
 
 .review-big-card-score {
@@ -243,7 +321,6 @@
     flex-direction: row;
     align-items: flex-end;
     justify-content: center;
-    /* en flex se pierden los espacios del texto: el hueco entre palabras lo pone gap */
     gap: 0.4rem;
     font-size: 1.6rem;
     margin-bottom: 2rem;
@@ -276,6 +353,7 @@
     .review-big-card {
         padding: 1rem;
         max-width: 40rem;
+        margin: 0 auto;
     }
 
     .review-big-card-content {
@@ -294,6 +372,8 @@
 
     .review-big-card-image img {
         width: 100%;
+        height: auto;
+        aspect-ratio: 1;
     }
 
     .review-big-card-info {
@@ -308,5 +388,34 @@
 
     .review-big-card-score-text {
         display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .review-big-card-header:has(> .review-big-card-extra) {
+        flex-wrap: wrap;
+        align-items: flex-start;
+        row-gap: 1rem;
+    }
+
+    .review-big-card-header:has(> .review-big-card-extra) > .review-big-card-header-info {
+        flex: 1 1 0;
+        min-width: 0;
+    }
+
+    .review-big-card-header:has(> .review-big-card-extra) .review-big-card-title {
+        overflow-wrap: anywhere;
+    }
+
+    .review-big-card-header:has(> .review-big-card-extra) > .review-big-card-score {
+        order: 1;
+        flex-basis: 100%;
+        justify-content: center;
+        margin-left: 0;
+        padding-right: 0;
+    }
+
+    .review-big-card-header:has(> .review-big-card-extra) > .review-big-card-extra {
+        margin: 0.4rem 0.4rem 0 0;
     }
 }

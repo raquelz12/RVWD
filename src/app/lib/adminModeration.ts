@@ -18,3 +18,45 @@ export const REPORT_TO_SANCTION_REASON: Record<string, string> = {
 
 // Al llegar a este número de sanciones activas se banea la cuenta
 export const MAX_SANCTIONS = 3;
+
+export const BAN_REASONS = [
+    { value: '3 strikes', label: '3 strikes' },
+    { value: 'Discurso de odio', label: 'Discurso de odio' },
+    { value: 'Amenazas / Estafa', label: 'Amenazas o estafa' },
+    { value: 'Bots / Review bombing', label: 'Bots / Review bombing' },
+];
+
+export const SUSPEND_DURATIONS = [
+    { value: '3 días', label: '3 días' },
+    { value: '7 días', label: '7 días' },
+    { value: '15 días', label: '15 días' },
+    { value: '30 días', label: '30 días' },
+];
+
+// Días que tarda en caducar una sanción (Ajustes de admin > Reglas de moderación)
+export const SANCTION_EXPIRY_DAYS = 90;
+
+// Días de suspensión automática con la penúltima sanción
+export const AUTO_SUSPEND_DAYS = 7;
+
+/** Qué supone añadir una sanción a quien ya tiene `count` activas:
+ *  la penúltima suspende la cuenta unos días y la última la banea */
+export const nextSanction = (count: number) => {
+    const total = count + 1;
+    const banned = total >= MAX_SANCTIONS;
+    const suspended = !banned && total === MAX_SANCTIONS - 1;
+    const type = banned
+        ? `Baneo (${MAX_SANCTIONS} sanciones)`
+        : suspended
+          ? `Suspensión temporal (${AUTO_SUSPEND_DAYS} días)`
+          : 'Aviso al usuario';
+    return { banned, suspended, type };
+};
+
+/** Texto del modal de añadir sanción: avisa de lo que pasará con la cuenta */
+export const sanctionHint = (count: number, firstName: string) => {
+    const { banned, suspended } = nextSanction(count);
+    if (banned) return `Con esta se baneará la cuenta de ${firstName}.`;
+    if (suspended) return `Con esta se suspenderá la cuenta ${AUTO_SUSPEND_DAYS} días.`;
+    return 'Selecciona el motivo y añade una nota interna.';
+};

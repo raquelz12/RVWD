@@ -1,0 +1,38 @@
+/* Buscador de la web (header, barra inferior y portada).
+   La base del desplegable está en components/SearchResults; aquí solo se coloca */
+.global-search {
+    position: relative;
+    width: 100%;
+    max-width: 40rem;
+}
+
+.global-search-results {
+    position: absolute;
+    top: calc(100% + 0.8rem);
+    left: 0;
+    min-width: 30rem;
+    max-height: 60vh;
+    overflow-y: auto;
+    z-index: 60;
+    text-align: left;
+}
+
+/* Barra inferior: hacia arriba, por encima de la cápsula del buscador (que tiene 0.8rem de relleno).
+   --search-bottom lo pone BottomNav en la cápsula: es su borde de abajo, así que lo que queda
+   por encima son esos px menos la propia cápsula y un margen */
+.global-search.opens-up .global-search-results {
+    top: auto;
+    bottom: calc(100% + 1.8rem);
+    min-width: 0;
+    width: 100%;
+    max-height: min(50dvh, calc(var(--search-bottom, 100dvh) - 9rem));
+}
+
+.global-search-more {
+    justify-content: center;
+    border-top: 0.1rem solid rgba(255, 255, 255, 0.15);
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--primary-white);
+    overflow-wrap: anywhere;
+}

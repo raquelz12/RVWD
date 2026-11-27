@@ -58,7 +58,7 @@ function AdminStats() {
         <div className="admin-list-container stats-container">
             <header className="stats-header">
                 <div className="admin-list-header">
-                    <h1>Estadísticas</h1>
+                    <h1 className="page-title">Estadísticas</h1>
                     <p>Comparado con {periodInfo.previous}</p>
                 </div>
                 <div className="stats-period" role="group" aria-label="Periodo">
@@ -109,7 +109,7 @@ function Panel({ title, subtitle, children, className = '' }: { title: string; s
     return (
         <section className={`stats-panel ${className}`}>
             <header className="stats-panel-head">
-                <h2 className="section-heading">{title}</h2>
+                <h2 className="block-title">{title}</h2>
                 {subtitle && <span className="stats-panel-sub">{subtitle}</span>}
             </header>
             {children}

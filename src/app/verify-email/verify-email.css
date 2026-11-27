@@ -1,0 +1,32 @@
+/* El contenedor, los textos, el ancho estrecho y el botón (.status-action) están en src/styles/status-page.css;
+   .form-label, .form-error y .success-message, en src/styles/forms.css */
+
+.verify-email-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+    width: 100%;
+    max-width: 44rem;
+}
+
+.verify-email-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+/* Recibe el foco por código para que se lea al enviar; no es interactivo, no hace falta marcarlo */
+.verify-email-sent:focus {
+    outline: none;
+}
+
+/* Un correo largo no debe desbordar en móvil */
+.verify-email-address {
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 768px) {
+    .verify-email-form {
+        max-width: none;
+    }
+}

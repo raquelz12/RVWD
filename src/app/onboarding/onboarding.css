@@ -1,273 +1,346 @@
+/* =========================================
+   ONBOARDING
+   Todo va bajo .onboarding-container: el CSS de cada página es global y
+   nombres como .step o .review-form-card chocarían con otras páginas.
+   ========================================= */
+
 /* General */
 .onboarding-container {
   display: flex;
   flex-direction: column;
-  gap: 8rem;
   padding: 4rem 2rem;
   width: 100%;
   max-width: 120rem;
   margin: 0 auto;
   box-sizing: border-box;
-  overflow-x: hidden;
 }
 
-.onboarding-container .button-group {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    gap: 1rem;
-    width: 100%;
-}
-
-.onboarding-container .button-group-end {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-left: auto;
-}
-
-.onboarding-container .search-result-item.is-disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-.onboarding-container .search-result-item.is-disabled:hover {
-    background-color: transparent;
-}
-
-.step {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-}
-
-.step-header {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    margin-bottom: 2rem;
-}
-
-.step-header p {
-    font-size: 2rem;
-}
-
-.step-indicator {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 0.8rem;
-    margin-bottom: 1rem;
-}
-
-.step-text {
-    font-size: 1.2rem;
-    margin: 0;
-}
-
-/* Step 1 */
-.step-1 {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 2rem;
-}
-
-.selected-artists {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
-    gap: 1.6rem;
-    margin-bottom: 2rem;
-}
-
-.selected-artists img {
-    width: 100%;
-    height: 15rem;
-    object-fit: cover;
-    border-radius: 1rem;
-}
-
-.search-dropdown-wrapper {
-  position: relative;
-  width: 100%;
-  margin-top: 1.6rem;
-}
-
-.selected-chips-container {
+.onboarding-container .step {
   display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.onboarding-container .step-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   margin-bottom: 2rem;
 }
 
-.artist-chip {
+/* El foco llega al título por código al cambiar de paso: no hace falta el contorno */
+.onboarding-container .step-header .page-title:focus {
+  outline: none;
+}
+
+.onboarding-container .step-description {
+  font-size: 2rem;
+}
+
+.onboarding-container .step-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.onboarding-container .step-dots {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.onboarding-container .step-text {
+  font-size: 1.2rem;
+}
+
+.onboarding-container .button-group {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+}
+
+.onboarding-container .button-group-end {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1rem;
+  margin-left: auto;
+}
+
+.onboarding-container .step-3 .button-group {
+  margin-top: 2rem;
+}
+
+/* Step 1 */
+.onboarding-container .search-dropdown-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.onboarding-container .selected-chips-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.onboarding-container .artist-chip {
   display: flex;
   align-items: center;
   gap: 0.8rem;
   padding: 0.6rem 1.2rem;
+  border: none;
   background-color: var(--primary-red);
+  color: var(--primary-white);
+  font: inherit;
   border-radius: 9rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease;
   box-shadow: 0 0.2rem 0.6rem rgba(0, 0, 0, 0.3);
 }
 
-.artist-chip:hover {
+.onboarding-container .artist-chip:hover {
   background-color: var(--primary-red-hover);
 }
 
-.artist-chip img {
-    width: 2.4rem;
-    height: 2.4rem;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 0.1rem solid rgba(255,255,255,0.1);
+.onboarding-container .artist-chip:focus-visible {
+  outline: 2px solid var(--primary-white);
+  outline-offset: 2px;
 }
 
-/* Responsive step 1 */
-@media (max-width: 768px) {
-  .selected-artists {
-    grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
-  }
+.onboarding-container .artist-chip img {
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 0.1rem solid rgba(255, 255, 255, 0.1);
 }
 
-/* Step 3 */
+/* Columna mínima = lo que ocupa una ArtistCard (imagen 13rem + padding + borde) */
+.onboarding-container .artist-suggestions {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(17.5rem, 1fr));
+  justify-items: center;
+  gap: 1.6rem;
+  min-width: 0;
+  margin: 0 0 2rem;
+  padding: 0;
+  border: none;
+}
+
+/* Tarjetas que se marcan: un checkbox o radio oculto dentro de un <label> */
+.onboarding-container .artist-option,
+.onboarding-container .review-option {
+  position: relative;
+  display: flex;
+}
+
+.onboarding-container .artist-option:has(input:focus-visible) .artist-card,
+.onboarding-container .review-option:has(input:focus-visible) .small-card {
+  outline: 2px solid var(--primary-white);
+  outline-offset: 2px;
+}
 
 /* Step 3.1 */
-
-.review-selection-header {
+.onboarding-container .review-selection-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 2rem;
   gap: 2rem;
 }
 
-.review-search-wrapper {
-  position: relative;
-  width: 300px;
+.onboarding-container .review-question {
+  margin: 0;
 }
 
-.review-suggestions-row {
+.onboarding-container .review-search-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 30rem;
+}
+
+.onboarding-container .review-suggestions-row {
   display: flex;
   gap: 1.6rem;
   flex-wrap: wrap;
-  margin-bottom: 3rem;
+  min-width: 0;
+  margin: 0 0 3rem;
+  padding: 0;
+  border: none;
 }
 
 /* Step 3.2 */
-
-.review-form-card {
+.onboarding-container .review-form-card {
   display: flex;
   border: 0.2rem solid color-mix(in srgb, var(--primary-white) 30%, transparent);
   background-color: color-mix(in srgb, var(--primary-white) 15%, transparent);
-  border-radius: 1.6rem;
+  border-radius: 2.4rem;
   padding: 2.4rem;
   gap: 2.4rem;
   max-width: 80rem;
 }
 
-.review-form-image {
+.onboarding-container .review-form-image {
   flex: 0 0 31rem;
   align-self: stretch;
   position: relative;
 }
 
-.review-form-image img {
+.onboarding-container .review-form-image img {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 1.2rem;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  border-radius: 1.6rem;
+  box-shadow: 0 0.8rem 2.4rem rgba(0, 0, 0, 0.4);
 }
 
-.review-form-content {
+.onboarding-container .review-form-content {
   flex-grow: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 2rem;
 }
 
-.review-form-top {
+.onboarding-container .review-form-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 1.5rem;
 }
 
-.sugg-type {
+.onboarding-container .review-type-badge {
   background-color: color-mix(in srgb, var(--primary-white) 20%, transparent);
   padding: 0.2rem 0.5rem;
   border-radius: 0.8rem;
-  font-family: inherit;
-  margin: 0;
   font-size: 1.4rem;
-  font-weight: 400;
 }
 
-.review-song-info h3 {
-  font-size: 2.4rem;
+.onboarding-container .review-song-info .block-title {
   margin: 0.4rem 0;
 }
 
-.review-song-info p {
+.onboarding-container .review-song-info p {
   font-size: 1.4rem;
   margin: 0;
 }
 
-.review-score-input {
+.onboarding-container .review-score-input {
   display: flex;
   align-items: center;
   gap: 1.2rem;
 }
 
-.review-score-input label {
+.onboarding-container .review-score-input label {
   font-size: 1.4rem;
 }
 
-.review-input-group {
+.onboarding-container .review-input-group {
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
 }
 
-.review-input-group label {
+.onboarding-container .review-input-group label {
   font-size: 1.3rem;
 }
 
-/* Responsive step 3 */
+/* Responsive: tablet (portada más estrecha y la nota puede bajar de línea) */
+@media (max-width: 1024px) {
+  .onboarding-container .review-form-image {
+    flex-basis: 22rem;
+  }
+
+  .onboarding-container .review-form-top {
+    flex-wrap: wrap;
+  }
+}
+
+/* Responsive: móvil */
 @media (max-width: 768px) {
-  .review-selection-header {
+  /* Botones del paso: el principal arriba a todo el ancho y debajo, en una fila,
+     «‹ Atrás» a la izquierda y «Omitir» a la derecha. Con display: contents los botones
+     de .button-group-end pasan a ser celdas de la rejilla */
+  .onboarding-container .button-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+  }
+
+  .onboarding-container .button-group-end {
+    display: contents;
+  }
+
+  .onboarding-container .button-group .custom-button.primary {
+    grid-column: 1 / -1;
+    order: -1;
+    width: 100%;
+  }
+
+  .onboarding-container .button-group > .custom-button.text {
+    justify-self: start;
+  }
+
+  .onboarding-container .button-group-end .custom-button.text {
+    justify-self: end;
+  }
+
+  /* Paso 1: no hay «Atrás», así que «Omitir» va centrado bajo el principal */
+  .onboarding-container .button-group:not(:has(.button-group-end)) .custom-button.text {
+    grid-column: 1 / -1;
+    justify-self: center;
+  }
+
+  /* Tarjetas de artista más pequeñas para que quepan 2 por fila hasta en 320px */
+  .onboarding-container .artist-suggestions {
+    grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+  }
+
+  .onboarding-container .artist-card {
+    min-width: 0;
+    padding: 1.2rem;
+  }
+
+  .onboarding-container .artist-image img {
+    width: 10rem;
+    height: 10rem;
+  }
+
+  .onboarding-container .review-selection-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 1.5rem;
   }
 
-  .review-suggestions-row {
-    display: flex;
-    flex-wrap: wrap;
+  .onboarding-container .review-suggestions-row {
     justify-content: center;
   }
 
-  .review-form-top {
+  .onboarding-container .review-form-top {
     flex-direction: column;
     align-items: flex-start;
-    gap: 1.5rem;
   }
 
-  .review-form-card {
+  .onboarding-container .review-form-card {
     flex-direction: column;
     gap: 2rem;
   }
 
   /* En móvil la portada va encima, a todo el ancho y cuadrada */
-  .review-form-image {
+  .onboarding-container .review-form-image {
     flex: none;
     width: 100%;
   }
 
-  .review-form-image img {
+  .onboarding-container .review-form-image img {
     position: static;
     display: block;
     width: 100%;
@@ -275,7 +348,14 @@
     aspect-ratio: 1/1;
   }
 
-  .review-form-content {
+  .onboarding-container .review-form-content {
     gap: 1.5rem;
+  }
+}
+
+/* .fade-in-section y su versión sin movimiento están en globals.css */
+@media (prefers-reduced-motion: reduce) {
+  .onboarding-container .artist-chip {
+    transition: none;
   }
 }

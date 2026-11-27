@@ -10,7 +10,10 @@ import TextArea from '../../../../components/TextArea/TextArea';
 import { REPLY_SIGNATURE, REPLY_TEMPLATES, TYPE_LABEL, type InboxType } from '../inbox/mockInbox';
 import { MAX_SANCTIONS } from '@/app/lib/adminModeration';
 import { formatDate, MOCK_TODAY } from '@/app/lib/adminFilters';
+import { DEFAULT_MAINTENANCE } from '@/app/lib/siteSettings';
 import OptionRow from '../../settings/OptionRow';
+import SettingsShell from '../../settings/SettingsShell';
+import AdminDialog from '../AdminDialog';
 import LegalEditor from './LegalEditor';
 import { LEGAL_DOCS, type LegalDoc } from './mockLegal';
 import '../../settings/settings.css';
@@ -33,10 +36,7 @@ const SECTIONS: { id: SectionId; title: string; desc: string; icon: string }[] =
 type Notify = (message: string) => void;
 
 export default function AdminSettingsPage() {
-    // En móvil se ve el menú o una sección; en escritorio, todas seguidas
-    const [activeSection, setActiveSection] = useState<SectionId | null>(null);
     const [toast, setToast] = useState('');
-    const activeTitle = SECTIONS.find((s) => s.id === activeSection)?.title;
 
     useEffect(() => {
         if (!toast) return;
@@ -44,129 +44,36 @@ export default function AdminSettingsPage() {
         return () => clearTimeout(timer);
     }, [toast]);
 
-    const sectionClass = (id: SectionId) => `settings-section admin-settings-section ${activeSection === id ? 'active-mobile' : ''}`;
+    const content: Record<SectionId, ReactNode> = {
+        account: <AccountSection notify={setToast} />,
+        notifications: <NotificationsSection notify={setToast} />,
+        moderation: <ModerationSection notify={setToast} />,
+        inbox: <InboxSection notify={setToast} />,
+        site: <SiteSection notify={setToast} />,
+        legal: <LegalSectionSettings notify={setToast} />,
+        session: <SessionSection />,
+    };
 
     return (
-        <div className="settings-page-container admin-settings">
-            <div className="settings-header">
-                {activeSection && (
-                    <button className="mobile-back-btn" onClick={() => setActiveSection(null)} aria-label="Volver a ajustes">
-                        ‹
-                    </button>
-                )}
-                <h1 className="page-title">
-                    <span className="desktop-title-text">Ajustes</span>
-                    <span className="mobile-title-text">{activeTitle ?? 'Ajustes'}</span>
-                </h1>
-            </div>
-            <div className="settings-content">
-                <nav className={`mobile-settings-menu ${activeSection ? 'hidden' : ''}`} aria-label="Secciones de ajustes">
-                    {SECTIONS.map((s) => (
-                        <button key={s.id} type="button" className="mobile-menu-item settings-menu-button" onClick={() => setActiveSection(s.id)}>
-                            <span className="menu-icon">
-                                <img src={s.icon} alt="" />
-                            </span>
-                            <span className="menu-text">
-                                <span className="menu-title">{s.title}</span>
-                                <span className="menu-desc">{s.desc}</span>
-                            </span>
-                            <span className="menu-chevron" aria-hidden="true">›</span>
-                        </button>
-                    ))}
-                </nav>
-
-                <div className={`settings-sections-wrapper ${activeSection ? 'show-section' : ''}`}>
-                    <section className={sectionClass('account')} aria-labelledby="settings-account">
-                        <h2 className="section-title settings-subtitle" id="settings-account">Cuenta</h2>
-                        <AccountSection notify={setToast} />
-                    </section>
-                    <section className={sectionClass('notifications')} aria-labelledby="settings-notifications">
-                        <h2 className="section-title settings-subtitle" id="settings-notifications">Notificaciones</h2>
-                        <NotificationsSection notify={setToast} />
-                    </section>
-                    <section className={sectionClass('moderation')} aria-labelledby="settings-moderation">
-                        <h2 className="section-title settings-subtitle" id="settings-moderation">Moderación</h2>
-                        <ModerationSection notify={setToast} />
-                    </section>
-                    <section className={sectionClass('inbox')} aria-labelledby="settings-inbox">
-                        <h2 className="section-title settings-subtitle" id="settings-inbox">Bandeja</h2>
-                        <InboxSection notify={setToast} />
-                    </section>
-                    <section className={sectionClass('site')} aria-labelledby="settings-site">
-                        <h2 className="section-title settings-subtitle" id="settings-site">Web</h2>
-                        <SiteSection notify={setToast} />
-                    </section>
-                    <section className={sectionClass('legal')} aria-labelledby="settings-legal">
-                        <h2 className="section-title settings-subtitle" id="settings-legal">Textos legales</h2>
-                        <LegalSectionSettings notify={setToast} />
-                    </section>
-                    <section className={sectionClass('session')} aria-labelledby="settings-session">
-                        <h2 className="section-title settings-subtitle" id="settings-session">Sesión</h2>
-                        <SessionSection />
-                    </section>
-                </div>
-            </div>
-
-            {toast && (
-                <div className="admin-toast" role="status">
-                    {toast}
-                </div>
-            )}
-        </div>
+        <SettingsShell sections={SECTIONS.map((s) => ({ ...s, content: content[s.id] }))}>
+            {/* Siempre en el DOM: los lectores de pantalla solo anuncian cambios en una región que ya existía */}
+            <div role="status">{toast && <div className="admin-toast">{toast}</div>}</div>
+        </SettingsShell>
     );
 }
 
 /* =========================================
    PIEZAS COMUNES
-   (OptionRow es común con los ajustes de usuario: ../../settings/OptionRow)
+   (OptionRow es común con los ajustes de usuario: ../../settings/OptionRow;
+   los modales son AdminDialog, como en el resto de admin)
    ========================================= */
-
-interface SettingsModalProps {
-    title: string;
-    subtitle?: ReactNode;
-    children?: ReactNode;
-    confirmLabel?: string;
-    danger?: boolean;
-    error?: string;
-    onClose: () => void;
-    onConfirm: () => void;
-}
-
-function SettingsModal({ title, subtitle, children, confirmLabel = 'Guardar', danger, error, onClose, onConfirm }: SettingsModalProps) {
-    useEffect(() => {
-        const handleKey = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') onClose();
-        };
-        document.addEventListener('keydown', handleKey);
-        return () => document.removeEventListener('keydown', handleKey);
-    }, [onClose]);
-
-    return (
-        <div className="admin-modal-overlay" onClick={onClose}>
-            <div className="admin-modal-card" role="dialog" aria-modal="true" aria-label={title} onClick={(e) => e.stopPropagation()}>
-                <button className="modal-close-btn" onClick={onClose} aria-label="Cerrar">✕</button>
-                <h3>{title}</h3>
-                {subtitle && <p className="modal-subtitle">{subtitle}</p>}
-                {children}
-                <div className="modal-actions-row">
-                    <Button variant="text" onClick={onClose}>
-                        Cancelar
-                    </Button>
-                    <Button variant={danger ? 'danger' : 'primary'} onClick={onConfirm}>
-                        {confirmLabel}
-                    </Button>
-                </div>
-                {error && <p className="modal-error-text">{error}</p>}
-            </div>
-        </div>
-    );
-}
 
 /** Lista de valores en "pastillas" con ✕ y un campo para añadir */
 function ChipEditor({
     items,
     onChange,
     placeholder,
+    inputLabel,
     format = (v) => v,
     normalize = (v) => v.trim().toLowerCase(),
     validate,
@@ -176,6 +83,8 @@ function ChipEditor({
     items: string[];
     onChange: (items: string[]) => void;
     placeholder: string;
+    /** Nombre del campo para lectores de pantalla (no tiene etiqueta visible) */
+    inputLabel: string;
     format?: (value: string) => string;
     normalize?: (value: string) => string;
     validate?: (value: string) => string | null;
@@ -186,8 +95,9 @@ function ChipEditor({
     const [error, setError] = useState('');
 
     const add = () => {
+        if (!draft.trim()) return;
+        // normalize puede dejarlo vacío (p. ej. "abc" en días): lo dice validate
         const value = normalize(draft);
-        if (!value) return;
         const problem = validate?.(value) ?? (items.includes(value) ? 'Ya está en la lista.' : null);
         if (problem) {
             setError(problem);
@@ -224,6 +134,7 @@ function ChipEditor({
                 <Input
                     type="text"
                     placeholder={placeholder}
+                    aria-label={inputLabel}
                     value={draft}
                     onChange={(e) => {
                         setDraft(e.target.value);
@@ -234,7 +145,11 @@ function ChipEditor({
                     {addLabel}
                 </Button>
             </form>
-            {error && <p className="modal-error-text">{error}</p>}
+            {error && (
+                <p className="modal-error-text" role="alert">
+                    {error}
+                </p>
+            )}
         </div>
     );
 }
@@ -258,6 +173,12 @@ const MOCK_SESSIONS: Session[] = [
 ];
 
 type AccountModal = 'name' | 'email' | 'password' | '2fa-on' | '2fa-off' | 'sessions' | null;
+
+const PASSWORD_FIELDS = [
+    { field: 'current', label: 'Contraseña actual', autoComplete: 'current-password' },
+    { field: 'next', label: 'Nueva contraseña', autoComplete: 'new-password' },
+    { field: 'repeat', label: 'Repite la nueva contraseña', autoComplete: 'new-password' },
+] as const;
 
 function AccountSection({ notify }: { notify: Notify }) {
     const [name, setName] = useState('Raquel Arnaiz');
@@ -327,8 +248,8 @@ function AccountSection({ notify }: { notify: Notify }) {
                 control={<Toggle checked={twoFactor} onChange={(on) => open(on ? '2fa-on' : '2fa-off')} label="Verificación en dos pasos" />}
             />
 
-            <div className="admin-settings-block">
-                <div className="admin-block-head">
+            <div className="settings-block">
+                <div className="settings-block-head">
                     <div>
                         <span className="settings-option-label">Sesiones abiertas</span>
                         <span className="settings-option-description">Dispositivos donde está iniciada tu cuenta de admin.</span>
@@ -354,79 +275,101 @@ function AccountSection({ notify }: { notify: Notify }) {
                 </ul>
             </div>
 
-            {modal === 'name' && (
-                <SettingsModal title="Cambiar nombre" error={error} onClose={close} onConfirm={saveName}>
-                    <div className="modal-field">
-                        <label>Nombre</label>
-                        <Input type="text" value={draft} onChange={(e) => { setDraft(e.target.value); setError(''); }} />
+            <AdminDialog isOpen={modal === 'name'} title="Cambiar nombre" confirmLabel="Guardar" error={error} onClose={close} onConfirm={saveName}>
+                <div className="modal-field">
+                    <label htmlFor="admin-settings-name" className="admin-dialog-label">Nombre</label>
+                    <Input
+                        id="admin-settings-name"
+                        type="text"
+                        autoComplete="name"
+                        value={draft}
+                        onChange={(e) => { setDraft(e.target.value); setError(''); }}
+                    />
+                </div>
+            </AdminDialog>
+            <AdminDialog
+                isOpen={modal === 'email'}
+                title="Cambiar email"
+                text="Te enviaremos un correo al nuevo email para confirmarlo."
+                confirmLabel="Guardar"
+                error={error}
+                onClose={close}
+                onConfirm={saveEmail}
+            >
+                <div className="modal-field">
+                    <label htmlFor="admin-settings-email" className="admin-dialog-label">Nuevo email</label>
+                    <Input
+                        id="admin-settings-email"
+                        type="email"
+                        autoComplete="email"
+                        value={draft}
+                        onChange={(e) => { setDraft(e.target.value); setError(''); }}
+                    />
+                </div>
+            </AdminDialog>
+            <AdminDialog isOpen={modal === 'password'} title="Cambiar contraseña" confirmLabel="Guardar" error={error} onClose={close} onConfirm={savePassword}>
+                {PASSWORD_FIELDS.map(({ field, label, autoComplete }) => (
+                    <div className="modal-field" key={field}>
+                        <label htmlFor={`admin-settings-password-${field}`} className="admin-dialog-label">{label}</label>
+                        <Input
+                            id={`admin-settings-password-${field}`}
+                            type="password"
+                            autoComplete={autoComplete}
+                            value={passwords[field]}
+                            onChange={(e) => {
+                                setPasswords((p) => ({ ...p, [field]: e.target.value }));
+                                setError('');
+                            }}
+                        />
                     </div>
-                </SettingsModal>
-            )}
-            {modal === 'email' && (
-                <SettingsModal title="Cambiar email" subtitle="Te enviaremos un correo al nuevo email para confirmarlo." error={error} onClose={close} onConfirm={saveEmail}>
-                    <div className="modal-field">
-                        <label>Nuevo email</label>
-                        <Input type="email" value={draft} onChange={(e) => { setDraft(e.target.value); setError(''); }} />
-                    </div>
-                </SettingsModal>
-            )}
-            {modal === 'password' && (
-                <SettingsModal title="Cambiar contraseña" error={error} onClose={close} onConfirm={savePassword}>
-                    {(['current', 'next', 'repeat'] as const).map((field) => (
-                        <div className="modal-field" key={field}>
-                            <label>{field === 'current' ? 'Contraseña actual' : field === 'next' ? 'Nueva contraseña' : 'Repite la nueva contraseña'}</label>
-                            <Input
-                                type="password"
-                                value={passwords[field]}
-                                onChange={(e) => {
-                                    setPasswords((p) => ({ ...p, [field]: e.target.value }));
-                                    setError('');
-                                }}
-                            />
-                        </div>
-                    ))}
-                </SettingsModal>
-            )}
-            {modal === '2fa-on' && (
-                <SettingsModal
-                    title="Activar verificación en dos pasos"
-                    subtitle="Escanea el código con tu app de autenticación (Google Authenticator, 1Password…) y escribe el código de 6 números que te muestre."
-                    confirmLabel="Activar"
-                    error={error}
-                    onClose={close}
-                    onConfirm={enable2fa}
-                >
-                    <div className="admin-qr-placeholder" aria-label="Código QR de ejemplo">QR</div>
-                    <div className="modal-field">
-                        <label>Código</label>
-                        <Input type="text" placeholder="123456" value={draft} onChange={(e) => { setDraft(e.target.value); setError(''); }} />
-                    </div>
-                </SettingsModal>
-            )}
-            {modal === '2fa-off' && (
-                <SettingsModal
-                    title="¿Desactivar la verificación en dos pasos?"
-                    subtitle="Tu cuenta de admin quedará protegida solo con la contraseña."
-                    confirmLabel="Desactivar"
-                    danger
-                    onClose={close}
-                    onConfirm={() => {
-                        setTwoFactor(false);
-                        close();
-                        notify('Verificación en dos pasos desactivada');
-                    }}
-                />
-            )}
-            {modal === 'sessions' && (
-                <SettingsModal
-                    title="¿Cerrar las demás sesiones?"
-                    subtitle={`Se cerrará la sesión en ${sessions.length - 1} ${sessions.length - 1 === 1 ? 'dispositivo' : 'dispositivos'}. Este seguirá conectado.`}
-                    confirmLabel="Cerrar sesiones"
-                    danger
-                    onClose={close}
-                    onConfirm={closeOtherSessions}
-                />
-            )}
+                ))}
+            </AdminDialog>
+            <AdminDialog
+                isOpen={modal === '2fa-on'}
+                title="Activar verificación en dos pasos"
+                text="Escanea el código con tu app de autenticación (Google Authenticator, 1Password…) y escribe el código de 6 números que te muestre."
+                confirmLabel="Activar"
+                error={error}
+                onClose={close}
+                onConfirm={enable2fa}
+            >
+                <div className="admin-qr-placeholder" role="img" aria-label="Código QR de ejemplo">QR</div>
+                <div className="modal-field">
+                    <label htmlFor="admin-settings-2fa" className="admin-dialog-label">Código</label>
+                    <Input
+                        id="admin-settings-2fa"
+                        type="text"
+                        inputMode="numeric"
+                        autoComplete="one-time-code"
+                        maxLength={6}
+                        placeholder="123456"
+                        value={draft}
+                        onChange={(e) => { setDraft(e.target.value); setError(''); }}
+                    />
+                </div>
+            </AdminDialog>
+            <AdminDialog
+                isOpen={modal === '2fa-off'}
+                title="¿Desactivar la verificación en dos pasos?"
+                text="Tu cuenta de admin quedará protegida solo con la contraseña."
+                confirmLabel="Desactivar"
+                danger
+                onClose={close}
+                onConfirm={() => {
+                    setTwoFactor(false);
+                    close();
+                    notify('Verificación en dos pasos desactivada');
+                }}
+            />
+            <AdminDialog
+                isOpen={modal === 'sessions'}
+                title="¿Cerrar las demás sesiones?"
+                text={`Se cerrará la sesión en ${sessions.length - 1} ${sessions.length - 1 === 1 ? 'dispositivo' : 'dispositivos'}. Este seguirá conectado.`}
+                confirmLabel="Cerrar sesiones"
+                danger
+                onClose={close}
+                onConfirm={closeOtherSessions}
+            />
         </>
     );
 }
@@ -464,17 +407,17 @@ function NotificationsSection({ notify }: { notify: Notify }) {
 
     return (
         <>
-            <div className="admin-settings-block">
-                <div className="admin-block-head">
+            <div className="settings-block">
+                <div className="settings-block-head">
                     <div>
                         <span className="settings-option-label">Avisos</span>
                         <span className="settings-option-description">Elige por dónde te llega cada aviso.</span>
                     </div>
                 </div>
-                <table className="admin-notif-table">
+                <table className="settings-notif-table">
                     <thead>
                         <tr>
-                            <th scope="col"><span className="visually-hidden">Aviso</span></th>
+                            <th scope="col"><span className="sr-only">Aviso</span></th>
                             <th scope="col">Campana</th>
                             <th scope="col">Email</th>
                         </tr>
@@ -502,7 +445,8 @@ function NotificationsSection({ notify }: { notify: Notify }) {
                     <>
                         {urgent && (
                             <Select
-                                className="admin-inline-select"
+                                className="settings-inline-select"
+                                ariaLabel="Denuncias para el aviso urgente"
                                 options={URGENT_OPTIONS}
                                 value={urgentThreshold}
                                 onChange={(v) => {
@@ -522,7 +466,8 @@ function NotificationsSection({ notify }: { notify: Notify }) {
                     <>
                         {digest && (
                             <Select
-                                className="admin-inline-select"
+                                className="settings-inline-select"
+                                ariaLabel="Hora del resumen diario"
                                 options={DIGEST_OPTIONS}
                                 value={digestTime}
                                 onChange={(v) => {
@@ -581,7 +526,8 @@ function ModerationSection({ notify }: { notify: Notify }) {
                 description="Pasado este tiempo, una sanción deja de contar para el baneo."
                 control={
                     <Select
-                        className="admin-inline-select"
+                        className="settings-inline-select"
+                        ariaLabel="Caducidad de las sanciones"
                         options={EXPIRY_OPTIONS}
                         value={expiry}
                         onChange={(v) => {
@@ -592,8 +538,8 @@ function ModerationSection({ notify }: { notify: Notify }) {
                 }
             />
 
-            <div className="admin-settings-block">
-                <div className="admin-block-head">
+            <div className="settings-block">
+                <div className="settings-block-head">
                     <div>
                         <span className="settings-option-label">Duraciones de suspensión</span>
                         <span className="settings-option-description">Las opciones que salen al suspender una cuenta.</span>
@@ -606,6 +552,7 @@ function ModerationSection({ notify }: { notify: Notify }) {
                         notify('Guardado');
                     }}
                     placeholder="Días (p. ej. 14)"
+                    inputLabel="Añadir duración en días"
                     format={daysLabel}
                     normalize={(v) => String(parseInt(v, 10) || '')}
                     validate={(v) =>
@@ -626,7 +573,8 @@ function ModerationSection({ notify }: { notify: Notify }) {
                     <>
                         {autoHide && (
                             <Select
-                                className="admin-inline-select"
+                                className="settings-inline-select"
+                                ariaLabel="Denuncias para ocultar"
                                 options={AUTO_HIDE_OPTIONS}
                                 value={autoHideAt}
                                 onChange={(v) => {
@@ -640,8 +588,8 @@ function ModerationSection({ notify }: { notify: Notify }) {
                 }
             />
 
-            <div className="admin-settings-block">
-                <div className="admin-block-head">
+            <div className="settings-block">
+                <div className="settings-block-head">
                     <div>
                         <span className="settings-option-label">Palabras prohibidas</span>
                         <span className="settings-option-description">
@@ -657,29 +605,29 @@ function ModerationSection({ notify }: { notify: Notify }) {
                         notify('Guardado');
                     }}
                     placeholder="Añadir palabra o frase"
+                    inputLabel="Añadir palabra o frase prohibida"
                     emptyText="No hay palabras prohibidas."
                 />
             </div>
 
-            {isBanModalOpen && (
-                <SettingsModal
-                    title="Sanciones para banear"
-                    subtitle="Cambia la regla para todos los usuarios. Quien ya tenga ese número de sanciones se baneará con su próxima sanción, no ahora."
-                    confirmLabel="Cambiar regla"
-                    danger
-                    onClose={() => setIsBanModalOpen(false)}
-                    onConfirm={() => {
-                        setBanAt(banDraft);
-                        setIsBanModalOpen(false);
-                        notify('Regla de baneo cambiada');
-                    }}
-                >
-                    <div className="modal-field">
-                        <label>Banear al llegar a</label>
-                        <Select options={BAN_AT_OPTIONS} value={banDraft} onChange={setBanDraft} />
-                    </div>
-                </SettingsModal>
-            )}
+            <AdminDialog
+                isOpen={isBanModalOpen}
+                title="Sanciones para banear"
+                text="Cambia la regla para todos los usuarios. Quien ya tenga ese número de sanciones se baneará con su próxima sanción, no ahora."
+                confirmLabel="Cambiar regla"
+                danger
+                onClose={() => setIsBanModalOpen(false)}
+                onConfirm={() => {
+                    setBanAt(banDraft);
+                    setIsBanModalOpen(false);
+                    notify('Regla de baneo cambiada');
+                }}
+            >
+                <div className="modal-field">
+                    <span id="admin-settings-ban-label" className="admin-dialog-label">Banear al llegar a</span>
+                    <Select labelledBy="admin-settings-ban-label" options={BAN_AT_OPTIONS} value={banDraft} onChange={setBanDraft} />
+                </div>
+            </AdminDialog>
         </>
     );
 }
@@ -708,6 +656,7 @@ function InboxSection({ notify }: { notify: Notify }) {
     const [templateError, setTemplateError] = useState('');
     const [signature, setSignature] = useState(REPLY_SIGNATURE);
     const [signatureDraft, setSignatureDraft] = useState<string | null>(null);
+    const [signatureError, setSignatureError] = useState('');
 
     const startNew = () => {
         setEditing({ id: '', type: 'contact', label: '', text: '' });
@@ -727,8 +676,8 @@ function InboxSection({ notify }: { notify: Notify }) {
 
     return (
         <>
-            <div className="admin-settings-block">
-                <div className="admin-block-head">
+            <div className="settings-block">
+                <div className="settings-block-head">
                     <div>
                         <span className="settings-option-label">Plantillas de respuesta</span>
                         <span className="settings-option-description">
@@ -755,10 +704,20 @@ function InboxSection({ notify }: { notify: Notify }) {
                                                 <span className="admin-template-preview">{t.text}</span>
                                             </span>
                                             <span className="admin-template-actions">
-                                                <button type="button" className="admin-text-btn" onClick={() => { setEditing(t); setTemplateError(''); }}>
+                                                <button
+                                                    type="button"
+                                                    className="admin-text-btn"
+                                                    onClick={() => { setEditing(t); setTemplateError(''); }}
+                                                    aria-label={`Editar la plantilla «${t.label}»`}
+                                                >
                                                     Editar
                                                 </button>
-                                                <button type="button" className="admin-text-btn danger" onClick={() => setToDelete(t)}>
+                                                <button
+                                                    type="button"
+                                                    className="admin-text-btn danger"
+                                                    onClick={() => setToDelete(t)}
+                                                    aria-label={`Borrar la plantilla «${t.label}»`}
+                                                >
                                                     Borrar
                                                 </button>
                                             </span>
@@ -775,27 +734,35 @@ function InboxSection({ notify }: { notify: Notify }) {
                 label="Firma"
                 value={<span className="admin-signature-preview">{signature}</span>}
                 description="Se añade al final de cada respuesta."
-                onClick={() => setSignatureDraft(signature)}
+                onClick={() => {
+                    setSignatureDraft(signature);
+                    setSignatureError('');
+                }}
             />
 
+            {/* Montados solo con datos: su contenido lee editing / toDelete / signatureDraft */}
             {editing && (
-                <SettingsModal
+                <AdminDialog
+                    isOpen
                     title={editing.id ? 'Editar plantilla' : 'Nueva plantilla'}
+                    confirmLabel="Guardar"
                     error={templateError}
                     onClose={() => setEditing(null)}
                     onConfirm={saveTemplate}
                 >
                     <div className="modal-field">
-                        <label>Para</label>
+                        <span id="admin-settings-template-type-label" className="admin-dialog-label">Para</span>
                         <Select
+                            labelledBy="admin-settings-template-type-label"
                             options={TEMPLATE_TYPE_OPTIONS}
                             value={editing.type}
                             onChange={(v) => setEditing({ ...editing, type: v as InboxType })}
                         />
                     </div>
                     <div className="modal-field">
-                        <label>Nombre</label>
+                        <label htmlFor="admin-settings-template-label" className="admin-dialog-label">Nombre</label>
                         <Input
+                            id="admin-settings-template-label"
                             type="text"
                             placeholder="p. ej. Gracias por escribir"
                             value={editing.label}
@@ -803,20 +770,22 @@ function InboxSection({ notify }: { notify: Notify }) {
                         />
                     </div>
                     <div className="modal-field">
-                        <label>Texto</label>
+                        <label htmlFor="admin-settings-template-text" className="admin-dialog-label">Texto</label>
                         <TextArea
+                            id="admin-settings-template-text"
                             value={editing.text}
                             onChange={(e) => { setEditing({ ...editing, text: e.target.value }); setTemplateError(''); }}
                             rows={5}
                             placeholder="Escribe la respuesta, sin saludo ni firma..."
                         />
                     </div>
-                </SettingsModal>
+                </AdminDialog>
             )}
             {toDelete && (
-                <SettingsModal
+                <AdminDialog
+                    isOpen
                     title="¿Borrar esta plantilla?"
-                    subtitle={<>Se borrará «{toDelete.label}». No afecta a las respuestas ya enviadas.</>}
+                    text={<>Se borrará «{toDelete.label}». No afecta a las respuestas ya enviadas.</>}
                     confirmLabel="Borrar"
                     danger
                     onClose={() => setToDelete(null)}
@@ -828,22 +797,29 @@ function InboxSection({ notify }: { notify: Notify }) {
                 />
             )}
             {signatureDraft !== null && (
-                <SettingsModal
+                <AdminDialog
+                    isOpen
                     title="Cambiar firma"
-                    error={signatureDraft.trim() ? undefined : ''}
+                    confirmLabel="Guardar"
+                    error={signatureError}
                     onClose={() => setSignatureDraft(null)}
                     onConfirm={() => {
-                        if (!signatureDraft.trim()) return;
+                        if (!signatureDraft.trim()) return setSignatureError('La firma no puede estar vacía.');
                         setSignature(signatureDraft.trim());
                         setSignatureDraft(null);
                         notify('Firma guardada');
                     }}
                 >
                     <div className="modal-field">
-                        <label>Firma</label>
-                        <TextArea value={signatureDraft} onChange={(e) => setSignatureDraft(e.target.value)} rows={3} />
+                        <label htmlFor="admin-settings-signature" className="admin-dialog-label">Firma</label>
+                        <TextArea
+                            id="admin-settings-signature"
+                            value={signatureDraft}
+                            onChange={(e) => { setSignatureDraft(e.target.value); setSignatureError(''); }}
+                            rows={3}
+                        />
                     </div>
-                </SettingsModal>
+                </AdminDialog>
             )}
         </>
     );
@@ -859,12 +835,6 @@ const NOTICE_TONES = [
 ];
 
 type SiteModal = 'maintenance-on' | 'maintenance-edit' | 'registration-off' | 'notice' | null;
-
-// Lo que se ve en /maintenance (mensaje y hora aproximada de vuelta)
-const DEFAULT_MAINTENANCE = {
-    message: 'Estamos actualizando la página para que funcione mejor.',
-    returnTime: '18:00',
-};
 
 function SiteSection({ notify }: { notify: Notify }) {
     const [maintenance, setMaintenance] = useState(false);
@@ -959,103 +929,108 @@ function SiteSection({ notify }: { notify: Notify }) {
                 }}
             />
 
-            {(modal === 'maintenance-on' || modal === 'maintenance-edit') && (
-                <SettingsModal
-                    title={modal === 'maintenance-on' ? '¿Activar el modo mantenimiento?' : 'Mensaje de mantenimiento'}
-                    subtitle={
-                        modal === 'maintenance-on'
-                            ? 'Nadie salvo admin podrá usar la web hasta que lo desactives. Esto es lo que verán:'
-                            : 'Lo que ven los usuarios en la página de mantenimiento.'
-                    }
-                    confirmLabel={modal === 'maintenance-on' ? 'Activar' : 'Guardar'}
-                    danger={modal === 'maintenance-on'}
-                    error={error}
-                    onClose={close}
-                    onConfirm={() => {
-                        if (!maintenanceDraft.message.trim()) return setError('Escribe el mensaje que verán los usuarios.');
-                        setMaintenanceInfo({ message: maintenanceDraft.message.trim(), returnTime: maintenanceDraft.returnTime.trim() });
-                        const activating = modal === 'maintenance-on';
-                        setMaintenance(true);
-                        close();
-                        notify(activating ? 'Modo mantenimiento activado' : 'Mensaje guardado');
-                    }}
-                >
-                    <div className="modal-field">
-                        <label>Mensaje</label>
-                        <TextArea
-                            value={maintenanceDraft.message}
-                            onChange={(e) => {
-                                setMaintenanceDraft({ ...maintenanceDraft, message: e.target.value });
-                                setError('');
-                            }}
-                            rows={3}
-                        />
-                    </div>
-                    <div className="modal-field">
-                        <label>Vuelta prevista (opcional)</label>
-                        <Input
-                            type="time"
-                            value={maintenanceDraft.returnTime}
-                            onChange={(e) => setMaintenanceDraft({ ...maintenanceDraft, returnTime: e.target.value })}
-                        />
-                    </div>
-                </SettingsModal>
-            )}
-            {modal === 'registration-off' && (
-                <SettingsModal
-                    title="¿Cerrar el registro?"
-                    subtitle="No se podrán crear cuentas nuevas hasta que lo vuelvas a abrir."
-                    confirmLabel="Cerrar registro"
-                    danger
-                    onClose={close}
-                    onConfirm={() => {
-                        setRegistration(false);
-                        close();
-                        notify('Registro cerrado');
-                    }}
-                />
-            )}
-            {modal === 'notice' && (
-                <SettingsModal
-                    title={notice ? 'Cambiar aviso general' : 'Añadir aviso general'}
-                    confirmLabel="Publicar aviso"
-                    error={error}
-                    onClose={close}
-                    onConfirm={() => {
-                        if (!noticeDraft.text.trim()) return setError('Escribe el texto del aviso.');
-                        setNotice({ ...noticeDraft, text: noticeDraft.text.trim() });
-                        close();
-                        notify('Aviso publicado');
-                    }}
-                >
-                    <div className="modal-field">
-                        <label>Texto</label>
-                        <TextArea
-                            value={noticeDraft.text}
-                            onChange={(e) => { setNoticeDraft({ ...noticeDraft, text: e.target.value }); setError(''); }}
-                            rows={3}
-                            placeholder="p. ej. Mañana de 2 a 4 h habrá mantenimiento."
-                        />
-                    </div>
-                    <div className="modal-field">
-                        <label>Tipo</label>
-                        <Select options={NOTICE_TONES} value={noticeDraft.tone} onChange={(v) => setNoticeDraft({ ...noticeDraft, tone: v })} />
-                    </div>
-                    {notice && (
-                        <button
-                            type="button"
-                            className="admin-text-btn danger admin-remove-notice"
-                            onClick={() => {
-                                setNotice(null);
-                                close();
-                                notify('Aviso quitado');
-                            }}
-                        >
-                            Quitar el aviso
-                        </button>
-                    )}
-                </SettingsModal>
-            )}
+            <AdminDialog
+                isOpen={modal === 'maintenance-on' || modal === 'maintenance-edit'}
+                title={modal === 'maintenance-on' ? '¿Activar el modo mantenimiento?' : 'Mensaje de mantenimiento'}
+                text={
+                    modal === 'maintenance-on'
+                        ? 'Nadie salvo admin podrá usar la web hasta que lo desactives. Esto es lo que verán:'
+                        : 'Lo que ven los usuarios en la página de mantenimiento.'
+                }
+                confirmLabel={modal === 'maintenance-on' ? 'Activar' : 'Guardar'}
+                danger={modal === 'maintenance-on'}
+                error={error}
+                onClose={close}
+                onConfirm={() => {
+                    if (!maintenanceDraft.message.trim()) return setError('Escribe el mensaje que verán los usuarios.');
+                    setMaintenanceInfo({ message: maintenanceDraft.message.trim(), returnTime: maintenanceDraft.returnTime.trim() });
+                    const activating = modal === 'maintenance-on';
+                    setMaintenance(true);
+                    close();
+                    notify(activating ? 'Modo mantenimiento activado' : 'Mensaje guardado');
+                }}
+            >
+                <div className="modal-field">
+                    <label htmlFor="admin-settings-maintenance-message" className="admin-dialog-label">Mensaje</label>
+                    <TextArea
+                        id="admin-settings-maintenance-message"
+                        value={maintenanceDraft.message}
+                        onChange={(e) => {
+                            setMaintenanceDraft({ ...maintenanceDraft, message: e.target.value });
+                            setError('');
+                        }}
+                        rows={3}
+                    />
+                </div>
+                <div className="modal-field">
+                    <label htmlFor="admin-settings-maintenance-time" className="admin-dialog-label">Vuelta prevista (opcional)</label>
+                    <Input
+                        id="admin-settings-maintenance-time"
+                        type="time"
+                        value={maintenanceDraft.returnTime}
+                        onChange={(e) => setMaintenanceDraft({ ...maintenanceDraft, returnTime: e.target.value })}
+                    />
+                </div>
+            </AdminDialog>
+            <AdminDialog
+                isOpen={modal === 'registration-off'}
+                title="¿Cerrar el registro?"
+                text="No se podrán crear cuentas nuevas hasta que lo vuelvas a abrir."
+                confirmLabel="Cerrar registro"
+                danger
+                onClose={close}
+                onConfirm={() => {
+                    setRegistration(false);
+                    close();
+                    notify('Registro cerrado');
+                }}
+            />
+            <AdminDialog
+                isOpen={modal === 'notice'}
+                title={notice ? 'Cambiar aviso general' : 'Añadir aviso general'}
+                confirmLabel="Publicar aviso"
+                error={error}
+                onClose={close}
+                onConfirm={() => {
+                    if (!noticeDraft.text.trim()) return setError('Escribe el texto del aviso.');
+                    setNotice({ ...noticeDraft, text: noticeDraft.text.trim() });
+                    close();
+                    notify('Aviso publicado');
+                }}
+            >
+                <div className="modal-field">
+                    <label htmlFor="admin-settings-notice-text" className="admin-dialog-label">Texto</label>
+                    <TextArea
+                        id="admin-settings-notice-text"
+                        value={noticeDraft.text}
+                        onChange={(e) => { setNoticeDraft({ ...noticeDraft, text: e.target.value }); setError(''); }}
+                        rows={3}
+                        placeholder="p. ej. Mañana de 2 a 4 h habrá mantenimiento."
+                    />
+                </div>
+                <div className="modal-field">
+                    <span id="admin-settings-notice-tone-label" className="admin-dialog-label">Tipo</span>
+                    <Select
+                        labelledBy="admin-settings-notice-tone-label"
+                        options={NOTICE_TONES}
+                        value={noticeDraft.tone}
+                        onChange={(v) => setNoticeDraft({ ...noticeDraft, tone: v })}
+                    />
+                </div>
+                {notice && (
+                    <button
+                        type="button"
+                        className="admin-text-btn danger admin-remove-notice"
+                        onClick={() => {
+                            setNotice(null);
+                            close();
+                            notify('Aviso quitado');
+                        }}
+                    >
+                        Quitar el aviso
+                    </button>
+                )}
+            </AdminDialog>
         </>
     );
 }

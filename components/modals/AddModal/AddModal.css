@@ -1,194 +1,234 @@
-/* Opciones de artista/album/cancion */
+/* Modal de crear RVW. Todo lleva el prefijo add-modal- porque el CSS es global;
+   las piezas comunes (.modal-header, .form-group...) están en Modal.css,
+   los resultados en components/SearchResults y .fade-in-section en globals.css */
 
-.options {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
+/* Tipo de RVW: álbum / canción / artista */
+.add-modal-fieldset {
+    margin: 0;
+    padding: 0;
+    border: none;
+    min-width: 0;
 }
 
-.options button {
-    flex:1;
+.add-modal-fieldset > legend {
+    padding: 0;
+    margin-bottom: 1.8rem;
+}
+
+.add-modal-types {
+    display: flex;
+    gap: 0.8rem;
+}
+
+.add-modal-type {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem 0.8rem;
     background-color: transparent;
     color: var(--primary-white);
     font-family: inherit;
     font-size: 1.4rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     border: none;
-    padding: 1rem 1.5rem;
     border-radius: 9rem;
-    min-width: 10rem;
-    margin: 0.5rem;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: transform 0.2s ease, filter 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.options button:hover:not(:disabled) {
-  transform: translateY(-0.2rem);
-  filter: brightness(1.1);
+.add-modal-type:hover {
+    transform: translateY(-0.2rem);
+    filter: brightness(1.1);
 }
 
-.options button.active {
+.add-modal-type[aria-pressed="true"] {
+    background-color: var(--primary-red);
     filter: brightness(1.2);
     box-shadow: 0 0 1.2rem color-mix(in srgb, var(--primary-red) 60%, transparent);
-    background-color: var(--primary-red);
 }
 
-.options img {
+.add-modal-type img,
+.add-modal-selected-type img {
+    flex-shrink: 0;
     width: 2rem;
     height: 2rem;
-    margin-right: 0.5rem;
     filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(103%) contrast(103%);
 }
 
-/* Seleccion */
-
-.fade-in-section {
-    animation: fadeInSlide 0.35s ease-out forwards;
-}
-
-@keyframes fadeInSlide {
-    from {
-        opacity: 0;
-        transform: translateY(1rem);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.search-container-wrapper {
+/* Buscador */
+.add-modal-search {
     display: flex;
     flex-direction: column;
-    width: 100%;
     gap: 0.8rem;
 }
 
-.search-dropdown-results {
-    width: 100%;
-    background-color: color-mix(in srgb, var(--bg-card) 95%, transparent);
-    border: 0.15rem solid rgba(255, 255, 255, 0.15);
-    border-radius: 1.4rem;
-    overflow: hidden;
-    box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.4);
-    animation: fadeInSlide 0.2s ease-out;
+/* Lo elegido. La etiqueta no es un <label> (ya no hay campo), pero se separa igual que ellos */
+.add-modal-selected-label {
+    margin-bottom: 1rem;
 }
 
-.search-result-item {
+.add-modal-selected {
     display: flex;
     align-items: center;
     gap: 1.2rem;
-    padding: 1.2rem 1.4rem;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
 }
 
-.search-result-item:hover {
-    background-color: color-mix(in srgb, var(--primary-red) 25%, transparent);
-}
-
-.search-result-item img {
-    width: 4rem;
-    height: 4rem;
-    border-radius: 0.8rem;
-    object-fit: cover;
-}
-
-.result-title {
-    font-size: 1.4rem;
-    font-weight: 600;
-    color: var(--primary-white);
-    margin: 0;
-}
-
-.result-sub {
-    font-size: 1.2rem;
-    color: var(--text-secondary);
-    margin: 0;
-}
-
-.selected-item-info {
-    display: flex;
-    align-items: center;
-    gap: 1.2rem;
-    margin-left: 1rem;
-}
-
-.selected-item-img {
+.add-modal-selected-img {
+    flex-shrink: 0;
     width: 10rem;
     height: 10rem;
     border-radius: 0.8rem;
     object-fit: cover;
 }
 
-.selected-item-text {
+.add-modal-selected-text {
+    flex: 1;
+    min-width: 0;
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    overflow-wrap: anywhere;
 }
 
-.selected-item-type {
+.add-modal-selected-type {
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
 
-.selected-item-type img {
-    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(103%) contrast(103%);
+.add-modal-selected-type img {
     width: 1.8rem;
     height: 1.8rem;
-    position: relative;
 }
 
-.selected-item-title {
+.add-modal-selected-title {
     font-family: var(--font-heading);
     font-size: 2rem;
 }
 
-.remove-selection-btn {
+.add-modal-remove {
+    flex-shrink: 0;
+    align-self: flex-start;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.2rem;
+    height: 3.2rem;
+    padding: 0;
     background-color: var(--primary-red);
-    border-radius: 9rem;
     border: none;
+    border-radius: 50%;
     color: var(--primary-white);
-    font-size: 1.6rem;
+    font-size: 2rem;
+    line-height: 1;
     cursor: pointer;
-    transition: all 0.2s ease;
-    position: absolute;
-    top: 3rem;
-    left: 0rem;
+    transition: background-color 0.2s ease;
 }
 
-/* Score */
+.add-modal-remove:hover {
+    background-color: var(--primary-red-hover);
+}
 
-.score-card-preview {
+/* Aviso de RVW a medias al abrir desde una ficha (artista, álbum o canción) de otra cosa */
+.add-modal-draft {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    margin: 0 1rem 1rem;
+    padding: 1.6rem;
+    border: 0.1rem solid color-mix(in srgb, var(--primary-white) 20%, transparent);
+    border-radius: 1.6rem;
+    background-color: color-mix(in srgb, var(--primary-white) 8%, transparent);
+}
+
+.add-modal-draft-text {
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.add-modal-draft-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.add-modal-draft-actions .custom-button {
+    flex: 1 1 auto;
+}
+
+/* Nota */
+.add-modal-score {
     display: flex;
     align-items: center;
     gap: 1.6rem;
     padding-left: 2rem;
-    position: relative;
 }
 
-.score-label-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    flex-grow: 1;
+/* Escritorio y tablet con pantalla baja (p. ej. 1440×900): más compacto para que
+   el formulario completo quepa sin scroll. En móvil ya hay su propia versión compacta */
+@media (min-width: 769px) and (max-height: 900px) {
+    .modal-body .add-modal-header p {
+        padding-bottom: 0.8rem;
+    }
+
+    .modal-body .add-modal-form {
+        gap: 1.2rem;
+    }
+
+    .modal-body .add-modal-form .form-group > label,
+    .add-modal-selected-label {
+        margin-bottom: 0.4rem;
+    }
+
+    .add-modal-fieldset > legend {
+        margin-bottom: 1.2rem;
+    }
+
+    .add-modal-selected-img {
+        width: 7rem;
+        height: 7rem;
+    }
+
+    .add-modal-selected-text {
+        gap: 0.4rem;
+    }
 }
 
-.logo-text {
-    margin-left: .5rem;
-    font-family: var(--font-heading);
-    letter-spacing: 0.1rem;
-}
+/* Móvil: los tres tipos siguen en una fila, más compactos */
+@media (max-width: 768px) {
+    .add-modal-fieldset > legend {
+        margin-bottom: 0.8rem;
+    }
 
-/* Responsive */
+    .add-modal-selected-label {
+        margin-bottom: 0;
+    }
+}
 
 @media (max-width: 480px) {
-    .options {
-        flex-direction: column;
+    .add-modal-types {
+        gap: 0.4rem;
+    }
+
+    .add-modal-type {
+        padding: 0.8rem 0.4rem;
+        font-size: 1.3rem;
+        gap: 0.4rem;
+    }
+
+    .add-modal-type img {
+        width: 1.6rem;
+        height: 1.6rem;
+    }
+
+    .add-modal-selected-img {
+        width: 8rem;
+        height: 8rem;
+    }
+
+    .add-modal-score {
+        padding-left: 0;
     }
 }

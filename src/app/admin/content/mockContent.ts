@@ -1,16 +1,16 @@
 // Datos de prueba de Contenido, compartidos por el listado y el detalle.
-// Los ids de contenido y de denuncia coinciden con los de /admin/reports.
+// Las denuncias salen de la lista de /admin/reports (mockReports.ts).
+import { MOCK_REPORTS, type ReportReason, type ReportStatus } from '../reports/mockReports';
+import { MOCK_USERS, type UserStatus } from '../users/mockUsers';
 
 export type ContentStatus = 'Publicado' | 'Oculto' | 'Eliminado';
-export type ContentReportStatus = 'En revisión' | 'Aplicada' | 'Descartada';
-export type AuthorStatus = 'Activo' | 'Suspendido' | 'Baneado';
 
 export interface ContentAuthor {
     id: string;
     name: string;
     username: string;
     avatar: string;
-    status: AuthorStatus;
+    status: UserStatus;
     sanctions: number;
 }
 
@@ -19,8 +19,8 @@ export interface ContentReport {
     contentId: string;
     reporter: string;
     reporterId: string;
-    reason: 'Spam' | 'Palabras inapropiadas' | 'Mal uso' | 'Acoso';
-    status: ContentReportStatus;
+    reason: ReportReason;
+    status: ReportStatus;
     createdAt: string; // YYYY-MM-DD
 }
 
@@ -66,34 +66,27 @@ export interface AdminContent extends ContentBase {
 
 export const CURRENT_ADMIN = '@admin';
 
-export const AUTHORS: Record<string, ContentAuthor> = {
-    '1': { id: '1', name: 'Raquel Arnaiz', username: '@raquelz.12204', avatar: '/placeholderCards.png', status: 'Activo', sanctions: 2 },
-    '2': { id: '2', name: 'Lucía Martín', username: '@lucia.music', avatar: '/placeholderCards.png', status: 'Activo', sanctions: 0 },
-    '3': { id: '3', name: 'Marcos Gil', username: '@marcos_rvw', avatar: '/placeholderCards.png', status: 'Activo', sanctions: 1 },
-    '4': { id: '4', name: 'Sara Vidal', username: '@sara.vinilos', avatar: '/placeholderCards.png', status: 'Activo', sanctions: 0 },
-};
+// Resumen del autor para Bandeja, sacado de Usuarios (la ficha de contenido usa MOCK_USERS directamente).
+// TODO: revisar al pasar por Bandeja
+export const AUTHORS: Record<string, ContentAuthor> = Object.fromEntries(
+    MOCK_USERS.map((u) => [
+        u.id,
+        { id: u.id, name: u.name, username: u.username, avatar: u.avatar, status: u.status, sanctions: u.sanctions.length },
+    ])
+);
 
-export const MOCK_CONTENT_REPORTS: ContentReport[] = [
-    { id: '1', contentId: 'post123', reporter: '@quevedo.20', reporterId: '5', reason: 'Spam', status: 'En revisión', createdAt: '2026-11-21' },
-    { id: '7', contentId: 'post123', reporter: '@lucia.music', reporterId: '2', reason: 'Spam', status: 'En revisión', createdAt: '2026-11-21' },
-    { id: '8', contentId: 'post123', reporter: '@marcos_rvw', reporterId: '3', reason: 'Mal uso', status: 'Aplicada', createdAt: '2026-11-16' },
-    { id: '9', contentId: 'post123', reporter: '@sara.vinilos', reporterId: '4', reason: 'Acoso', status: 'Descartada', createdAt: '2026-11-15' },
-    { id: '2', contentId: 'post124', reporter: '@lucia.music', reporterId: '2', reason: 'Palabras inapropiadas', status: 'Descartada', createdAt: '2026-11-20' },
-    { id: '3', contentId: 'post125', reporter: '@quevedo.20', reporterId: '5', reason: 'Palabras inapropiadas', status: 'Aplicada', createdAt: '2026-11-18' },
-    { id: '10', contentId: 'post125', reporter: '@marcos_rvw', reporterId: '3', reason: 'Acoso', status: 'Aplicada', createdAt: '2026-11-18' },
-    { id: '11', contentId: 'post125', reporter: '@sara.vinilos', reporterId: '4', reason: 'Palabras inapropiadas', status: 'Aplicada', createdAt: '2026-11-18' },
-    { id: '4', contentId: 'post126', reporter: '@marcos_rvw', reporterId: '3', reason: 'Spam', status: 'En revisión', createdAt: '2026-11-20' },
-    { id: '12', contentId: 'post126', reporter: '@quevedo.20', reporterId: '5', reason: 'Spam', status: 'En revisión', createdAt: '2026-11-19' },
-    { id: '13', contentId: 'post126', reporter: '@sara.vinilos', reporterId: '4', reason: 'Mal uso', status: 'En revisión', createdAt: '2026-11-18' },
-    { id: '14', contentId: 'post126', reporter: '@raquelz.12204', reporterId: '1', reason: 'Spam', status: 'En revisión', createdAt: '2026-11-17' },
-    { id: '15', contentId: 'post126', reporter: '@pablo.discos', reporterId: '6', reason: 'Spam', status: 'Aplicada', createdAt: '2026-11-16' },
-    { id: '16', contentId: 'post126', reporter: '@ines_rvw', reporterId: '7', reason: 'Mal uso', status: 'Descartada', createdAt: '2026-11-16' },
-    { id: '17', contentId: 'post126', reporter: '@leo.vinilo', reporterId: '8', reason: 'Acoso', status: 'Descartada', createdAt: '2026-11-15' },
-    { id: '5', contentId: 'post127', reporter: '@lucia.music', reporterId: '2', reason: 'Spam', status: 'Aplicada', createdAt: '2026-11-03' },
-    { id: '18', contentId: 'post127', reporter: '@quevedo.20', reporterId: '5', reason: 'Spam', status: 'Aplicada', createdAt: '2026-11-03' },
-    { id: '6', contentId: 'post128', reporter: '@marcos_rvw', reporterId: '3', reason: 'Mal uso', status: 'En revisión', createdAt: '2026-11-01' },
-    { id: '19', contentId: 'post128', reporter: '@quevedo.20', reporterId: '5', reason: 'Mal uso', status: 'Descartada', createdAt: '2026-10-30' },
-];
+const usernameOf = (id: string) => MOCK_USERS.find((u) => u.id === id)?.username ?? '';
+
+// Mismos datos que el listado de Denuncias; un perfil denunciado no es contenido
+export const MOCK_CONTENT_REPORTS: ContentReport[] = MOCK_REPORTS.filter((r) => r.contentType !== 'Perfil').map((r) => ({
+    id: r.id,
+    contentId: r.contentId,
+    reporter: MOCK_USERS.find((u) => u.id === r.reporterId)?.username ?? '',
+    reporterId: r.reporterId,
+    reason: r.reason,
+    status: r.status,
+    createdAt: r.createdAt,
+}));
 
 const BASE_CONTENT: ContentBase[] = [
     {
@@ -102,9 +95,7 @@ const BASE_CONTENT: ContentBase[] = [
         excerpt: 'Esto es spam, entra en mi perfil y gana seguidores gratis',
         text: 'Esto es spam, entra en mi perfil y gana seguidores gratis!! Sorteo cada semana, link en mi bio. Seguidme y os sigo de vuelta 🔥🔥',
         authorId: '1', status: 'Publicado', likes: 2, createdAt: '2026-11-21',
-        history: [
-            { id: 'h1', daysAgo: 5, admin: '@mod.ana', action: 'Sanción al autor: Lenguaje inapropiado', note: 'Comentario insultando a otro usuario en la reseña de Clarent.' },
-        ],
+        history: [],
     },
     {
         id: 'post124', type: 'RVW', subject: 'Clarent', subjectKind: 'Álbum', subjectArtist: 'Clarent', subjectHref: '/album/1',
@@ -143,6 +134,7 @@ const BASE_CONTENT: ContentBase[] = [
         history: [
             { id: 'h4', daysAgo: 18, admin: CURRENT_ADMIN, action: '2 denuncias marcadas como aplicadas' },
             { id: 'h5', daysAgo: 18, admin: CURRENT_ADMIN, action: 'Eliminado', note: 'Texto copiado y pegado en 20 álbumes para posicionar el perfil.' },
+            { id: 'h6', daysAgo: 19, admin: CURRENT_ADMIN, action: 'Sanción al autor: Spam', note: 'Mismo texto publicado en 20 álbumes.' },
         ],
     },
     {
@@ -186,7 +178,7 @@ export const MOCK_CONTENT: AdminContent[] = BASE_CONTENT.map((item) => {
     const reports = getContentReports(item.id);
     return {
         ...item,
-        authorUsername: AUTHORS[item.authorId].username,
+        authorUsername: usernameOf(item.authorId),
         reports: reports.length,
         pendingReports: reports.filter((r) => r.status === 'En revisión').length,
         commentsCount:
@@ -200,8 +192,6 @@ export const STATUS_CLASS: Record<ContentStatus, string> = {
     Eliminado: 'status-deleted',
 };
 
-export { formatDate } from '@/app/lib/adminFilters';
-
 // Enlace público: la RVW, o la RVW donde está el comentario
 export const publicHref = (item: Pick<AdminContent, 'id' | 'type' | 'reviewId'>) =>
-    item.type === 'RVW' ? `/reviews/${item.id}` : `/reviews/${item.reviewId}#comment-${item.id}`;
+    item.type === 'RVW' ? `/reviews/${item.id}` : `/reviews/${item.reviewId}#comentario-${item.id}`;

@@ -1,44 +1,25 @@
 'use client';
 
-import { useState, useRef, useEffect, useCallback, Suspense } from 'react';
+import { useState, useCallback, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import SearchBar from '../../../../components/SearchBar/SearchBar';
 import Select from '../../../../components/Select/Select';
 import FilterSheet from '../../../../components/FilterSheet/FilterSheet';
-import Dot from '../../../../components/Dot/Dot';
+import MoreMenu, { type MoreMenuItem } from '../../../../components/MoreMenu/MoreMenu';
+import SanctionDots from '../SanctionDots';
+import { DATE_OPTIONS, formatDate, matchesDate } from '@/app/lib/adminFilters';
+import { MOCK_USERS, type AdminUser } from '../users/mockUsers';
+import { MOCK_REPORTS, REPORT_STATUS_CLASS, reportContentHref, type AdminReport } from './mockReports';
+import { useSeenReports } from './useSeenReports';
 import '../admin-shared.css';
 import './reports.css';
-
-interface AdminReport {
-    id: string;
-    userId: string;
-    contentId: string;
-    name: string;
-    username: string;
-    avatar: string;
-    status: 'En revisión' | 'Descartada' | 'Suspendido' | 'Aplicada';
-    reason: 'Spam' | 'Palabras inapropiadas' | 'Mal uso' | 'Acoso';
-    sanctions: number;
-    contentType: 'Comentario' | 'RVW' | 'Perfil';
-    createdAt: string;
-}
-
-const MOCK_REPORTS: AdminReport[] = [
-    { id: '1', userId: '1', contentId: 'post123', name: 'Raquel Arnaiz', username: '@raquelz.12204', avatar: '/placeholderCards.png', status: 'En revisión', reason: 'Spam', sanctions: 2, contentType: 'Comentario', createdAt: '12/03/2027' },
-    { id: '2', userId: '1', contentId: 'post124', name: 'Raquel Arnaiz', username: '@raquelz.12204', avatar: '/placeholderCards.png', status: 'Descartada', reason: 'Palabras inapropiadas', sanctions: 2, contentType: 'RVW', createdAt: '12/03/2027' },
-    { id: '3', userId: '1', contentId: 'post125', name: 'Raquel Arnaiz', username: '@raquelz.12204', avatar: '/placeholderCards.png', status: 'Suspendido', reason: 'Mal uso', sanctions: 2, contentType: 'Comentario', createdAt: '12/03/2027' },
-    { id: '4', userId: '1', contentId: 'post126', name: 'Raquel Arnaiz', username: '@raquelz.12204', avatar: '/placeholderCards.png', status: 'En revisión', reason: 'Spam', sanctions: 2, contentType: 'RVW', createdAt: '12/03/2027' },
-    { id: '5', userId: '1', contentId: 'post127', name: 'Raquel Arnaiz', username: '@raquelz.12204', avatar: '/placeholderCards.png', status: 'Aplicada', reason: 'Spam', sanctions: 2, contentType: 'RVW', createdAt: '12/03/2027' },
-    { id: '6', userId: '1', contentId: 'post128', name: 'Raquel Arnaiz', username: '@raquelz.12204', avatar: '/placeholderCards.png', status: 'En revisión', reason: 'Mal uso', sanctions: 2, contentType: 'RVW', createdAt: '12/03/2027' },
-];
 
 const STATUS_OPTIONS = [
     { value: 'all', label: 'Todos' },
     { value: 'En revisión', label: 'En revisión' },
     { value: 'Aplicada', label: 'Aplicada' },
     { value: 'Descartada', label: 'Descartada' },
-    { value: 'Suspendido', label: 'Suspendido' },
 ];
 
 const REASON_OPTIONS = [
@@ -64,12 +45,41 @@ const CONTENT_OPTIONS = [
     { value: 'Perfil', label: 'Perfil' },
 ];
 
-const DATE_OPTIONS = [
-    { value: 'all', label: 'Todas' },
-    { value: 'today', label: 'Hoy' },
-    { value: 'week', label: 'Últimos 7 días' },
-    { value: 'month', label: 'Último mes' },
+type SortKey = 'date' | 'sanctions';
+type SortDir = 'asc' | 'desc';
+interface SortState {
+    key: SortKey;
+    dir: SortDir;
+}
+
+const DEFAULT_SORT: SortState = { key: 'date', dir: 'desc' };
+
+// En móvil no hay cabeceras de columna: se ordena desde el panel de filtros
+const SORT_OPTIONS = [
+    { value: 'date-desc', label: 'Más recientes' },
+    { value: 'date-asc', label: 'Más antiguas' },
+    { value: 'sanctions-desc', label: 'Más sanciones' },
 ];
+
+interface SortColumn {
+    key: SortKey;
+    label: string;
+    className?: string;
+}
+
+const SANCTIONS_COLUMN: SortColumn = { key: 'sanctions', label: 'Sanciones' };
+const DATE_COLUMN: SortColumn = { key: 'date', label: 'Fecha', className: 'col-date' };
+
+// Cada denuncia con su usuario denunciado (nombre, avatar y sanciones salen de Usuarios)
+type ReportRow = AdminReport & { user: AdminUser };
+
+const ROWS: ReportRow[] = MOCK_REPORTS.flatMap((report) => {
+    const user = MOCK_USERS.find((u) => u.id === report.userId);
+    return user ? [{ ...report, user }] : [];
+});
+
+const sortValue = (row: ReportRow, key: SortKey) =>
+    key === 'sanctions' ? row.user.sanctions.length : new Date(row.createdAt).getTime();
 
 // useSearchParams necesita un Suspense para que la build de producción no falle
 export default function AdminReportsPage() {
@@ -93,7 +103,8 @@ function AdminReportsWithQuery() {
 
 function AdminReportsContent({ initialQuery, contentId }: { initialQuery: string; contentId: string }) {
     const router = useRouter();
-    const [reports, setReports] = useState<AdminReport[]>(MOCK_REPORTS);
+    const seen = useSeenReports();
+    const [reports, setReports] = useState<ReportRow[]>(ROWS);
     const [searchQuery, setSearchQuery] = useState(initialQuery);
     const [statusFilter, setStatusFilter] = useState('');
     const [reasonFilter, setReasonFilter] = useState('');
@@ -102,34 +113,42 @@ function AdminReportsContent({ initialQuery, contentId }: { initialQuery: string
     const [dateFilter, setDateFilter] = useState('');
     const [showMobileFilters, setShowMobileFilters] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
+    const [sort, setSort] = useState<SortState>(DEFAULT_SORT);
 
-    // Control del menú de 3 puntos por fila
-    const [openMenuId, setOpenMenuId] = useState<string | null>(null);
-    const menuRef = useRef<HTMLDivElement>(null);
+    const query = searchQuery.toLowerCase();
+    const filteredReports = reports
+        .filter((report) => {
+            const matchesSearch =
+                report.user.name.toLowerCase().includes(query) || report.user.username.toLowerCase().includes(query);
+            const matchesStatus = statusFilter ? report.status === statusFilter : true;
+            const matchesReason = reasonFilter ? report.reason === reasonFilter : true;
+            const matchesSanction = sanctionFilter ? report.user.sanctions.length === Number(sanctionFilter) : true;
+            const matchesContent = contentFilter ? report.contentType === contentFilter : true;
+            const matchesContentId = contentId ? report.contentId === contentId : true;
 
-    useEffect(() => {
-        const handleClickOutside = (e: MouseEvent) => {
-            if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-                setOpenMenuId(null);
-            }
-        };
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
+            return (
+                matchesSearch &&
+                matchesStatus &&
+                matchesReason &&
+                matchesSanction &&
+                matchesContent &&
+                matchesContentId &&
+                matchesDate(report.createdAt, dateFilter)
+            );
+        })
+        .sort((a, b) => {
+            const diff = sortValue(a, sort.key) - sortValue(b, sort.key);
+            return sort.dir === 'asc' ? diff : -diff;
+        });
 
-    const filteredReports = reports.filter((report) => {
-        const matchesSearch =
-            report.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            report.username.toLowerCase().includes(searchQuery.toLowerCase());
+    const newCount = reports.filter((r) => !seen.has(r.id)).length;
 
-        const matchesStatus = statusFilter && statusFilter !== 'all' ? report.status === statusFilter : true;
-        const matchesReason = reasonFilter && reasonFilter !== 'all' ? report.reason === reasonFilter : true;
-        const matchesSanction = sanctionFilter && sanctionFilter !== 'all' ? report.sanctions === Number(sanctionFilter) : true;
-        const matchesContent = contentFilter && contentFilter !== 'all' ? report.contentType === contentFilter : true;
-        const matchesContentId = contentId ? report.contentId === contentId : true;
-
-        return matchesSearch && matchesStatus && matchesReason && matchesSanction && matchesContent && matchesContentId;
-    });
+    // Primer clic: de mayor a menor; segundo clic en la misma columna: al revés
+    const toggleSort = (key: SortKey) => {
+        setSort((prev) =>
+            prev.key === key ? { key, dir: prev.dir === 'desc' ? 'asc' : 'desc' } : { key, dir: 'desc' }
+        );
+    };
 
     // Quita ?content= conservando la búsqueda si la había
     const clearContentFilter = () => {
@@ -146,29 +165,37 @@ function AdminReportsContent({ initialQuery, contentId }: { initialQuery: string
         setDateFilter('');
     };
 
-    const handleQuickStatusChange = (id: string, newStatus: AdminReport['status']) => {
-        setReports((prev) =>
-            prev.map((r) => (r.id === id ? { ...r, status: newStatus } : r))
-        );
-        setOpenMenuId(null);
+    // TODO: con backend, descartar también desde aquí. Aplicar solo desde el detalle, porque pide una nota interna
+    const discard = (id: string) => {
+        setReports((prev) => prev.map((r) => (r.id === id ? { ...r, status: 'Descartada' } : r)));
     };
 
-    const renderSanctions = (count: number) => (
-        <div className="sanctions-wrapper">
-            <div className="sanctions-dots">
-                {[0, 1, 2].map((i) => (
-                    <Dot key={i} type={i < count ? 'filled' : 'empty'} />
-                ))}
-            </div>
-            <span className="sanctions-text">{count}/3</span>
-        </div>
+    const menuItems = (report: ReportRow): MoreMenuItem[] => [
+        { label: 'Ver usuario', href: `/admin/users/${report.userId}` },
+        { label: report.contentType === 'Perfil' ? 'Ver perfil' : 'Ver contenido', href: reportContentHref(report) },
+        ...(report.status === 'En revisión'
+            ? (['divider', { label: 'Descartar', danger: true, onClick: () => discard(report.id) }] as MoreMenuItem[])
+            : []),
+    ];
+
+    // Punto rojo y texto para lectores de pantalla en las denuncias que aún no se han abierto
+    const renderName = (report: ReportRow) => (
+        <>
+            {!seen.has(report.id) && <span className="pending-dot report-new-dot" aria-hidden="true" />}
+            <span className="sr-only">Denuncia a </span>
+            {report.user.name}
+            {!seen.has(report.id) && <span className="sr-only"> (nueva)</span>}
+        </>
     );
 
     return (
         <div className="admin-list-container">
             <header className="admin-list-header">
-                <h1>Denuncias</h1>
-                <p>{filteredReports.length} en total</p>
+                <h1 className="page-title">Denuncias</h1>
+                <p>
+                    {reports.length} denuncias en total
+                    {newCount > 0 && ` · ${newCount} ${newCount === 1 ? 'nueva' : 'nuevas'}`}
+                </p>
             </header>
             <section className="admin-list-toolbar">
                 <div className="search-and-mobile-filter">
@@ -178,11 +205,13 @@ function AdminReportsContent({ initialQuery, contentId }: { initialQuery: string
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />
                     <button
+                        type="button"
                         className={`mobile-filter-btn ${activeFiltersCount > 0 ? 'active' : ''}`}
                         onClick={() => setShowMobileFilters(true)}
                         aria-label="Mostrar filtros"
+                        aria-expanded={showMobileFilters}
                     >
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                             <path d="M3 4a1 1 0 0 1 1-1h16a1 1 0 0 1 .8 1.6L14 13.33V20a1 1 0 0 1-1.45.89l-2-1A1 1 0 0 1 10 19v-5.67L3.2 4.6A1 1 0 0 1 3 4z" />
                         </svg>
                         {activeFiltersCount > 0 && <span className="mobile-filter-badge">{activeFiltersCount}</span>}
@@ -240,6 +269,19 @@ function AdminReportsContent({ initialQuery, contentId }: { initialQuery: string
                                 placeholder="Fecha"
                             />
                         </div>
+                        {/* solo en móvil: en escritorio se ordena con las cabeceras */}
+                        <div className="admin-filter-field admin-sort-field">
+                            <span className="admin-filter-label">Ordenar por</span>
+                            <Select
+                                options={SORT_OPTIONS}
+                                value={`${sort.key}-${sort.dir}`}
+                                onChange={(val) => {
+                                    const [key, dir] = val.split('-') as [SortKey, SortDir];
+                                    setSort({ key, dir });
+                                }}
+                                placeholder="Ordenar por"
+                            />
+                        </div>
                     </div>
                 </FilterSheet>
             </section>
@@ -248,7 +290,7 @@ function AdminReportsContent({ initialQuery, contentId }: { initialQuery: string
                     <div className="admin-active-chip">
                         <span>
                             Denuncias de{' '}
-                            <Link href={`/admin/content/${contentId}`} className="admin-active-chip-link">
+                            <Link href={`/admin/content/${encodeURIComponent(contentId)}`} className="admin-active-chip-link">
                                 este contenido
                             </Link>
                         </span>
@@ -268,66 +310,43 @@ function AdminReportsContent({ initialQuery, contentId }: { initialQuery: string
                     <span>Usuario</span>
                     <span className="center-col">Estado</span>
                     <span className="center-col">Motivo</span>
-                    <span className="center-col">Sanciones</span>
+                    <SortHeader column={SANCTIONS_COLUMN} sort={sort} onSort={toggleSort} />
                     <span className="center-col">Contenido</span>
-                    <span className="center-col col-date">Fecha</span>
-                    <span></span>
+                    <SortHeader column={DATE_COLUMN} sort={sort} onSort={toggleSort} />
+                    <span>
+                        <span className="sr-only">Acciones</span>
+                    </span>
                 </div>
                 <div className="admin-table-body">
                     {filteredReports.map((report) => (
+                        // Fila con ⋮: el enlace del nombre cubre toda la fila (.admin-row-link) y el menú queda encima
                         <div
                             key={report.id}
-                            className="admin-table-row reports-grid"
-                            onClick={() => router.push(`/admin/reports/${report.id}`)}
+                            className={`admin-table-row reports-grid ${seen.has(report.id) ? '' : 'report-is-new'}`}
                         >
                             <div className="user-cell">
-                                <img src={report.avatar} alt={report.name} className="user-avatar" />
+                                <img src={report.user.avatar} alt="" className="user-avatar" />
                                 <div className="user-names">
-                                    <span className="user-fullname">{report.name}</span>
-                                    <span className="user-handle">{report.username}</span>
+                                    <Link href={`/admin/reports/${report.id}`} className="user-fullname admin-row-link">
+                                        {renderName(report)}
+                                    </Link>
+                                    <span className="user-handle">{report.user.username}</span>
                                 </div>
                             </div>
-                            <span className="center-col cell-text">{report.status}</span>
+                            <span className={`center-col cell-text report-status ${REPORT_STATUS_CLASS[report.status]}`}>
+                                {report.status}
+                            </span>
                             <span className="center-col cell-text">{report.reason}</span>
-                            <div className="center-col">{renderSanctions(report.sanctions)}</div>
-                            <span className="center-col cell-text">{report.contentType}</span>
-                            <span className="center-col cell-text col-date">{report.createdAt}</span>
-                            <div
-                                className="row-menu-wrapper"
-                                ref={openMenuId === report.id ? menuRef : null}
-                                onClick={(e) => e.stopPropagation()}
-                            >
-                                <button
-                                    className="more-menu-btn"
-                                    onClick={() => setOpenMenuId(openMenuId === report.id ? null : report.id)}
-                                    aria-label="Acciones de denuncia"
-                                >
-                                    ⋮
-                                </button>
-                                {openMenuId === report.id && (
-                                    <div className="more-menu-dropdown align-right">
-                                        <Link href={`/admin/users/${report.userId}`} className="dropdown-item">
-                                            Ver usuario
-                                        </Link>
-                                        <Link href={`/admin/content/${report.contentId}`} className="dropdown-item">
-                                            Ver contenido
-                                        </Link>
-                                        <div className="dropdown-divider" />
-                                        <button
-                                            className="dropdown-item"
-                                            onClick={() => handleQuickStatusChange(report.id, 'Aplicada')}
-                                        >
-                                            Marcar aplicada
-                                        </button>
-                                        <button
-                                            className="dropdown-item danger"
-                                            onClick={() => handleQuickStatusChange(report.id, 'Descartada')}
-                                        >
-                                            Descartar
-                                        </button>
-                                    </div>
-                                )}
+                            <div className="center-col">
+                                <SanctionDots count={report.user.sanctions.length} />
                             </div>
+                            <span className="center-col cell-text">{report.contentType}</span>
+                            <span className="center-col cell-text col-date">{formatDate(report.createdAt)}</span>
+                            <MoreMenu
+                                className="admin-row-menu"
+                                items={menuItems(report)}
+                                label={`Acciones de la denuncia a ${report.user.name}`}
+                            />
                         </div>
                     ))}
                     {filteredReports.length === 0 && (
@@ -339,21 +358,27 @@ function AdminReportsContent({ initialQuery, contentId }: { initialQuery: string
             </section>
             <section className="admin-list-mobile">
                 {filteredReports.map((report) => (
-                    <Link href={`/admin/reports/${report.id}`} key={report.id} className="admin-mobile-row">
+                    <Link
+                        href={`/admin/reports/${report.id}`}
+                        key={report.id}
+                        className={`admin-mobile-row ${seen.has(report.id) ? '' : 'report-is-new'}`}
+                    >
                         <div className="admin-mobile-left">
-                            <img src={report.avatar} alt={report.name} className="user-avatar" />
+                            <img src={report.user.avatar} alt="" className="user-avatar" />
                             <div className="user-names">
-                                <span className="user-fullname">{report.name}</span>
-                                <span className="user-handle">{report.username}</span>
+                                <span className="user-fullname">{renderName(report)}</span>
+                                <span className="user-handle">{report.user.username}</span>
                             </div>
                         </div>
 
                         <div className="admin-mobile-right">
                             <div className="admin-mobile-status">
-                                <span className="mobile-status-text">{report.status}</span>
-                                {renderSanctions(report.sanctions)}
+                                <span className={`mobile-status-text report-status ${REPORT_STATUS_CLASS[report.status]}`}>
+                                    {report.status}
+                                </span>
+                                <SanctionDots count={report.user.sanctions.length} />
                             </div>
-                            <span className="mobile-chevron">›</span>
+                            <span className="mobile-chevron" aria-hidden="true">›</span>
                         </div>
                     </Link>
                 ))}
@@ -363,31 +388,57 @@ function AdminReportsContent({ initialQuery, contentId }: { initialQuery: string
                     </div>
                 )}
             </section>
+            {/* TODO: paginación de maqueta hasta que haya backend */}
             <nav className="admin-pagination" aria-label="Paginación de denuncias">
                 <button
+                    type="button"
                     className="page-btn"
                     onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                     disabled={currentPage === 1}
+                    aria-label="Página anterior"
                 >
                     ‹
                 </button>
                 {[1, 2, 3].map((page) => (
                     <button
+                        type="button"
                         key={page}
                         className={`page-btn ${currentPage === page ? 'active' : ''}`}
                         onClick={() => setCurrentPage(page)}
+                        aria-label={`Página ${page}`}
+                        aria-current={currentPage === page ? 'page' : undefined}
                     >
                         {page}
                     </button>
                 ))}
-                <span className="page-dots">..</span>
+                <span className="page-dots" aria-hidden="true">..</span>
                 <button
+                    type="button"
                     className="page-btn"
                     onClick={() => setCurrentPage((p) => p + 1)}
+                    aria-label="Página siguiente"
                 >
                     ›
                 </button>
             </nav>
         </div>
+    );
+}
+
+// Cabecera de columna ordenable, como en Usuarios
+function SortHeader({ column, sort, onSort }: { column: SortColumn; sort: SortState; onSort: (key: SortKey) => void }) {
+    const isActive = sort.key === column.key;
+    return (
+        <span
+            className={`center-col ${column.className ?? ''}`}
+            aria-sort={isActive ? (sort.dir === 'asc' ? 'ascending' : 'descending') : 'none'}
+        >
+            <button type="button" className={`sort-header-btn ${isActive ? 'active' : ''}`} onClick={() => onSort(column.key)}>
+                {column.label}
+                <span className="sort-arrow" aria-hidden="true">
+                    {isActive ? (sort.dir === 'asc' ? '▲' : '▼') : '▾'}
+                </span>
+            </button>
+        </span>
     );
 }

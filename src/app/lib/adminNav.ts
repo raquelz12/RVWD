@@ -1,5 +1,6 @@
 // Navegación del panel de admin: una sola fuente para el header y la barra inferior.
 import { UNREAD_INBOX_COUNT } from '@/app/admin/inbox/mockInbox';
+import { PENDING_REPORTS_COUNT } from '@/app/admin/reports/mockReports';
 
 export const isAdminPath = (pathname: string | null) =>
     !!pathname && (pathname === '/admin' || pathname.startsWith('/admin/'));
@@ -41,7 +42,7 @@ export const ADMIN_MORE_LINKS: AdminNavLink[] = [
 
 // TODO: con backend, vendrán de la API y se actualizarán al leer / resolver
 export const ADMIN_BADGES = {
-    pendingReports: 3,
+    pendingReports: PENDING_REPORTS_COUNT,
     unreadInbox: UNREAD_INBOX_COUNT,
 };
 

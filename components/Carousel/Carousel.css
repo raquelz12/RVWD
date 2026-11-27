@@ -51,17 +51,38 @@
     margin-top: 2rem;
 }
 
+/* La activa crece con transform y no con font-size: transform no cambia lo que ocupa la letra,
+   así las demás no se mueven al deslizar (con font-size, durante la transición crecían dos a la vez
+   y empujaban al resto). Crece desde la base, y el margen evita que pise a sus vecinas */
 .pagination-letter {
+    padding: 0;
+    margin: 0 0.15rem;
+    border: none;
+    background: none;
     font-family: var(--font-heading);
+    font-weight: 400;
     font-size: 1.6rem;
     color: color-mix(in srgb, var(--primary-white) 15%, transparent);
-    transition: all 0.3s ease;
+    transform-origin: center bottom;
+    transition: color 0.3s ease, transform 0.3s ease, text-shadow 0.3s ease;
     cursor: pointer;
 }
 
 .pagination-letter.active {
     color: var(--primary-red);
-    font-size: 2.2rem;
-    font-weight: bold;
+    /* 2.2rem / 1.6rem: el mismo tamaño que tenía antes */
+    transform: scale(1.375);
     text-shadow: 0 0 0.8rem color-mix(in srgb, var(--primary-red) 50%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pagination-letter {
+        transition: none;
+    }
+}
+
+.pagination-letter:focus-visible {
+    outline: 2px solid var(--primary-white);
+    outline-offset: 2px;
+    border-radius: 0.4rem;
 }

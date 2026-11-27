@@ -1,7 +1,8 @@
 'use client';
 
-import { Suspense, useState, useEffect, useRef } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { Fragment, Suspense, useState, useEffect } from 'react';
+import { useParams } from 'next/navigation';
+import Link from 'next/link';
 import Button from '../../../../components/Button/Button';
 import Score from '../../../../components/Score/Score';
 import '@/styles/media-detail.css';
@@ -13,154 +14,184 @@ import Breadcrumbs from '../../../../components/Breadcrumbs/Breadcrumbs';
 import { generateBreadcrumbs } from '@/utils/breadcrumbs';
 import { getSongDetails } from '@/lib/api';
 import { Song } from '@/types/music';
-import SearchBar from '../../../../components/SearchBar/SearchBar';
 import FavButton from '../../../../components/FavButton/FavButton';
-import Link from 'next/link';
+import Rvw from '../../../../components/Rvw/Rvw';
+import { useModal } from '@/context/ModalContext';
 
-function SongContent() {
-    const params = useParams();
-    const router = useRouter();
+function SongContent({ id }: { id: string }) {
+    const { openAdd } = useModal();
 
     const [song, setSong] = useState<Song | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        const fetchSong = async () => {
-            if (params.id) {
-                const data = await getSongDetails(params.id as string);
-                setSong(data);
-            }
+        let cancelled = false;
+        getSongDetails(id).then((data) => {
+            if (cancelled) return;
+            setSong(data);
             setIsLoading(false);
+        });
+        return () => {
+            cancelled = true;
         };
-        
-        fetchSong();
-    }, [params.id]);
+    }, [id]);
 
     if (isLoading) {
-        return <div className="helper-wrapper">
-                    <span className="helper-text">Cargando canción...</span>
-                </div>;
+        return (
+            <div className="helper-wrapper">
+                <span className="helper-text">Cargando canción...</span>
+            </div>
+        );
     }
 
     if (!song) {
-        return <div className="helper-wrapper">
-                    <span className="helper-text">Canción no encontrada</span>
-                    <SearchBar placeholder="Busca otra canción..." />
-                </div>;
+        return (
+            <div className="helper-wrapper">
+                <span className="helper-text">Canción no encontrada</span>
+                <Link href="/feed" className="custom-button primary helper-link">Volver al feed</Link>
+            </div>
+        );
     }
 
     const breadcrumbs = generateBreadcrumbs('song', song);
-    const topRvws = [1, 2, 3, 4];
+
+    // Maqueta hasta que haya backend
+    const topRvwCards = [1, 2, 3, 4].map((n) => ({
+        key: n,
+        node: (
+            <MediaCard
+                href="/reviews/123"
+                type="cancion"
+                title={song.name}
+                artist={song.artist.name}
+                imageUrl={song.coverUrl}
+                userName="@raquelz.12204"
+                userPicture="/placeholderCards.png"
+                score={8.5}
+                forceShowInfo={true}
+            />
+        ),
+    }));
+
+    const nameRow = (
+        <div className="media-name-row">
+            <h1 className="page-title media-title">{song.name}</h1>
+            <div className="media-title-actions">
+                <FavButton itemLabel={song.name} className="title-fav-btn" />
+            </div>
+        </div>
+    );
+
+    const artistLink = (
+        <Link href={`/artist/${song.artist.id}`} className="song-artist">{song.artist.name}</Link>
+    );
+
+    const scoreBlock = (
+        <div className="score-block">
+            <span className="score-label"><Rvw>RVWD</Rvw> score</span>
+            <Score score={song.score} variant="white" input={false} />
+        </div>
+    );
+
+    const stats = (
+        <ProfileStats
+            minutes={song.stats.minutes}
+            favs={song.stats.favs}
+            rvws={song.stats.rvws}
+        />
+    );
+
+    const rvwButton = (
+        <Button variant="primary" className="rvw-action-btn" onClick={() => openAdd({ type: 'cancion', id: song.id })}>
+            <Rvw>RVW</Rvw>
+        </Button>
+    );
 
     return (
         <div className="song-page-container">
             <Breadcrumbs items={breadcrumbs} />
+
+            {/* Escritorio y tablet */}
             <div className="desktop-song-view">
                 <div className="song-header-desktop">
-                    <img src={song.coverUrl} alt="Portada" className="song-cover-desktop" />
+                    {/* Decorativa: el nombre ya va en el h1 */}
+                    <img src={song.coverUrl} alt="" className="song-cover-desktop" />
                     <div className="song-info-desktop">
                         <div className="song-title-row">
                             <div>
-                                <h1 className="song-title">{song.name} <FavButton itemLabel={song.name} className="title-fav-btn" /></h1>
-                                <Link href={`/artist/${song.artist.id}`} className="song-artist">
-                                    {song.artist.name}
-                                </Link>
+                                {nameRow}
+                                {artistLink}
                             </div>
-                            <div className="song-score-action">
-                                <div className="score-block">
-                                    <span className="score-label"><span className="RVWS">RVWD</span> score</span>
-                                    <Score score={song.score} variant="white" input={false} />
-                                </div>
-                            </div>
+                            {scoreBlock}
                         </div>
                         <div className="song-stats-row">
-                            <ProfileStats 
-                                minutes={song.stats.minutes} 
-                                favs={song.stats.favs} 
-                                rvws={song.stats.rvws} 
-                            />
-                            <Button variant="primary" className="rvw-action-btn"><span className="RVWS">RVW</span></Button>
+                            {stats}
+                            {rvwButton}
                         </div>
                     </div>
                 </div>
-                {/* Listados PC */}
                 <div className="song-sections">
-                    <div className="song-section">
-                        <h2 className="section-title song-section-title">Top <span className="RVWS">RVWS</span></h2>
-                        <div className="cards-grid">
-                            {topRvws.map((item, index) => (
-                                <MediaCard
-                                    key={index}
-                                    type="cancion"
-                                    title={song.name}
-                                    artist={song.artist.name}
-                                    imageUrl={song.coverUrl}
-                                    userName="@raquelz.12204"
-                                    userPicture="/placeholderCards.png"
-                                    score={8.5}
-                                    forceShowInfo={true}
-                                />
+                    <section className="song-section" aria-labelledby="song-rvws-desktop">
+                        <h2 id="song-rvws-desktop" className="section-title">Top <Rvw>RVWS</Rvw></h2>
+                        <ul className="cards-grid">
+                            {topRvwCards.map((card) => (
+                                <li key={card.key}>{card.node}</li>
                             ))}
-                        </div>
-                    </div>
+                        </ul>
+                    </section>
                 </div>
             </div>
-            
-            {/* Movil */}
+
+            {/* Móvil */}
             <div className="mobile-song-view">
                 <div className="mobile-song-hero">
-                    <img src={song.coverUrl} alt="Portada" className="mobile-hero-bg" />
+                    <img src={song.coverUrl} alt="" className="mobile-hero-bg" />
                     <div className="mobile-hero-gradient"></div>
                 </div>
                 <div className="mobile-song-content">
                     <div className="mobile-song-title">
-                        <h1 className="song-title">{song.name} <FavButton itemLabel={song.name} className="title-fav-btn" /></h1>
-                        <Link href={`/artist/${song.artist.id}`} className="song-artist">{song.artist.name}</Link>
+                        {nameRow}
+                        {artistLink}
                     </div>
-                    <ProfileStats 
-                        minutes={song.stats.minutes} 
-                        favs={song.stats.favs} 
-                        rvws={song.stats.rvws} 
-                    />
+                    {stats}
                     <div className="mobile-score-action">
-                        <div className="score-block">
-                            <span className="score-label"><span className="RVWS">RVWD</span> score</span>
-                            <Score score={song.score} variant="white" input={false} />
-                        </div>
-                        <Button variant="primary" className="rvw-action-btn"><span className="RVWS">RVW</span></Button>
+                        {scoreBlock}
+                        {rvwButton}
                     </div>
-                    {/* Listados Móvil (Scroll Horizontal) */}
+                    {/* Listado en carrusel */}
                     <div className="song-sections-mobile">
-                        <div className="song-section">
-                            <h2 className="section-title song-section-title">Top <span className="RVWS">RVWS</span></h2>
+                        <section className="song-section" aria-labelledby="song-rvws-mobile">
+                            <h2 id="song-rvws-mobile" className="section-title song-section-title">Top <Rvw>RVWS</Rvw></h2>
                             <Carousel>
-                                {topRvws.map((item, index) => (
-                                    <MediaCard
-                                        key={index}
-                                        type="cancion"
-                                        title={song.name}
-                                        artist={song.artist.name}
-                                        imageUrl={song.coverUrl}
-                                        userName="@raquelz.12204"
-                                        userPicture="/placeholderCards.png"
-                                        score={8.5}
-                                        forceShowInfo={true}
-                                    />
+                                {topRvwCards.map((card) => (
+                                    <Fragment key={card.key}>{card.node}</Fragment>
                                 ))}
                             </Carousel>
-                        </div>
+                        </section>
                     </div>
                 </div>
             </div>
-
         </div>
     );
 }
 
+function SongRoute() {
+    const { id } = useParams<{ id: string }>();
+    // key: al pasar de una canción a otra el estado empieza de cero
+    return <SongContent key={id} id={id} />;
+}
+
 export default function SongPage() {
+    // Con cacheComponents, useParams necesita un Suspense alrededor
     return (
-        <Suspense fallback={<div className="helper-wrapper" style={{ padding: '4rem', color: 'white', textAlign: 'center' }}>Cargando canción...</div>}>
-            <SongContent />
+        <Suspense
+            fallback={
+                <div className="helper-wrapper">
+                    <span className="helper-text">Cargando canción...</span>
+                </div>
+            }
+        >
+            <SongRoute />
         </Suspense>
     );
 }

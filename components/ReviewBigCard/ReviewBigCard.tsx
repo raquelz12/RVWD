@@ -1,11 +1,19 @@
 'use client';
 
+import Link from 'next/link';
+import { useState } from 'react';
 import './ReviewBigCard.css';
 import Score from '../Score/Score';
 import FavButton from '../FavButton/FavButton';
+import MoreMenu, { type MoreMenuItem } from '../MoreMenu/MoreMenu';
+import { formatDate } from '@/app/lib/adminFilters';
+import { useModal } from '@/context/ModalContext';
+import Rvw from '../Rvw/Rvw';
 
 interface ReviewBigCardProps {
     username?: string;
+    /** Perfil del autor: su nombre en la cabecera pasa a ser un enlace */
+    userHref?: string;
     userImageUrl?: string;
     followed?: boolean;
     type?: 'Álbum' | 'Canción' | 'Artista';
@@ -16,15 +24,40 @@ interface ReviewBigCardProps {
     pageScore?: number;
     titleReview?: string;
     reviewText?: string;
+    /** Fecha en formato AAAA-MM-DD; se enseña como DD/MM/AAAA */
     reviewDate?: string;
     commentsCount?: number;
     favoritesCount?: number;
     profile?: boolean; // Indica si la tarjeta sale solo la socre red o las dos
+    /** Enseña la reseña entera en vez de cortarla a 3 líneas (página de la propia RVW) */
+    fullText?: boolean;
+    /** Ancla de la lista de comentarios en la misma página (p. ej. "#comentarios"):
+     *  el contador de comentarios pasa a ser un enlace que baja hasta ella */
+    commentsHref?: string;
+    /** Si se pasa, toda la tarjeta lleva a esta ruta, pero sus botones siguen funcionando por separado
+     *  (así no hay botones dentro de un enlace) */
+    href?: string;
+    /** Ruta del álbum / canción / artista reseñado (opción "Ir al…" del menú ⋮) */
+    mediaHref?: string;
+    /** La reseña es del usuario: el menú enseña Editar / Eliminar (si se pasan onEdit / onDelete)
+     *  en vez de Seguir / Denunciar. Sin cabecera de usuario, el menú ⋮ sale junto a la nota */
+    ownReview?: boolean;
+    /** Id de la reseña (para la denuncia); si no se pasa, se usa href */
+    reviewId?: string;
+    onEdit?: () => void;
+    onDelete?: () => void;
     onClick?: () => void;
 }
 
+const MEDIA_LABEL: Record<NonNullable<ReviewBigCardProps['type']>, string> = {
+    'Álbum': 'Ir al álbum',
+    'Canción': 'Ir a la canción',
+    'Artista': 'Ir al artista',
+};
+
 export default function ReviewBigCard({
     username,
+    userHref,
     userImageUrl,
     followed,
     type,
@@ -39,46 +72,106 @@ export default function ReviewBigCard({
     commentsCount,
     favoritesCount,
     profile,
+    fullText,
+    commentsHref,
+    href,
+    mediaHref,
+    ownReview,
+    reviewId,
+    onEdit,
+    onDelete,
     onClick
 }: ReviewBigCardProps) {
+    const { openReport } = useModal();
+    // TODO: seguir / dejar de seguir de verdad cuando haya backend
+    const [isFollowed, setIsFollowed] = useState(!!followed);
+
+    const showUserHeader = !!(userImageUrl && username && followed !== undefined);
+
+    // Opciones del menú ⋮: las de una reseña propia o las de la de otra persona
+    const menuItems: MoreMenuItem[] = [
+        ...(mediaHref && type ? [{ label: MEDIA_LABEL[type], href: mediaHref }] : []),
+        ...(href ? [{ label: 'Copiar enlace', copyPath: href }] : []),
+        ...(ownReview
+            ? [
+                  // Solo las acciones que tienen función: sin onEdit / onDelete no salen
+                  ...(onEdit ? [{ label: 'Editar', onClick: onEdit }] : []),
+                  ...(onDelete ? ['divider' as const, { label: 'Eliminar', onClick: onDelete, danger: true }] : []),
+              ]
+            : [
+                  // Sin cabecera (p. ej. en el perfil del autor) seguir ya está en la propia página
+                  ...(showUserHeader ? [{
+                      label: isFollowed ? `Dejar de seguir a ${username}` : `Seguir a ${username}`,
+                      onClick: () => setIsFollowed((f) => !f),
+                  }] : []),
+                  'divider' as const,
+                  {
+                      label: 'Denunciar',
+                      onClick: () => openReport({ type: 'RVW', id: reviewId ?? href ?? '', author: username ?? '' }),
+                      danger: true,
+                  },
+              ]),
+    ];
+
+    // Baja con suavidad hasta los comentarios (sin animación si se pide menos movimiento)
+    const scrollToComments = (e: React.MouseEvent<HTMLAnchorElement>) => {
+        e.stopPropagation();
+        const target = commentsHref?.startsWith('#') ? document.getElementById(commentsHref.slice(1)) : null;
+        if (!target) return;
+        e.preventDefault();
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+    };
+
+    // Sin cabecera (p. ej. en un perfil): el menú va en la fila del título
+    const showInlineMenu = !showUserHeader && menuItems.length > 0;
+
     return (
         <div className="review-big-card" onClick={onClick}>
-            {userImageUrl && username && followed !== undefined && (
+            {showUserHeader && (
                 <div className="review-big-card-header">
                     <div className="review-big-card-user">
-                        <img src={userImageUrl} alt={username} />
+                        <img src={userImageUrl} alt="" />
                         <div className="review-big-card-user-info">
-                            <p className="user-name">{username}</p>
-                            <p className="user-followed">{followed ? 'Le sigues' : 'No le sigues'}</p>
+                            <p className="user-name">
+                                {userHref ? (
+                                    <Link href={userHref} className="review-big-card-user-link">{username}</Link>
+                                ) : username}
+                            </p>
+                            {!ownReview && (
+                                <p className="user-followed">{isFollowed ? 'Le sigues' : 'No le sigues'}</p>
+                            )}
                         </div>
                     </div>
-                    <div className="review-big-card-extra">
-                        <button className="review-big-card-extra-btn">
-                            ...
-                        </button>
-                    </div>
+                    <MoreMenu items={menuItems} label="Opciones de la RVW" className="review-big-card-extra" />
                 </div>
             )}
             <div className="review-big-card-content">
                 <div className="review-big-card-image">
-                    <img src={imageUrl} alt={title} />
+                    {/* Decorativa: el título va justo al lado */}
+                    <img src={imageUrl || '/placeholderCards.png'} alt="" />
                 </div>
                 <div className="review-big-card-info">
                     <div className="review-big-card-header">
                         <div className="review-big-card-header-info">
                             <p className="review-big-card-type">{type}</p>
-                            <p className="review-big-card-title">{title}</p>
+                            <p className="review-big-card-title">
+                                {href ? (
+                                    <Link href={href} className="review-big-card-link">{title}</Link>
+                                ) : title}
+                            </p>
                             <p className="review-big-card-artist">{artist}</p>
                         </div>
                         {profile && (
                         <div className="review-big-card-score">
                             <div className="review-big-card-score-wrapper">
-                                <p className="review-big-card-score-text">Tu <span className="RVWS">RVW</span> score</p>
+                                {/* Nota de quien escribió la RVW; "RVW score" se confundía con "RVWD score" */}
+                                <p className="review-big-card-score-text">{ownReview ? 'Tu nota' : 'Su nota'}</p>
                                 <Score variant="red" input={false} score={parseFloat(score?.toString() || '0')} />
                             </div>
                             <div className="review-big-card-score-wrapper">
                             <p className="review-big-card-score-text">
-                                    <span className="RVWS">RVWD</span> score
+                                    <Rvw>RVWD</Rvw> score
                                 </p>
                                 <Score variant="white" input={false} score={parseFloat(pageScore?.toString() || '0')} />
                             </div>
@@ -88,17 +181,32 @@ export default function ReviewBigCard({
                                 <Score variant="red" input={false} score={parseFloat(score?.toString() || '0')} />
                             </div>
                         )}
+                        {showInlineMenu && (
+                            <MoreMenu items={menuItems} label="Opciones de la RVW" className="review-big-card-extra" />
+                        )}
                     </div>
-                    <div className="review-big-card-review">
+                    <div className={`review-big-card-review ${fullText ? 'is-full' : ''}`}>
                         <span className="title">{titleReview}</span>
                         <span className="text">{reviewText}</span>
                     </div>
                     <div className="review-big-card-footer">
-                        <p>{reviewDate}</p>
+                        <p>{reviewDate ? formatDate(reviewDate) : null}</p>
                         <div className="review-big-card-footer-stats">
-                            <button className="review-big-card-footer-btn" onClick={() => {}}>
-                                {commentsCount} <img src="/comments-solid-full.svg" alt="Comentarios" />
-                            </button>
+                            {commentsHref ? (
+                                <a
+                                    href={commentsHref}
+                                    className="review-big-card-footer-stat review-big-card-comments-link"
+                                    aria-label={`Ver los ${commentsCount ?? 0} comentarios`}
+                                    onClick={scrollToComments}
+                                >
+                                    {commentsCount} <span className="review-big-card-comments-icon" aria-hidden="true" />
+                                </a>
+                            ) : (
+                                // Solo informa: los comentarios se ven dentro de la reseña
+                                <span className="review-big-card-footer-stat" aria-label={`${commentsCount ?? 0} comentarios`}>
+                                    {commentsCount} <img src="/comments-solid-full.svg" alt="" />
+                                </span>
+                            )}
                             <FavButton count={favoritesCount} itemLabel="esta RVW" className="review-big-card-footer-btn" />
                         </div>
                     </div>

@@ -1,258 +1,192 @@
-import React, { Suspense } from 'react';
+import React from 'react';
 import SmallCard from '../../../components/SmallCard/SmallCard';
 import Button from '../../../components/Button/Button';
 import './feed.css';
 import ReviewBigCard from '../../../components/ReviewBigCard/ReviewBigCard';
 import ArtistCard from '../../../components/ArtistCard/ArtistCard';
 import MediaCard from '../../../components/MediaCard/MediaCard';
-import FeedTabs from '../../../components/FeedTabs/FeedTabs';
+import FeedTabs, { type FeedTab } from '../../../components/FeedTabs/FeedTabs';
+import SideDrawer from '../../../components/SideDrawer/SideDrawer';
 import Link from 'next/link';
 import { mockAlbums } from '../lib/mockData';
+import Rvw from '../../../components/Rvw/Rvw';
+import { userHref } from '../lib/publicUsers';
+
+// TODO: vendrán del backend
+const SIMILAR_USERS = [
+    { username: '@lucia.music', name: 'Lucía Martín' },
+    { username: '@clarent', name: 'Clarent' },
+    { username: '@juanp', name: 'Juan Pérez' },
+    { username: '@sara.vinilos', name: 'Sara Vidal' },
+];
 
 export const instant = false;
 
 export default async function Feed({ searchParams }: { searchParams: Promise<{ tab?: string }> }) {
     const resolvedParams = await searchParams;
-    const currentTab = resolvedParams.tab || 'para-ti';
+    const currentTab: FeedTab = resolvedParams.tab === 'descubrir' ? 'descubrir' : 'para-ti';
 
     return (
         <div className="feed-container">
-            {/* Mientras cargan las pestañas se ven ya con su forma (y la activa marcada), sin poder pulsarlas */}
-            <Suspense fallback={
-                <div className="feed-buttons">
-                    <button className={currentTab === 'para-ti' ? 'feed-button active' : 'feed-button'} disabled>Para ti</button>
-                    <button className={currentTab === 'descubrir' ? 'feed-button active' : 'feed-button'} disabled>Descubrir</button>
-                </div>
-            }>
-                <FeedTabs />
-            </Suspense>
+            <h1 className="sr-only">Feed</h1>
+            <FeedTabs currentTab={currentTab} />
             {currentTab === 'para-ti' ? (
                 <div className="feed">
                     <div className="feed-main-column">
-                        <div className="show-new">
-                            <img src="/arrow-up-long-solid-full.svg" alt="Flecha" />
-                            <span className="RVWS">RVWS</span> nuevas
-                        </div>
-                        <Link href="/reviews/123" className="feed-review-link">
-                            <ReviewBigCard
-                                username="@raquelz.12204"
-                                userImageUrl="/placeholderCards.png"
-                                followed={true}
-                                type="Álbum"
-                                title="No pasa nada hombre"
-                                artist="Clarent"
-                                imageUrl="/placeholderCards.png"
-                                score={8.5}
-                                titleReview="Mi opinión sobre este álbum"
-                                reviewText="Este álbum es increíble. Toda la música es genial y los arreglos son perfectos."
-                                reviewDate="2023-01-01"
-                                commentsCount={10}
-                                favoritesCount={5}
-                            />
+                        <Link href="/feed" className="show-new">
+                            <img src="/arrow-up-long-solid-full.svg" alt="" />
+                            <Rvw>RVWS</Rvw> nuevas
                         </Link>
-                        <div className="might-like-section">
-                            <div className="section-header">
-                                <h3 className="title block-title">Artistas que te podrían gustar</h3>
-                                <Button variant="text">Ver más</Button>
-                            </div>
+                        <ReviewBigCard
+                            href="/reviews/123"
+                            mediaHref="/album/123"
+                            reviewId="123"
+                            username="@clarent"
+                            userHref={userHref('@clarent')}
+                            userImageUrl="/placeholderCards.png"
+                            followed={true}
+                            type="Álbum"
+                            title="No pasa nada hombre"
+                            artist="Clarent"
+                            imageUrl="/placeholderCards.png"
+                            score={8.5}
+                            titleReview="Mi opinión sobre este álbum"
+                            reviewText="Este álbum es increíble. Toda la música es genial y los arreglos son perfectos."
+                            reviewDate="2023-01-01"
+                            commentsCount={10}
+                            favoritesCount={5}
+                        />
+                        <section className="feed-section">
+                            <h2 className="section-title">Artistas que te podrían gustar</h2>
                             <div className="might-like-cards">
-                                <ArtistCard name="Clarent" hasScore={true} isSelected={false} followed={true} score={8.5} variant="white" />
-                                <ArtistCard name="Clarent" hasScore={true} isSelected={false} followed={true} score={9.5} variant="white" />
-                                <ArtistCard name="Clarent" hasScore={true} isSelected={false} followed={true} score={7.8} variant="white" />
-                                <ArtistCard name="Clarent" hasScore={true} isSelected={false} followed={true} score={9.4} variant="white" />
+                                <ArtistCard href="/artist/123" name="Clarent" hasScore={true} showFollow={true} score={8.5} variant="white" />
+                                <ArtistCard href="/artist/123" name="Clarent" hasScore={true} showFollow={true} score={9.5} variant="white" />
+                                <ArtistCard href="/artist/123" name="Clarent" hasScore={true} showFollow={true} score={7.8} variant="white" />
+                                <ArtistCard href="/artist/123" name="Clarent" hasScore={true} showFollow={true} score={9.4} variant="white" />
                             </div>
-                        </div>
-                        <div className="fav-reviews-for-you-section">
-                            <div className="section-header">
-                                <h3 className="title block-title"><span className="RVWS">RVWS</span> favoritas para ti</h3>
-                                <Button variant="text">Ver más</Button>
+                        </section>
+                        <section className="feed-section">
+                            <h2 className="section-title"><Rvw>RVWS</Rvw> favoritas para ti</h2>
+                            <div className="media-cards-row">
+                                <MediaCard href="/reviews/123" type="album" title="No pasa nada hombre" artist="Clarent" imageUrl="/placeholderCards.png" userName="@raquelz.12204" userPicture="/placeholderCards.png" score={8.5} />
+                                <MediaCard href="/reviews/123" type="album" title="No pasa nada hombre" artist="Clarent" imageUrl="/placeholderCards.png" userName="@raquelz.12204" userPicture="/placeholderCards.png" score={8.5} />
+                                <MediaCard href="/reviews/123" type="album" title="No pasa nada hombre" artist="Clarent" imageUrl="/placeholderCards.png" userName="@raquelz.12204" userPicture="/placeholderCards.png" score={8.5} />
                             </div>
-                            <div className="fav-reviews-for-you-cards">
-                                <MediaCard type="album" title="No pasa nada hombre" artist="Clarent" imageUrl="/placeholderCards.png" score={8.5} />
-                                <MediaCard type="album" title="No pasa nada hombre" artist="Clarent" imageUrl="/placeholderCards.png" score={8.5} />
-                                <MediaCard type="album" title="No pasa nada hombre" artist="Clarent" imageUrl="/placeholderCards.png" score={8.5} />
-                            </div>
-                        </div>
-                        <Link href="/reviews/123" className="feed-review-link">
-                            <ReviewBigCard
-                                username="@raquelz.12204"
-                                userImageUrl="/placeholderCards.png"
-                                followed={true}
-                                type="Álbum"
-                                title="No pasa nada hombre"
-                                artist="Clarent"
-                                imageUrl="/placeholderCards.png"
-                                score={8.5}
-                                titleReview="Mi opinión sobre este álbum"
-                                reviewText="Este álbum es increíble. Toda la música es genial y los arreglos son perfectos."
-                                reviewDate="2023-01-01"
-                                commentsCount={10}
-                                favoritesCount={5}
-                            />
-                        </Link>
+                        </section>
+                        <ReviewBigCard
+                            href="/reviews/123"
+                            mediaHref="/album/123"
+                            reviewId="123"
+                            username="@sara.vinilos"
+                            userHref={userHref('@sara.vinilos')}
+                            userImageUrl="/placeholderCards.png"
+                            followed={true}
+                            type="Álbum"
+                            title="No pasa nada hombre"
+                            artist="Clarent"
+                            imageUrl="/placeholderCards.png"
+                            score={8.5}
+                            titleReview="Mi opinión sobre este álbum"
+                            reviewText="Este álbum es increíble. Toda la música es genial y los arreglos son perfectos."
+                            reviewDate="2023-01-01"
+                            commentsCount={10}
+                            favoritesCount={5}
+                        />
                     </div>
-                    <div className="feed-side-column">
-                        <input type="checkbox" id="releases-toggle" className="releases-toggle-checkbox" />
-                        <label htmlFor="releases-toggle" className="drawer-overlay"></label>
-                        <label htmlFor="releases-toggle" className="floating-releases-btn">
-                            <img src="/fire-solid-full.svg" alt="Nuevos lanzamientos" />
-                        </label>
-                        <div className="mobile-releases-drawer">
-                            <div className="drawer-header">
-                                <h3 className="block-title feed-side-title">Nuevos lanzamientos</h3>
-                                <label htmlFor="releases-toggle" className="close-drawer-btn">
-                                    ✕
-                                </label>
-                            </div>
-                            <div className="new-releases-cards">
-                                {mockAlbums.map((album) => (
-                                    <Link 
-                                        key={album.id} 
-                                        href={`/album/${album.id}`} 
-                                    >
-                                        <SmallCard 
-                                            type="album" 
-                                            title={album.name} 
-                                            artist={album.artist.name} 
-                                            imageUrl={album.coverUrl} 
-                                        />
-                                    </Link>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
+                    <SideDrawer title="Nuevos lanzamientos" icon="/fire-solid-full.svg">
+                        {mockAlbums.map((album) => (
+                            <Link key={album.id} href={`/album/${album.id}`}>
+                                <SmallCard
+                                    type="album"
+                                    title={album.name}
+                                    artist={album.artist.name}
+                                    imageUrl={album.coverUrl}
+                                />
+                            </Link>
+                        ))}
+                    </SideDrawer>
                 </div>
             ) : (
                 // ----------------------------DESCUBRIR TAB----------------------------
                 <div className="feed">
                     {/* ----------------------------COLUMNA PRINCIPAL---------------------------- */}
                     <div className="feed-main-column">
-                        <div className="weekly-top-section">
+                        <section className="feed-section">
                             <div className="buttons-container">
                                 <Button variant="primary">Todo</Button>
                                 <Button variant="outline">Canciones</Button>
                                 <Button variant="outline">Álbumes</Button>
                                 <Button variant="outline">Artistas</Button>
                             </div>
-                            <div className="weekly-top-cards">
-                                <div className="section-header">
-                                    <h3 className="title block-title">Top de la semana</h3>
-                                    <Button variant="text">Ver más</Button>
-                                </div>
-                                <div className="weekly-top-cards-list">
-                                    <span className="weekly-top-card">
-                                        <span className="weekly-top-card-number">1</span>
+                            <h2 className="section-title">Top de la semana</h2>
+                            <ol className="weekly-top-cards-list">
+                                {[1, 2, 3].map((position) => (
+                                    <li key={position} className="weekly-top-card">
+                                        <span className="weekly-top-card-number">{position}</span>
                                         <Link href="/album/123" className="weekly-top-link">
                                             <SmallCard variant="large" type="album" title="No pasa nada hombre" artist="Clarent" imageUrl="/placeholderCards.png" score={8.5} />
                                         </Link>
-                                    </span>
-                                    <span className="weekly-top-card">
-                                        <span className="weekly-top-card-number">2</span>
-                                        <Link href="/album/123" className="weekly-top-link">
-                                            <SmallCard variant="large" type="album" title="No pasa nada hombre" artist="Clarent" imageUrl="/placeholderCards.png" score={8.5} />
-                                        </Link>
-                                    </span>
-                                    <span className="weekly-top-card">
-                                        <span className="weekly-top-card-number">3</span>
-                                        <Link href="/album/123" className="weekly-top-link">
-                                            <SmallCard variant="large" type="album" title="No pasa nada hombre" artist="Clarent" imageUrl="/placeholderCards.png" score={8.5} />
-                                        </Link>
-                                    </span>
-                                </div>
+                                    </li>
+                                ))}
+                            </ol>
+                        </section>
+                        <section className="feed-section">
+                            <h2 className="section-title"><Rvw>RVWS</Rvw> favoritas de la semana</h2>
+                            <div className="media-cards-row">
+                                <MediaCard href="/reviews/123" type="album" title="No pasa nada hombre" artist="Clarent" imageUrl="/placeholderCards.png" userName="@raquelz.12204" userPicture="/placeholderCards.png" score={8.5} />
+                                <MediaCard href="/reviews/123" type="album" title="No pasa nada hombre" artist="Clarent" imageUrl="/placeholderCards.png" userName="@raquelz.12204" userPicture="/placeholderCards.png" score={8.5} />
+                                <MediaCard href="/reviews/123" type="album" title="No pasa nada hombre" artist="Clarent" imageUrl="/placeholderCards.png" userName="@raquelz.12204" userPicture="/placeholderCards.png" score={8.5} />
                             </div>
-                            <div className="favorite-weekly-rvws-section">
-                                <div className="section-header">
-                                    <h3 className="title block-title"><span className="RVWS">RVWS</span> favoritas de la semana</h3>
-                                    <Button variant="text">Ver más</Button>
-                                </div>
-                                <div className="favorite-weekly-rvws-cards">
-                                    <MediaCard type="album" title="No pasa nada hombre" artist="Clarent" imageUrl="/placeholderCards.png" score={8.5} />
-                                    <MediaCard type="album" title="No pasa nada hombre" artist="Clarent" imageUrl="/placeholderCards.png" score={8.5} />
-                                    <MediaCard type="album" title="No pasa nada hombre" artist="Clarent" imageUrl="/placeholderCards.png" score={8.5} />
-                                </div>
-                            </div>
-                            <div className="users-section">
-                                <div className="section-header">
-                                    <h3 className="title block-title">Tienes mucho en común con...</h3>
-                                    <Button variant="text">Ver más</Button>
-                                </div>
-                                <div className="users-cards">
-                                    {/* Múltiples User Cards... */}
-                                    <div className="user-card">
-                                        {/* De momento al perfil propio: aún no hay página de perfil de otros usuarios */}
-                                        <Link href="/profile" className="user-card-link">
-                                            <img src="/placeholderCards.png" alt="Usuario" className="user-image" />
+                        </section>
+                        <section className="feed-section">
+                            <h2 className="section-title">Tienes mucho en común con...</h2>
+                            <div className="users-cards">
+                                {SIMILAR_USERS.map((user) => (
+                                    <div key={user.username} className="user-card">
+                                        <Link href={userHref(user.username)} className="user-card-link">
+                                            <img src="/placeholderCards.png" alt="" className="user-image" />
                                             <div className="user-info">
-                                                <span className="username">@raquelz.12204</span>
-                                                <span className="name">Raquel Z.</span>
+                                                <span className="username">{user.username}</span>
+                                                <span className="name">{user.name}</span>
                                             </div>
                                         </Link>
                                         <Button variant="primary">Seguir</Button>
                                     </div>
-                                    <div className="user-card">
-                                        {/* De momento al perfil propio: aún no hay página de perfil de otros usuarios */}
-                                        <Link href="/profile" className="user-card-link">
-                                            <img src="/placeholderCards.png" alt="Usuario" className="user-image" />
-                                            <div className="user-info">
-                                                <span className="username">@raquelz.12204</span>
-                                                <span className="name">Raquel Z.</span>
-                                            </div>
-                                        </Link>
-                                        <Button variant="primary">Seguir</Button>
-                                    </div>
-                                </div>
+                                ))}
                             </div>
-                            <div className="rvws-discover-section">
-                                <div className="section-header">
-                                    <h3 className="title block-title"><span className="RVWS">RVWS</span> que podrían gustarte</h3>
-                                    <Button variant="text">Ver más</Button>
-                                </div>
-                                <div className="rvws-discover-cards">
-                                    <Link href="/reviews/123" className="feed-review-link">
-                                        <ReviewBigCard
-                                            username="@raquelz.12204"
-                                            userImageUrl="/placeholderCards.png"
-                                            followed={false}
-                                            type="Álbum"
-                                            title="No pasa nada hombre"
-                                            artist="Clarent"
-                                            imageUrl="/placeholderCards.png"
-                                            score={8.5}
-                                            titleReview="Mi opinión sobre este álbum"
-                                            reviewText="Este álbum es increíble. Toda la música es genial y los arreglos son perfectos."
-                                            reviewDate="2023-01-01"
-                                            commentsCount={10}
-                                            favoritesCount={5}
-                                        />
-                                    </Link>
-                                </div>
-                            </div>
-                        </div>
+                        </section>
+                        <section className="feed-section">
+                            <h2 className="section-title"><Rvw>RVWS</Rvw> que podrían gustarte</h2>
+                            <ReviewBigCard
+                                href="/reviews/123"
+                                mediaHref="/album/123"
+                                reviewId="123"
+                                username="@juanp"
+                                userHref={userHref('@juanp')}
+                                userImageUrl="/placeholderCards.png"
+                                followed={false}
+                                type="Álbum"
+                                title="No pasa nada hombre"
+                                artist="Clarent"
+                                imageUrl="/placeholderCards.png"
+                                score={8.5}
+                                titleReview="Mi opinión sobre este álbum"
+                                reviewText="Este álbum es increíble. Toda la música es genial y los arreglos son perfectos."
+                                reviewDate="2023-01-01"
+                                commentsCount={10}
+                                favoritesCount={5}
+                            />
+                        </section>
                     </div>
                     {/* ----------------------------COLUMNA LATERAL---------------------------- */}
-                    <div className="feed-side-column">
-                        <input type="checkbox" id="releases-toggle" className="releases-toggle-checkbox" />
-                        <label htmlFor="releases-toggle" className="drawer-overlay"></label>
-                        <label htmlFor="releases-toggle" className="floating-releases-btn">
-                            <img src="/newspaper-solid-full.svg" alt="Novedades" />
-                        </label>
-                        <div className="mobile-releases-drawer">
-                            <div className="drawer-header">
-                                <h3 className="block-title feed-side-title">Novedades</h3>
-                                <label htmlFor="releases-toggle" className="close-drawer-btn">
-                                    ✕
-                                </label>
-                            </div>
-                            <div className="new-releases-cards">
-                                <div className="discovery-card">
-                                    <p>Gracias a vuestras sugerencias, ya se pueden guardar reseñas.</p>
-                                    <Link href="/suggestions" className="discovery-link">
-                                        Ver sugerencias hechas
-                                    </Link>
-                                </div>
-                            </div>
+                    <SideDrawer title="Novedades" icon="/newspaper-solid-full.svg">
+                        <div className="discovery-card">
+                            <p>Gracias a vuestras sugerencias, ya se pueden guardar reseñas.</p>
+                            <Link href="/suggestions" className="discovery-link">
+                                Ver sugerencias hechas
+                            </Link>
                         </div>
-                    </div>
+                    </SideDrawer>
                 </div>
             )}
         </div>

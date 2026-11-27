@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Modal from '../../Modal/Modal';
 import Button from '../../Button/Button';
 import Input from '../../Input/Input';
 import { useModal } from '@/context/ModalContext';
-import './LoginModal.css';
+import '@/styles/forms.css';
+import Rvw from '../../Rvw/Rvw';
 
 export interface LoginModalProps {
   isOpen: boolean;
@@ -14,61 +16,84 @@ export interface LoginModalProps {
 
 export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const { openModal } = useModal();
+  const router = useRouter();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+
+  // Siempre está montado (GlobalModals): al cerrar se vacía para no dejar la contraseña escrita
+  const reset = () => {
+    setUsername('');
+    setPassword('');
+  };
+
+  const handleClose = () => {
+    reset();
+    onClose();
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Pra cuando haya back
+    // TODO: validar e iniciar sesión cuando haya backend
+    handleClose();
+    router.push('/feed');
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={handleClose} labelledBy="login-title">
       <div className="modal-header">
-        <h2>Inicia sesión en ЯVWD</h2>
+        <h2 id="login-title" className="section-title">Inicia sesión en <Rvw>RVWD</Rvw></h2>
         <p>Accede a tu cuenta para empezar a reseñar</p>
       </div>
       <form onSubmit={handleSubmit} className="modal-form">
         <div className="form-group">
-          <label>Nombre de usuario o Email</label>
-          <Input 
-            type="text" 
-            value={username} 
+          <label htmlFor="login-user" className="form-label">Nombre de usuario o email*</label>
+          <Input
+            id="login-user"
+            type="text"
+            autoComplete="username"
+            aria-required="true"
+            value={username}
             onChange={(e) => setUsername(e.target.value)}
-            placeholder="tu nombre de usuario o email" 
+            placeholder="tu nombre de usuario o email"
           />
         </div>
         <div className="form-group">
-          <label>Contraseña</label>
+          <label htmlFor="login-password" className="form-label">Contraseña*</label>
           <Input
-            type="password" 
-            value={password} 
+            id="login-password"
+            type="password"
+            autoComplete="current-password"
+            aria-required="true"
+            value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="••••••••" 
+            placeholder="••••••••"
           />
-          <Button variant="text" onClick={() => { onClose();}}>
+          <Button
+            type="button"
+            variant="text"
+            onClick={() => { reset(); openModal('forgot'); }}
+          >
             ¿Olvidaste tu contraseña?
           </Button>
         </div>
+        <p className="required-fields-note">* Campos obligatorios</p>
         <div className="button-group">
-            <Button variant="primary" type="submit">
+          <Button variant="primary" type="submit">
             Iniciar sesión
-            </Button>
-            <Button variant="secondary">
-            Google
-            </Button>
+          </Button>
+          {/* TODO: OAuth cuando haya backend */}
+          <Button type="button" variant="secondary">
+            Continuar con Google
+          </Button>
         </div>
       </form>
       <div className="modal-footer">
         <p>
-          ¿No tienes cuenta todavía?
-          <Button variant="text" onClick={() => { onClose(); openModal('register'); }}>
+          ¿No tienes cuenta todavía?{' '}
+          <Button type="button" variant="text" onClick={() => { reset(); openModal('register'); }}>
             Regístrate
           </Button>
         </p>
-      </div>
-      <div className="error-message">
-        {/* Aquí puedes mostrar mensajes de error si es necesario */}
       </div>
     </Modal>
   );

@@ -3,13 +3,27 @@
    Huecos editables del top 4: onboarding (paso 2) y perfil
    ========================================= */
 
+/* 4 en fila en escritorio, 2×2 cuando no caben (nunca 3 + 1) y 1 columna en móvil.
+   4 × 26rem + huecos = 108.5rem; con el padding del perfil (2rem + 2rem por lado) hacen falta ~1165px */
 .top-songs-grid {
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  grid-template-columns: repeat(4, 26rem);
   justify-content: space-evenly;
   gap: 1.5rem;
   margin-bottom: 3rem;
-  flex-wrap: wrap;
+}
+
+@media (max-width: 1169px) {
+  .top-songs-grid {
+    grid-template-columns: repeat(2, 26rem);
+    justify-content: center;
+  }
+}
+
+@media (max-width: 575px) {
+  .top-songs-grid {
+    grid-template-columns: 26rem;
+  }
 }
 
 .song-slot-container {
@@ -41,6 +55,24 @@
 .empty-slot.editable:hover {
   background-color: rgba(255, 255, 255, 0.08);
   transform: scale(1.02);
+}
+
+/* Cuando el hueco o la capa de quitar son <button> (onboarding), sin el estilo del navegador */
+button.empty-slot,
+button.remove-overlay {
+  padding: 0;
+  font: inherit;
+  color: inherit;
+}
+
+button.remove-overlay {
+  border: none;
+}
+
+.empty-slot.editable:focus-visible,
+.remove-overlay:focus-visible {
+  outline: 2px solid var(--primary-white);
+  outline-offset: 2px;
 }
 
 .add-circle-btn {
@@ -154,8 +186,17 @@
   border-radius: 2.4rem;
 }
 
-.filled-slot:hover .remove-overlay {
+.filled-slot:hover .remove-overlay,
+.remove-overlay:focus-visible {
   opacity: 1;
+}
+
+/* En pantallas táctiles no hay hover: la ✕ se ve siempre, para que tocar la tarjeta no la quite sin avisar */
+@media (hover: none) {
+  .remove-overlay {
+    opacity: 1;
+    background-color: transparent;
+  }
 }
 
 .remove-btn-circle {
@@ -180,9 +221,9 @@
 
 /* =========================================
    BUSCADOR FLOTANTE (onboarding y perfil)
-   La base de .search-dropdown-results está en AddModal.css, que se carga
-   siempre. Aquí solo se ajusta dentro de estas dos páginas para no
-   cambiar el desplegable del modal.
+   La base del desplegable está en components/SearchResults. Aquí solo
+   se hace flotante dentro de estas dos páginas, para no cambiar el
+   desplegable del modal de crear RVW.
    ========================================= */
 
 .onboarding-container .search-dropdown-results,
@@ -265,6 +306,24 @@
   100% {
     opacity: 1;
     transform: translateY(0) scale(1);
+  }
+}
+
+/* Reducir movimiento: las animaciones acaban al instante pero dejan su estado final
+   (shrinkToSearchBar y morphToSquare usan forwards para fijar la forma) */
+@media (prefers-reduced-motion: reduce) {
+  .search-slot-active,
+  .search-slot-active.closing,
+  .filled-slot,
+  .filled-slot > *:first-child,
+  .filled-slot.removing .remove-btn-circle {
+    animation-duration: 0.01ms;
+  }
+
+  .empty-slot,
+  .empty-slot.editable:hover {
+    transition: none;
+    transform: none;
   }
 }
 

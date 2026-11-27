@@ -5,31 +5,11 @@ import Link from 'next/link';
 import SearchBar from '../../../../components/SearchBar/SearchBar';
 import Select from '../../../../components/Select/Select';
 import FilterSheet from '../../../../components/FilterSheet/FilterSheet';
-import Dot from '../../../../components/Dot/Dot';
+import SanctionDots from '../SanctionDots';
+import { formatDate } from '@/app/lib/adminFilters';
+import { MOCK_USERS, STATUS_CLASS, type AdminUser } from './mockUsers';
 import '../admin-shared.css';
 import './users.css';
-
-interface AdminUser {
-    id: string;
-    name: string;
-    username: string;
-    email: string;
-    avatar: string;
-    status: 'Activo' | 'Suspendido' | 'Baneado';
-    role: 'Usuario' | 'Admin' | 'Moderador';
-    reports: number;
-    sanctions: number;
-    createdAt: string;
-}
-
-const MOCK_USERS: AdminUser[] = [
-    { id: '1', name: 'Raquel Arnaiz', username: '@raquelz.12204', email: 'raquel@rvwd.com', avatar: '/placeholderCards.png', status: 'Activo', role: 'Usuario', reports: 3, sanctions: 2, createdAt: '12/03/2027' },
-    { id: '2', name: 'Raquel Arnaiz', username: '@raquelz.12204', email: 'admin@rvwd.com', avatar: '/placeholderCards.png', status: 'Activo', role: 'Admin', reports: 3, sanctions: 2, createdAt: '12/03/2027' },
-    { id: '3', name: 'Raquel Arnaiz', username: '@raquelz.12204', email: 'user3@rvwd.com', avatar: '/placeholderCards.png', status: 'Suspendido', role: 'Usuario', reports: 3, sanctions: 2, createdAt: '12/03/2027' },
-    { id: '4', name: 'Raquel Arnaiz', username: '@raquelz.12204', email: 'mod@rvwd.com', avatar: '/placeholderCards.png', status: 'Activo', role: 'Moderador', reports: 3, sanctions: 2, createdAt: '12/03/2027' },
-    { id: '5', name: 'Raquel Arnaiz', username: '@raquelz.12204', email: 'user5@rvwd.com', avatar: '/placeholderCards.png', status: 'Activo', role: 'Usuario', reports: 3, sanctions: 2, createdAt: '12/03/2027' },
-    { id: '6', name: 'Raquel Arnaiz', username: '@raquelz.12204', email: 'banned@rvwd.com', avatar: '/placeholderCards.png', status: 'Baneado', role: 'Usuario', reports: 3, sanctions: 2, createdAt: '12/03/2027' },
-];
 
 const STATUS_OPTIONS = [
     { value: 'all', label: 'Todos' },
@@ -53,6 +33,35 @@ const SANCTION_OPTIONS = [
     { value: '3', label: '3/3' },
 ];
 
+type SortKey = 'date' | 'reports' | 'sanctions';
+type SortDir = 'asc' | 'desc';
+interface SortState {
+    key: SortKey;
+    dir: SortDir;
+}
+
+const DEFAULT_SORT: SortState = { key: 'date', dir: 'desc' };
+
+// En móvil no hay cabeceras de columna: se ordena desde el panel de filtros
+const SORT_OPTIONS = [
+    { value: 'date-desc', label: 'Más recientes' },
+    { value: 'date-asc', label: 'Más antiguos' },
+    { value: 'reports-desc', label: 'Más denuncias' },
+    { value: 'sanctions-desc', label: 'Más sanciones' },
+];
+
+const SORTABLE_COLUMNS: { key: SortKey; label: string; className?: string }[] = [
+    { key: 'reports', label: 'Denuncias' },
+    { key: 'sanctions', label: 'Sanciones' },
+    { key: 'date', label: 'Fecha de alta', className: 'col-date' },
+];
+
+const sortValue = (user: AdminUser, key: SortKey) => {
+    if (key === 'reports') return user.reportsReceived;
+    if (key === 'sanctions') return user.sanctions.length;
+    return new Date(user.createdAt).getTime();
+};
+
 export default function AdminUsersPage() {
     const [searchQuery, setSearchQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState('');
@@ -60,19 +69,31 @@ export default function AdminUsersPage() {
     const [sanctionFilter, setSanctionFilter] = useState('');
     const [showMobileFilters, setShowMobileFilters] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
+    const [sort, setSort] = useState<SortState>(DEFAULT_SORT);
 
+    const query = searchQuery.toLowerCase();
     const filteredUsers = MOCK_USERS.filter((user) => {
         const matchesSearch =
-            user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            user.email.toLowerCase().includes(searchQuery.toLowerCase());
+            user.name.toLowerCase().includes(query) ||
+            user.username.toLowerCase().includes(query) ||
+            user.email.toLowerCase().includes(query);
 
-        const matchesStatus = statusFilter && statusFilter !== 'all' ? user.status === statusFilter : true;
-        const matchesRole = roleFilter && roleFilter !== 'all' ? user.role === roleFilter : true;
-        const matchesSanction = sanctionFilter && sanctionFilter !== 'all' ? user.sanctions === Number(sanctionFilter) : true;
+        const matchesStatus = statusFilter ? user.status === statusFilter : true;
+        const matchesRole = roleFilter ? user.role === roleFilter : true;
+        const matchesSanction = sanctionFilter ? user.sanctions.length === Number(sanctionFilter) : true;
 
         return matchesSearch && matchesStatus && matchesRole && matchesSanction;
+    }).sort((a, b) => {
+        const diff = sortValue(a, sort.key) - sortValue(b, sort.key);
+        return sort.dir === 'asc' ? diff : -diff;
     });
+
+    // Primer clic: de mayor a menor; segundo clic en la misma columna: al revés
+    const toggleSort = (key: SortKey) => {
+        setSort((prev) =>
+            prev.key === key ? { key, dir: prev.dir === 'desc' ? 'asc' : 'desc' } : { key, dir: 'desc' }
+        );
+    };
 
     const activeFiltersCount = [statusFilter, roleFilter, sanctionFilter].filter(Boolean).length;
     const closeFilters = useCallback(() => setShowMobileFilters(false), []);
@@ -82,22 +103,11 @@ export default function AdminUsersPage() {
         setSanctionFilter('');
     };
 
-    const renderSanctions = (count: number) => (
-        <div className="sanctions-wrapper">
-            <div className="sanctions-dots">
-                {[0, 1, 2].map((i) => (
-                    <Dot key={i} type={i < count ? 'filled' : 'empty'} />
-                ))}
-            </div>
-            <span className="sanctions-text">{count}/3</span>
-        </div>
-    );
-
     return (
         <div className="admin-list-container">
             <header className="admin-list-header">
-                <h1>Usuarios</h1>
-                <p>1.234 usuarios en total</p>
+                <h1 className="page-title">Usuarios</h1>
+                <p>{MOCK_USERS.length} usuarios en total</p>
             </header>
             <section className="admin-list-toolbar">
                 <div className="search-and-mobile-filter">
@@ -107,11 +117,13 @@ export default function AdminUsersPage() {
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />
                     <button
+                        type="button"
                         className={`mobile-filter-btn ${activeFiltersCount > 0 ? 'active' : ''}`}
                         onClick={() => setShowMobileFilters(true)}
                         aria-label="Mostrar filtros"
+                        aria-expanded={showMobileFilters}
                     >
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                             <path d="M3 4a1 1 0 0 1 1-1h16a1 1 0 0 1 .8 1.6L14 13.33V20a1 1 0 0 1-1.45.89l-2-1A1 1 0 0 1 10 19v-5.67L3.2 4.6A1 1 0 0 1 3 4z" />
                         </svg>
                         {activeFiltersCount > 0 && <span className="mobile-filter-badge">{activeFiltersCount}</span>}
@@ -151,6 +163,19 @@ export default function AdminUsersPage() {
                                 placeholder="Sanción"
                             />
                         </div>
+                        {/* solo en móvil: en escritorio se ordena con las cabeceras */}
+                        <div className="admin-filter-field admin-sort-field">
+                            <span className="admin-filter-label">Ordenar por</span>
+                            <Select
+                                options={SORT_OPTIONS}
+                                value={`${sort.key}-${sort.dir}`}
+                                onChange={(val) => {
+                                    const [key, dir] = val.split('-') as [SortKey, SortDir];
+                                    setSort({ key, dir });
+                                }}
+                                placeholder="Ordenar por"
+                            />
+                        </div>
                     </div>
                 </FilterSheet>
             </section>
@@ -159,26 +184,46 @@ export default function AdminUsersPage() {
                     <span>Usuario</span>
                     <span className="center-col">Estado</span>
                     <span className="center-col">Rol</span>
-                    <span className="center-col">Denuncias</span>
-                    <span className="center-col">Sanciones</span>
-                    <span className="center-col col-date">Fecha creación</span>
+                    {SORTABLE_COLUMNS.map((col) => {
+                        const isActive = sort.key === col.key;
+                        return (
+                            <span
+                                key={col.key}
+                                className={`center-col ${col.className ?? ''}`}
+                                aria-sort={isActive ? (sort.dir === 'asc' ? 'ascending' : 'descending') : 'none'}
+                            >
+                                <button
+                                    type="button"
+                                    className={`sort-header-btn ${isActive ? 'active' : ''}`}
+                                    onClick={() => toggleSort(col.key)}
+                                >
+                                    {col.label}
+                                    <span className="sort-arrow" aria-hidden="true">
+                                        {isActive ? (sort.dir === 'asc' ? '▲' : '▼') : '▾'}
+                                    </span>
+                                </button>
+                            </span>
+                        );
+                    })}
                 </div>
 
                 <div className="admin-table-body">
                     {filteredUsers.map((user) => (
                         <Link href={`/admin/users/${user.id}`} key={user.id} className="admin-table-row users-grid">
                             <div className="user-cell">
-                                <img src={user.avatar} alt={user.name} className="user-avatar" />
+                                <img src={user.avatar} alt="" className="user-avatar" />
                                 <div className="user-names">
                                     <span className="user-fullname">{user.name}</span>
                                     <span className="user-handle">{user.username}</span>
                                 </div>
                             </div>
-                            <span className="center-col cell-text">{user.status}</span>
+                            <span className={`center-col cell-text user-status ${STATUS_CLASS[user.status]}`}>{user.status}</span>
                             <span className="center-col cell-text">{user.role}</span>
-                            <span className="center-col cell-text">{user.reports}</span>
-                            <div className="center-col">{renderSanctions(user.sanctions)}</div>
-                            <span className="center-col cell-text col-date">{user.createdAt}</span>
+                            <span className="center-col cell-text">{user.reportsReceived}</span>
+                            <div className="center-col">
+                                <SanctionDots count={user.sanctions.length} />
+                            </div>
+                            <span className="center-col cell-text col-date">{formatDate(user.createdAt)}</span>
                         </Link>
                     ))}
                     {filteredUsers.length === 0 && (
@@ -192,7 +237,7 @@ export default function AdminUsersPage() {
                 {filteredUsers.map((user) => (
                     <Link href={`/admin/users/${user.id}`} key={user.id} className="admin-mobile-row">
                         <div className="admin-mobile-left">
-                            <img src={user.avatar} alt={user.name} className="user-avatar" />
+                            <img src={user.avatar} alt="" className="user-avatar" />
                             <div className="user-names">
                                 <span className="user-fullname">{user.name}</span>
                                 <span className="user-handle">{user.username}</span>
@@ -201,10 +246,10 @@ export default function AdminUsersPage() {
 
                         <div className="admin-mobile-right">
                             <div className="admin-mobile-status">
-                                <span className="mobile-status-text">{user.status}</span>
-                                {renderSanctions(user.sanctions)}
+                                <span className={`mobile-status-text user-status ${STATUS_CLASS[user.status]}`}>{user.status}</span>
+                                <SanctionDots count={user.sanctions.length} />
                             </div>
-                            <span className="mobile-chevron">›</span>
+                            <span className="mobile-chevron" aria-hidden="true">›</span>
                         </div>
                     </Link>
                 ))}
@@ -214,27 +259,35 @@ export default function AdminUsersPage() {
                     </div>
                 )}
             </section>
+            {/* TODO: paginación de maqueta hasta que haya backend */}
             <nav className="admin-pagination" aria-label="Paginación de usuarios">
                 <button
+                    type="button"
                     className="page-btn"
                     onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                     disabled={currentPage === 1}
+                    aria-label="Página anterior"
                 >
                     ‹
                 </button>
                 {[1, 2, 3].map((page) => (
                     <button
+                        type="button"
                         key={page}
                         className={`page-btn ${currentPage === page ? 'active' : ''}`}
                         onClick={() => setCurrentPage(page)}
+                        aria-label={`Página ${page}`}
+                        aria-current={currentPage === page ? 'page' : undefined}
                     >
                         {page}
                     </button>
                 ))}
-                <span className="page-dots">..</span>
+                <span className="page-dots" aria-hidden="true">..</span>
                 <button
+                    type="button"
                     className="page-btn"
                     onClick={() => setCurrentPage((p) => p + 1)}
+                    aria-label="Página siguiente"
                 >
                     ›
                 </button>

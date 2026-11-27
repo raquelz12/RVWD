@@ -21,12 +21,12 @@
     color: var(--primary-white);
 }
 
-/* estados */
-.admin-list-container .content-status.status-hidden {
+/* estados (listado y ficha) */
+.content-status.status-hidden {
     color: var(--warning);
 }
 
-.admin-list-container .content-status.status-deleted {
+.content-status.status-deleted {
     color: var(--danger-red);
     opacity: 0.75;
 }
@@ -60,21 +60,16 @@
     align-items: flex-end;
 }
 
-/* "Ordenar por" solo existe en el panel de filtros de móvil */
-.content-sort-field {
-    display: none !important;
-}
-
 /* vista previa en el modal de ocultar / eliminar */
 .content-modal-preview {
-    margin: 0 0 1.6rem;
+    margin: 0;
     padding: 1.2rem 1.6rem;
     border-left: 3px solid var(--primary-red);
     border-radius: 0 1.2rem 1.2rem 0;
     background-color: rgba(255, 255, 255, 0.06);
     font-size: 1.4rem;
     line-height: 1.5;
-    overflow: hidden;
+    overflow-wrap: anywhere;
 }
 
 .content-modal-preview span {
@@ -88,12 +83,5 @@
     .admin-table-header.content-grid,
     .admin-table-row.content-grid {
         grid-template-columns: 3fr 1fr 0.8fr 1fr 3.6rem;
-    }
-}
-
-@media (max-width: 850px) {
-    .content-sort-field {
-        display: flex !important;
-        flex-direction: column;
     }
 }

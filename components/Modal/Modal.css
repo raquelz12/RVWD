@@ -1,9 +1,6 @@
 .modal-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
+    inset: 0;
     background-color: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(8px);
     display: flex;
@@ -11,32 +8,69 @@
     align-items: center;
     z-index: 9999;
     animation: overlayFadeIn 0.25s ease-out forwards;
+    /* Teclado del móvil o la tablet: se pone encima de la página sin cambiar su alto (ni el de dvh),
+       y Safari además desplaza la vista. El fondo sigue cubriendo toda la pantalla (si no, asoma la
+       página bajo la barra de direcciones flotante de Safari), pero con este relleno el modal se
+       centra en la zona que se ve. Modal.tsx pasa dónde empieza (--visual-top), cuánto mide
+       (--visual-height) y cuánto tapa el teclado (--keyboard-inset). Sin teclado: 0, 100dvh y 0 */
+    padding-top: var(--visual-top, 0px);
+    padding-bottom: var(--keyboard-inset, 0px);
 }
 
 .modal-content {
-    background-color: colormix;
-    padding: 2rem;
+    /* El relleno de abajo va en .modal-body, para que el aviso de «hay más» quede pegado al borde */
+    padding: 2rem 2rem 0;
     border: 0.2rem solid color-mix(in srgb, var(--primary-white) 30%, transparent);
     border-radius: 2.4rem;
     background-color: color-mix(in srgb, var(--primary-white) 15%, transparent);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     max-width: 500px;
-    width: 80%;
+    /* 1.6rem de margen a cada lado en móvil */
+    width: calc(100% - 3.2rem);
     position: relative;
     animation: modalSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    max-height: 85vh;
+    /* Alto de sobra para que el modal de crear RVW quepa sin scroll en pantallas de 1080px */
+    max-height: 92vh;
+    max-height: 92dvh;
+    max-height: min(92dvh, calc(var(--visual-height, 100dvh) - 2rem));
     overflow-y: auto;
+    /* Al llegar al final del modal, el scroll no pasa a la página */
+    overscroll-behavior: contain;
+    scrollbar-width: none;
 }
 
-.modal-form {
+.modal-content::-webkit-scrollbar {
+    display: none;
+}
+
+.modal-body {
     padding-bottom: 2rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.6rem;
 }
 
-.form-group {
-    transition: all 0.3s ease;
+/* Aviso de que hay más contenido debajo: degradado pegado al borde de abajo mientras quede
+   algo por ver (clase que pone Modal.tsx). Los márgenes negativos lo extienden a todo el ancho
+   y evitan que ocupe sitio. bottom: por encima del teclado si el panel sigue detrás (Android) */
+.modal-content::after {
+    content: '';
+    position: sticky;
+    bottom: var(--keyboard-inset, 0px);
+    z-index: 1;
+    display: block;
+    height: 4rem;
+    margin: -4rem -2rem 0;
+    pointer-events: none;
+    background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.35));
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.modal-content.has-more-below::after {
+    opacity: 1;
+}
+
+/* El foco va al diálogo solo si no tiene campos; no hace falta marcarlo */
+.modal-content:focus {
+    outline: none;
 }
 
 .modal-close {
@@ -53,6 +87,52 @@
 
 .modal-close:hover {
     color: var(--primary-red);
+}
+
+/* Piezas comunes de los modales (login, registro, crear RVW).
+   Acotadas a .modal-body: el CSS es global y .form-group o .button-group también existen en otras páginas */
+.modal-body .modal-header {
+    /* Deja sitio a la ✕ */
+    padding-right: 3rem;
+}
+
+.modal-body .modal-header h2 {
+    margin: 0;
+}
+
+.modal-body .modal-header p {
+    padding-bottom: 1.6rem;
+    margin: 0;
+}
+
+.modal-body .modal-form {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    gap: 1.6rem;
+}
+
+.modal-body .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.modal-body .form-group > label {
+    margin-bottom: 1rem;
+}
+
+.modal-body .button-group {
+    display: flex;
+    flex-direction: column;
+    width: 60%;
+    gap: 1.6rem;
+    align-self: center;
+}
+
+.modal-body .modal-footer {
+    text-align: center;
+    margin-top: 1.6rem;
 }
 
 /*transiciones*/
@@ -76,16 +156,113 @@
   }
 }
 
-.form-group label {
-  margin-bottom: 1rem;
+@keyframes modalSheetUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
 }
 
-.modal::-webkit-scrollbar,
-.modal-content::-webkit-scrollbar {
-  display: none;
+/* Teclado abierto con un modal (clase que pone Modal.tsx). En Safari, bajo la barra de direcciones
+   flotante solo se pinta la página, nunca los elementos fijos: se oculta la página y su fondo pasa
+   a ser el del final del panel, como si este siguiera por detrás del teclado.
+   visibility se puede volver a activar en un hijo, así que el modal sigue viéndose */
+html.modal-keyboard-open,
+html.modal-keyboard-open body {
+    background: rgb(56, 68, 72);
 }
 
-.modal,
-.modal-content {
-  scrollbar-width: none;
+html.modal-keyboard-open body {
+    visibility: hidden;
+}
+
+html.modal-keyboard-open .modal-overlay {
+    visibility: visible;
+}
+
+/* Móvil: panel que sube desde abajo, con el mismo aspecto que BottomSheet */
+@media (max-width: 768px) {
+    /* El panel llega hasta abajo del todo, por detrás de la barra de direcciones y del teclado,
+       como los paneles de iOS. Su relleno inferior es lo que tapa el teclado: el contenido
+       termina justo encima, y debajo solo se ve el fondo del propio panel */
+    .modal-overlay {
+        align-items: flex-end;
+        padding: 0;
+    }
+
+    .modal-content {
+        width: 100%;
+        max-width: none;
+        max-height: 90dvh;
+        /* Que el borde de arriba no se salga de la zona que se ve */
+        max-height: min(90dvh, calc(var(--visual-height, 100dvh) + var(--keyboard-inset, 0px) - 2rem));
+        padding: 0 2rem;
+        background: linear-gradient(180deg, rgba(44, 52, 56, 0.98) 0%, rgba(56, 68, 72, 0.98) 100%);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-bottom: none;
+        border-radius: 2.4rem 2.4rem 0 0;
+        box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.45);
+        animation: modalSheetUp 0.35s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+    }
+
+    /* Asa decorativa, como en BottomSheet */
+    .modal-content::before {
+        content: '';
+        display: block;
+        width: 4.4rem;
+        height: 0.5rem;
+        border-radius: 1rem;
+        background-color: rgba(255, 255, 255, 0.3);
+        margin: 1rem auto 1.4rem;
+    }
+
+    /* Relleno inferior: lo que tapa el teclado (el contenido acaba justo encima) o la zona segura */
+    .modal-body {
+        padding-bottom: calc(2rem + max(env(safe-area-inset-bottom), var(--keyboard-inset, 0px)));
+    }
+
+    /* En móvil el aviso funde con el color del final del panel */
+    .modal-content::after {
+        background: linear-gradient(to bottom, transparent, rgba(56, 68, 72, 0.98));
+    }
+
+    .modal-close {
+        top: 1.6rem;
+    }
+
+    /* Más compacto para que haga falta menos scroll */
+    .modal-body .modal-header p {
+        padding-bottom: 0.8rem;
+    }
+
+    .modal-body .modal-form {
+        padding: 1rem 0;
+        gap: 1.2rem;
+    }
+
+    .modal-body .form-group > label {
+        margin-bottom: 0;
+    }
+
+    .modal-body .button-group {
+        width: 100%;
+        gap: 1.2rem;
+    }
+
+    .modal-body .modal-footer {
+        margin-top: 0.8rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .modal-overlay,
+    .modal-content {
+        animation: none;
+    }
+
+    .modal-content::after {
+        transition: none;
+    }
 }

@@ -11,8 +11,9 @@ interface SearchBarProps {
 export default function SearchBar({ placeholder = 'Buscar...', value = '', onChange = (): void => {}, autoFocus, className = '' }: SearchBarProps) {
     return (
         <div className={`search-bar ${className}`}>
-            <img src="/magnifying-glass-solid-full.svg" alt="Buscar" className="search-icon" />
-            <input type="text" className="search-input" placeholder={placeholder} value={value} onChange={onChange} autoFocus={autoFocus} />
+            <img src="/magnifying-glass-solid-full.svg" alt="" className="search-icon" />
+            {/* El placeholder desaparece al escribir: aria-label para que el campo siga teniendo nombre */}
+            <input type="text" className="search-input" placeholder={placeholder} aria-label={placeholder} value={value} onChange={onChange} autoFocus={autoFocus} />
         </div>
     );
 }

@@ -1,0 +1,77 @@
+.report-modal {
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+    padding: 1rem;
+}
+
+.report-modal-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    /* Deja sitio a la ✕ del modal */
+    padding-right: 3rem;
+}
+
+.report-modal-title {
+    margin: 0;
+    font-size: 2.4rem;
+    font-weight: 500;
+}
+
+.report-modal-context,
+.report-modal-text {
+    margin: 0;
+    font-size: 1.4rem;
+    opacity: 0.8;
+}
+
+.report-modal-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.report-modal-label {
+    font-size: 1.6rem;
+    font-weight: 600;
+}
+
+.report-modal-optional {
+    font-weight: 400;
+    opacity: 0.7;
+}
+
+.report-modal-counter {
+    align-self: flex-end;
+    font-size: 1.2rem;
+    opacity: 0.7;
+}
+
+.report-modal-note {
+    margin: 0;
+    font-size: 1.3rem;
+    opacity: 0.7;
+}
+
+.report-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+/* Confirmación tras enviar */
+.report-modal-sent {
+    align-items: center;
+    text-align: center;
+    padding: 2rem 1rem;
+}
+
+@media (max-width: 480px) {
+    .report-modal-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+}

@@ -1,22 +1,15 @@
 import './Input.css';
 
-export interface InputProps {
+/*Acepta cualquier atributo de <input> (id, name, autoComplete, required...), como Button*/
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     type: string;
-    placeholder?: string;
-    value?: string;
-    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    id?: string;
 }
 
-export default function Input({ type, placeholder, value, onChange, id }: InputProps) {
+export default function Input({ className = '', ...props }: InputProps) {
     return (
         <input
-            id={id}
-            type={type}
-            placeholder={placeholder}
-            value={value}
-            onChange={onChange}
-            className="input"
+            className={`input ${className}`.trim()}
+            {...props}
         />
     );
 }

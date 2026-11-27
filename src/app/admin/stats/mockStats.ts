@@ -136,7 +136,6 @@ export const getStats = (period: Period) => {
                 { label: '«Una obra maestra»', sub: 'Clarent · @raquelz.12204', value: 312, href: '/admin/content/post124' },
                 { label: '«Para el verano»', sub: 'Un verano sin ti · @sara.vinilos', value: 168, href: '/admin/content/post130' },
                 { label: '«Arriesgado y redondo»', sub: 'Motomami · @lucia.music', value: 121, href: '/admin/content/post126' },
-                { label: '«Sigue sonando actual»', sub: 'El mal querer · @marcos_rvw', value: 74, href: '/admin/content/post127' },
                 { label: '«Correcto sin más»', sub: 'Clarent · @lucia.music', value: 33, href: '/admin/content/post128' },
             ]),
             topUsers: scaled(period, [

@@ -1,3 +1,9 @@
+/* Enlace que envuelve la tarjeta (prop href, o envuelta a mano en algunas páginas) */
+.media-card-link {
+  text-decoration: none;
+  color: inherit;
+}
+
 .media-card {
   position: relative; 
   display: flex;
@@ -36,7 +42,6 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  position: relative;
   width: 26rem;
   height: 26rem;
   overflow: hidden;
@@ -46,9 +51,11 @@
   box-shadow: 0 0.4rem 1.2rem rgba(0, 0, 0, 0.2);
 }
 
+/* Siempre cuadrada: si la imagen no lo es, se recorta en vez de deformarse */
 .media-image {
   width: 24rem;
   height: 24rem;
+  object-fit: cover;
   transition: transform 0.3s ease;
   border-radius: 1.6rem;
 }
@@ -80,26 +87,7 @@
 
 .user-name {
   font-size: 1.2rem;
-  color: #ffffff;
-}
-
-.score-badge {
-  position: absolute;
-  width: 6.4rem;
-  height: 6.4rem;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  overflow: hidden;
-  background: linear-gradient(to bottom, var(--gradient-red-start), var(--gradient-red-middle), var(--gradient-red-end));
-  box-shadow: 0 0.4rem 1.2rem color-mix(in srgb, var(--primary-red) 40%, transparent);
   color: var(--primary-white);
-  font-size: 3rem;
-  top: -3rem;
-  right: -3rem;
-  z-index: 10;
 }
 
 /*Texto hover*/
@@ -121,11 +109,15 @@
   opacity: 1; 
 }
 
+/* En una línea con "…"; el título completo sale al pasar el ratón (atributo title) */
 .gradient-title {
   font-size: 1.6rem;
   font-weight: 600;
   color: var(--primary-white);
   margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .gradient-type {

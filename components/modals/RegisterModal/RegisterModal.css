@@ -1,60 +1,25 @@
-.modal-header h2 {
-    margin: 0;
-    font-size: 2.4rem;
-}
-
-.modal-header p {
-    padding-bottom: 1.6rem;
-    margin: 0;
-}
-
-.modal-form {
+/* El resto de piezas (.modal-header, .form-group...) están en Modal.css */
+.register-terms {
     display: flex;
-    flex-direction: column;
-    padding: 1rem;
-    gap: 1.6rem;
-}
-
-.form-group {
-    display: flex;
-    flex-direction: column;
+    align-items: flex-start;
     gap: 0.8rem;
 }
 
-.checkbox-group {
-    display: inline-flex;
-    gap: 0.8rem;
-}
-
-.checkbox-group input[type="checkbox"] {
+/* El rojo al marcarlo viene de globals.css */
+.register-terms input[type="checkbox"] {
+    flex-shrink: 0;
     width: 1.6rem;
     height: 1.6rem;
-    border: 0.2rem solid var(--primary-white);
-    border-radius: 0.4rem;
-    background-color: transparent;
+    margin: 0.2rem 0 0;
     cursor: pointer;
 }
 
-.checkbox-group a {
-    text-decoration: none;
-    font-weight: bold;
-    color: var(--primary-white);
-    transition: color 0.15s ease;
+/* Aviso de «Revisa tu correo»: recibe el foco por código para que se lea; no es interactivo, no hace falta marcarlo */
+.register-sent:focus {
+    outline: none;
 }
 
-.checkbox-group a:hover {
-    color: var(--primary-red);
-}
-
-.button-group {
-    display: flex;
-    flex-direction: column;
-    width: 60%;
-    gap: 1.6rem;
-    align-self: center;
-}
-
-.modal-footer {
-    text-align: center;
-    margin-top: 1.6rem;
+/* Un correo largo no debe desbordar el panel en móvil */
+.register-email {
+    overflow-wrap: anywhere;
 }

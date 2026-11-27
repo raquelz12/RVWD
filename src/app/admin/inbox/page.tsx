@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import SearchBar from '../../../../components/SearchBar/SearchBar';
 import Select from '../../../../components/Select/Select';
 import FilterSheet from '../../../../components/FilterSheet/FilterSheet';
+import MoreMenu, { type MoreMenuItem } from '../../../../components/MoreMenu/MoreMenu';
 import {
     CONTACT_REASONS,
     MOCK_INBOX,
@@ -20,11 +21,13 @@ import {
     type InboxStatus,
     type InboxType,
 } from './mockInbox';
+import { markRead, markUnread, useReadInbox } from './useReadInbox';
 import { DATE_OPTIONS, formatDate, matchesDate } from '@/app/lib/adminFilters';
 import '../admin-shared.css';
 import './inbox.css';
 
 type Tab = 'all' | InboxType;
+type SortDir = 'desc' | 'asc';
 
 const TABS: { value: Tab; label: string }[] = [
     { value: 'all', label: 'Todo' },
@@ -48,6 +51,12 @@ const ALL_TAB_STATUS_OPTIONS = [
 
 const DEFAULT_STATUS = 'open';
 
+// En móvil no hay cabeceras de columna: se ordena desde el panel de filtros
+const SORT_OPTIONS = [
+    { value: 'desc', label: 'Más recientes' },
+    { value: 'asc', label: 'Más antiguos' },
+];
+
 const statusOptionsFor = (tab: Tab) =>
     tab === 'all'
         ? ALL_TAB_STATUS_OPTIONS
@@ -57,16 +66,6 @@ const categoryOptionsFor = (tab: Tab) => {
     const list = tab === 'contact' ? CONTACT_REASONS : SUGGESTION_CATEGORIES;
     return [{ value: 'all', label: 'Todos' }, ...list.map((c) => ({ value: c, label: c }))];
 };
-
-const matchesStatus = (m: InboxMessage, filter: string) => {
-    if (filter === 'open') return isOpen(m.status);
-    if (filter === 'unread') return !m.read;
-    if (filter === 'done') return isDone(m.status);
-    if (filter === 'dismissed') return isDismissed(m.status);
-    if (filter === 'all') return true;
-    return m.status === filter;
-};
-
 
 const LONG_PRESS_MS = 500;
 
@@ -80,24 +79,28 @@ export default function AdminInboxPage() {
 }
 
 // /admin/inbox?tab=suggestion abre esa pestaña; ?q= precarga la búsqueda.
-// La key recrea el listado al cambiar los parámetros.
+// La pestaña sale siempre de la URL. La key recrea el listado solo cuando cambia ?q=
+// (Next conserva el estado de las páginas ya visitadas), así que al cambiar de pestaña
+// o volver de un mensaje se mantienen los filtros.
 function AdminInboxWithQuery() {
     const searchParams = useSearchParams();
     const query = searchParams.get('q') ?? '';
     const tabParam = searchParams.get('tab');
     const tab: Tab = tabParam === 'contact' || tabParam === 'suggestion' ? tabParam : 'all';
-    return <AdminInboxList key={`${query}|${tab}`} initialQuery={query} initialTab={tab} />;
+    return <AdminInboxList key={query} initialQuery={query} tab={tab} />;
 }
 
-function AdminInboxList({ initialQuery, initialTab }: { initialQuery: string; initialTab: Tab }) {
+function AdminInboxList({ initialQuery, tab }: { initialQuery: string; tab: Tab }) {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const read = useReadInbox();
+    // TODO: con backend, los cambios de estado se guardarán en el servidor
     const [messages, setMessages] = useState<InboxMessage[]>(MOCK_INBOX);
-    const [tab, setTab] = useState<Tab>(initialTab);
     const [searchQuery, setSearchQuery] = useState(initialQuery);
     const [statusFilter, setStatusFilter] = useState(DEFAULT_STATUS);
     const [categoryFilter, setCategoryFilter] = useState('');
     const [dateFilter, setDateFilter] = useState('');
-    const [sortDir, setSortDir] = useState<'desc' | 'asc'>('desc');
+    const [sortDir, setSortDir] = useState<SortDir>('desc');
     const [showMobileFilters, setShowMobileFilters] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
 
@@ -108,25 +111,45 @@ function AdminInboxList({ initialQuery, initialTab }: { initialQuery: string; in
     const longPressStart = useRef<{ x: number; y: number } | null>(null);
     const longPressFired = useRef(false);
 
-    // menú de 3 puntos por fila
-    const [openMenuId, setOpenMenuId] = useState<string | null>(null);
-    const menuRef = useRef<HTMLDivElement>(null);
+    const clearSelection = () => {
+        setSelectedIds(new Set());
+        setMobileSelecting(false);
+    };
 
-    useEffect(() => {
-        const handleClickOutside = (e: MouseEvent) => {
-            if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-                setOpenMenuId(null);
-            }
-        };
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
+    // Al cambiar de pestaña (desde aquí o con un enlace a ?tab=) se quitan los filtros
+    // que no existen en la nueva pestaña y la selección
+    const [prevTab, setPrevTab] = useState(tab);
+    if (tab !== prevTab) {
+        setPrevTab(tab);
+        setCategoryFilter('');
+        if (!statusOptionsFor(tab).some((o) => o.value === statusFilter)) setStatusFilter(DEFAULT_STATUS);
+        clearSelection();
+        setCurrentPage(1);
+    }
+
+    const changeTab = (next: Tab) => {
+        const params = new URLSearchParams(searchParams.toString());
+        if (next === 'all') params.delete('tab');
+        else params.set('tab', next);
+        const qs = params.toString();
+        router.replace(qs ? `/admin/inbox?${qs}` : '/admin/inbox', { scroll: false });
+    };
 
     useEffect(() => () => {
         if (longPressTimer.current) clearTimeout(longPressTimer.current);
     }, []);
 
-    const unreadCount = (t: Tab) => messages.filter((m) => !m.read && (t === 'all' || m.type === t)).length;
+    const isRead = (m: InboxMessage) => read.has(m.id);
+    const unreadCount = (t: Tab) => messages.filter((m) => !read.has(m.id) && (t === 'all' || m.type === t)).length;
+
+    const matchesStatus = (m: InboxMessage, filter: string) => {
+        if (filter === 'open') return isOpen(m.status);
+        if (filter === 'unread') return !read.has(m.id);
+        if (filter === 'done') return isDone(m.status);
+        if (filter === 'dismissed') return isDismissed(m.status);
+        if (filter === 'all') return true;
+        return m.status === filter;
+    };
 
     const search = searchQuery.trim().toLowerCase();
     const visibleMessages = messages
@@ -149,12 +172,26 @@ function AdminInboxList({ initialQuery, initialTab }: { initialQuery: string; in
         })
         .sort((a, b) => (sortDir === 'desc' ? b.createdAt.localeCompare(a.createdAt) : a.createdAt.localeCompare(b.createdAt)));
 
-    const selectedMessages = messages.filter((m) => selectedIds.has(m.id));
-    const selectedType = selectedMessages.every((m) => m.type === selectedMessages[0]?.type)
-        ? selectedMessages[0]?.type
+    // La selección solo cuenta lo que se ve: si un filtro oculta un mensaje marcado, no se le aplican las acciones
+    const selectedVisible = visibleMessages.filter((m) => selectedIds.has(m.id));
+    const isSelecting = selectedVisible.length > 0;
+    const inMobileSelect = mobileSelecting && isSelecting;
+    const selectedType = selectedVisible.every((m) => m.type === selectedVisible[0]?.type)
+        ? selectedVisible[0]?.type
         : undefined;
-    const allVisibleSelected = visibleMessages.length > 0 && visibleMessages.every((m) => selectedIds.has(m.id));
-    const someVisibleSelected = visibleMessages.some((m) => selectedIds.has(m.id));
+    const allVisibleSelected = visibleMessages.length > 0 && selectedVisible.length === visibleMessages.length;
+
+    // Escape quita la selección (salvo si se está cerrando un menú ⋮ o el panel de filtros)
+    useEffect(() => {
+        if (!isSelecting) return;
+        const onKey = (e: KeyboardEvent) => {
+            if (e.key !== 'Escape' || showMobileFilters || document.querySelector('.more-menu.is-open')) return;
+            setSelectedIds(new Set());
+            setMobileSelecting(false);
+        };
+        document.addEventListener('keydown', onKey);
+        return () => document.removeEventListener('keydown', onKey);
+    }, [isSelecting, showMobileFilters]);
 
     const activeFiltersCount = [statusFilter !== DEFAULT_STATUS, categoryFilter, dateFilter].filter(Boolean).length;
     const closeFilters = useCallback(() => setShowMobileFilters(false), []);
@@ -164,23 +201,9 @@ function AdminInboxList({ initialQuery, initialTab }: { initialQuery: string; in
         setDateFilter('');
     };
 
-    const changeTab = (next: Tab) => {
-        setTab(next);
-        setCategoryFilter('');
-        // los estados concretos de una pestaña no existen en las demás
-        if (!statusOptionsFor(next).some((o) => o.value === statusFilter)) setStatusFilter(DEFAULT_STATUS);
-        clearSelection();
-        setCurrentPage(1);
-    };
-
-    const updateMessages = (ids: Iterable<string>, changes: Partial<InboxMessage>) => {
+    const updateStatus = (ids: string[], status: InboxStatus) => {
         const set = new Set(ids);
-        setMessages((prev) => prev.map((m) => (set.has(m.id) ? { ...m, ...changes } : m)));
-    };
-
-    const clearSelection = () => {
-        setSelectedIds(new Set());
-        setMobileSelecting(false);
+        setMessages((prev) => prev.map((m) => (set.has(m.id) ? { ...m, status } : m)));
     };
 
     const toggleSelected = (id: string) => {
@@ -189,7 +212,7 @@ function AdminInboxList({ initialQuery, initialTab }: { initialQuery: string; in
         else next.add(id);
         setSelectedIds(next);
         // al desmarcar el último, se sale del modo selección en móvil
-        if (next.size === 0) setMobileSelecting(false);
+        if (!visibleMessages.some((m) => next.has(m.id))) setMobileSelecting(false);
     };
 
     const toggleAllVisible = () => {
@@ -198,14 +221,16 @@ function AdminInboxList({ initialQuery, initialTab }: { initialQuery: string; in
         setSelectedIds(next);
     };
 
-    // TODO: con backend, abrir marca como leído en el servidor
-    const openMessage = (m: InboxMessage) => {
-        if (!m.read) updateMessages([m.id], { read: true });
-        router.push(`/admin/inbox/${m.id}`);
+    const selectedVisibleIds = selectedVisible.map((m) => m.id);
+
+    const bulkMarkRead = (value: boolean) => {
+        if (value) markRead(selectedVisibleIds);
+        else markUnread(selectedVisibleIds);
+        clearSelection();
     };
 
-    const bulkUpdate = (changes: Partial<InboxMessage>) => {
-        updateMessages(selectedIds, changes);
+    const bulkStatus = (status: InboxStatus) => {
+        updateStatus(selectedVisibleIds, status);
         clearSelection();
     };
 
@@ -233,55 +258,55 @@ function AdminInboxList({ initialQuery, initialTab }: { initialQuery: string; in
         longPressStart.current = null;
     };
 
+    // En móvil el enlace solo navega si no se está seleccionando
     const handleMobileClick = (m: InboxMessage, e: ReactMouseEvent) => {
-        e.preventDefault();
         if (longPressFired.current) {
+            e.preventDefault();
             longPressFired.current = false;
             return;
         }
-        if (mobileSelecting) toggleSelected(m.id);
-        else openMessage(m);
+        if (inMobileSelect) {
+            e.preventDefault();
+            toggleSelected(m.id);
+            return;
+        }
+        markRead([m.id]);
     };
 
     const senderName = (m: InboxMessage) => m.name ?? m.user?.username ?? m.email;
 
-    const renderSender = (m: InboxMessage) => (
-        <div className="user-cell inbox-sender">
-            {m.user ? (
-                <img src={m.user.avatar} alt="" className="user-avatar inbox-avatar" />
-            ) : (
-                <span className="user-avatar inbox-avatar inbox-avatar-initial" aria-hidden="true">
-                    {senderName(m).replace('@', '').charAt(0).toUpperCase()}
-                </span>
-            )}
-            <div className="user-names">
-                <span className="user-fullname">
-                    {!m.read && <span className="pending-dot inbox-unread-dot" aria-label="No leído" />}
-                    {senderName(m)}
-                </span>
-                <span className="user-handle">{m.user && m.name ? m.user.username : m.email}</span>
-            </div>
-        </div>
-    );
-
-    const statusMenu = (m: InboxMessage) => (
+    // Punto rojo y texto para lectores de pantalla en los no leídos
+    const renderName = (m: InboxMessage) => (
         <>
-            <span className="dropdown-label">Cambiar estado</span>
-            {statusesFor(m.type).map((s) => (
-                <button
-                    key={s}
-                    className={`dropdown-item ${m.status === s ? 'is-current' : ''}`}
-                    onClick={() => {
-                        updateMessages([m.id], { status: s });
-                        setOpenMenuId(null);
-                    }}
-                >
-                    {s}
-                    {m.status === s && <span aria-hidden="true">✓</span>}
-                </button>
-            ))}
+            {!isRead(m) && <span className="pending-dot inbox-unread-dot" aria-hidden="true" />}
+            {senderName(m)}
+            {!isRead(m) && <span className="sr-only"> (no leído)</span>}
         </>
     );
+
+    const renderAvatar = (m: InboxMessage) =>
+        m.user ? (
+            <img src={m.user.avatar} alt="" className="user-avatar inbox-avatar" />
+        ) : (
+            <span className="user-avatar inbox-avatar inbox-avatar-initial" aria-hidden="true">
+                {senderName(m).replace('@', '').charAt(0).toUpperCase()}
+            </span>
+        );
+
+    const menuItems = (m: InboxMessage): MoreMenuItem[] => [
+        { label: 'Responder', href: `/admin/inbox/${m.id}#reply` },
+        isRead(m)
+            ? { label: 'Marcar como no leído', onClick: () => markUnread([m.id]) }
+            : { label: 'Marcar como leído', onClick: () => markRead([m.id]) },
+        ...(m.user ? [{ label: 'Ver usuario', href: `/admin/users/${m.user.id}` }] : []),
+        'divider',
+        { heading: 'Cambiar estado' },
+        ...statusesFor(m.type).map((s) => ({
+            label: s,
+            checked: m.status === s,
+            onClick: () => updateStatus([m.id], s),
+        })),
+    ];
 
     const emptyMessage = (
         <div className="admin-empty-message">
@@ -295,13 +320,16 @@ function AdminInboxList({ initialQuery, initialTab }: { initialQuery: string; in
 
     const showType = tab === 'all';
     const gridClass = `inbox-grid ${showType ? 'with-type' : ''}`;
-    const isSelecting = selectedIds.size > 0;
+    const totalUnread = unreadCount('all');
 
     return (
         <div className="admin-list-container">
             <header className="admin-list-header">
-                <h1>Bandeja</h1>
-                <p>{visibleMessages.length} en total</p>
+                <h1 className="page-title">Bandeja</h1>
+                <p>
+                    {messages.length} mensajes en total
+                    {totalUnread > 0 && ` · ${totalUnread} sin leer`}
+                </p>
             </header>
 
             <nav className="admin-tabs" aria-label="Tipo de mensaje">
@@ -317,9 +345,12 @@ function AdminInboxList({ initialQuery, initialTab }: { initialQuery: string; in
                         >
                             {t.label}
                             {count > 0 && (
-                                <span className="admin-tab-count" aria-label={`${count} sin leer`}>
-                                    {count}
-                                </span>
+                                <>
+                                    <span className="admin-tab-count" aria-hidden="true">
+                                        {count}
+                                    </span>
+                                    <span className="sr-only">({count} sin leer)</span>
+                                </>
                             )}
                         </button>
                     );
@@ -334,11 +365,13 @@ function AdminInboxList({ initialQuery, initialTab }: { initialQuery: string; in
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />
                     <button
+                        type="button"
                         className={`mobile-filter-btn ${activeFiltersCount > 0 ? 'active' : ''}`}
                         onClick={() => setShowMobileFilters(true)}
                         aria-label="Mostrar filtros"
+                        aria-expanded={showMobileFilters}
                     >
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                             <path d="M3 4a1 1 0 0 1 1-1h16a1 1 0 0 1 .8 1.6L14 13.33V20a1 1 0 0 1-1.45.89l-2-1A1 1 0 0 1 10 19v-5.67L3.2 4.6A1 1 0 0 1 3 4z" />
                         </svg>
                         {activeFiltersCount > 0 && <span className="mobile-filter-badge">{activeFiltersCount}</span>}
@@ -380,6 +413,16 @@ function AdminInboxList({ initialQuery, initialTab }: { initialQuery: string; in
                                 placeholder="Fecha"
                             />
                         </div>
+                        {/* solo en móvil: en escritorio se ordena con la cabecera Fecha */}
+                        <div className="admin-filter-field admin-sort-field">
+                            <span className="admin-filter-label">Ordenar por</span>
+                            <Select
+                                options={SORT_OPTIONS}
+                                value={sortDir}
+                                onChange={(val) => setSortDir(val as SortDir)}
+                                placeholder="Ordenar por"
+                            />
+                        </div>
                     </div>
                 </FilterSheet>
             </section>
@@ -387,13 +430,13 @@ function AdminInboxList({ initialQuery, initialTab }: { initialQuery: string; in
             {isSelecting && (
                 <div className="inbox-bulk-bar" role="toolbar" aria-label="Acciones para los seleccionados">
                     <span className="inbox-bulk-count">
-                        {selectedIds.size} {selectedIds.size === 1 ? 'seleccionado' : 'seleccionados'}
+                        {selectedVisible.length} {selectedVisible.length === 1 ? 'seleccionado' : 'seleccionados'}
                     </span>
                     <div className="inbox-bulk-actions">
-                        <button type="button" className="inbox-bulk-btn" onClick={() => bulkUpdate({ read: true })}>
+                        <button type="button" className="inbox-bulk-btn" onClick={() => bulkMarkRead(true)}>
                             Marcar como leídos
                         </button>
-                        <button type="button" className="inbox-bulk-btn" onClick={() => bulkUpdate({ read: false })}>
+                        <button type="button" className="inbox-bulk-btn" onClick={() => bulkMarkRead(false)}>
                             Marcar como no leídos
                         </button>
                         {selectedType ? (
@@ -401,7 +444,7 @@ function AdminInboxList({ initialQuery, initialTab }: { initialQuery: string; in
                                 className="inbox-bulk-status"
                                 options={statusesFor(selectedType).map((s) => ({ value: s, label: s }))}
                                 value=""
-                                onChange={(val) => bulkUpdate({ status: val as InboxStatus })}
+                                onChange={(val) => bulkStatus(val as InboxStatus)}
                                 placeholder="Cambiar estado"
                             />
                         ) : (
@@ -422,7 +465,7 @@ function AdminInboxList({ initialQuery, initialTab }: { initialQuery: string; in
                             className="inbox-checkbox"
                             checked={allVisibleSelected}
                             ref={(el) => {
-                                if (el) el.indeterminate = someVisibleSelected && !allVisibleSelected;
+                                if (el) el.indeterminate = isSelecting && !allVisibleSelected;
                             }}
                             onChange={toggleAllVisible}
                             aria-label="Seleccionar todos"
@@ -431,7 +474,9 @@ function AdminInboxList({ initialQuery, initialTab }: { initialQuery: string; in
                     <span className="inbox-col-left">Autor</span>
                     {showType && <span className="center-col">Tipo</span>}
                     <span className="inbox-col-left">Mensaje</span>
-                    <span className="center-col">{tab === 'contact' ? 'Motivo' : tab === 'suggestion' ? 'Categoría' : 'Motivo'}</span>
+                    <span className="center-col">
+                        {tab === 'contact' ? 'Motivo' : tab === 'suggestion' ? 'Categoría' : 'Motivo / categoría'}
+                    </span>
                     <span className="center-col">Estado</span>
                     <span className="center-col col-date" aria-sort={sortDir === 'asc' ? 'ascending' : 'descending'}>
                         <button
@@ -443,16 +488,18 @@ function AdminInboxList({ initialQuery, initialTab }: { initialQuery: string; in
                             <span className="sort-arrow" aria-hidden="true">{sortDir === 'asc' ? '▲' : '▼'}</span>
                         </button>
                     </span>
-                    <span></span>
+                    <span>
+                        <span className="sr-only">Acciones</span>
+                    </span>
                 </div>
                 <div className="admin-table-body">
                     {visibleMessages.map((m) => (
+                        // El enlace del nombre cubre toda la fila (.admin-row-link); la casilla y el ⋮ quedan encima
                         <div
                             key={m.id}
-                            className={`admin-table-row ${gridClass} ${m.read ? '' : 'is-unread'} ${selectedIds.has(m.id) ? 'is-selected' : ''}`}
-                            onClick={() => openMessage(m)}
+                            className={`admin-table-row ${gridClass} ${isRead(m) ? '' : 'is-unread'} ${selectedIds.has(m.id) ? 'is-selected' : ''}`}
                         >
-                            <span className="inbox-check-cell" onClick={(e) => e.stopPropagation()}>
+                            <span className="inbox-check-cell">
                                 <input
                                     type="checkbox"
                                     className="inbox-checkbox"
@@ -461,117 +508,115 @@ function AdminInboxList({ initialQuery, initialTab }: { initialQuery: string; in
                                     aria-label={`Seleccionar mensaje de ${senderName(m)}`}
                                 />
                             </span>
-                            {renderSender(m)}
+                            <div className="user-cell">
+                                {renderAvatar(m)}
+                                <div className="user-names">
+                                    <Link
+                                        href={`/admin/inbox/${m.id}`}
+                                        className="user-fullname admin-row-link"
+                                        onClick={() => markRead([m.id])}
+                                    >
+                                        {renderName(m)}
+                                    </Link>
+                                    <span className="user-handle">{m.user && m.name ? m.user.username : m.email}</span>
+                                </div>
+                            </div>
                             {showType && <span className="center-col cell-text inbox-type">{TYPE_LABEL[m.type]}</span>}
                             <span className="cell-text inbox-excerpt">{m.message}</span>
                             <span className="center-col cell-text">{m.category}</span>
                             <span className={`center-col cell-text inbox-status ${statusClass(m.status)}`}>{m.status}</span>
                             <span className="center-col cell-text col-date">{formatDate(m.createdAt)}</span>
-                            <div
-                                className="row-menu-wrapper"
-                                ref={openMenuId === m.id ? menuRef : null}
-                                onClick={(e) => e.stopPropagation()}
-                            >
-                                <button
-                                    className="more-menu-btn"
-                                    onClick={() => setOpenMenuId(openMenuId === m.id ? null : m.id)}
-                                    aria-label="Acciones del mensaje"
-                                >
-                                    ⋮
-                                </button>
-                                {openMenuId === m.id && (
-                                    <div className="more-menu-dropdown align-right inbox-menu">
-                                        <button className="dropdown-item" onClick={() => openMessage(m)}>
-                                            Ver mensaje
-                                        </button>
-                                        <Link href={`/admin/inbox/${m.id}#reply`} className="dropdown-item">
-                                            Responder
-                                        </Link>
-                                        <button
-                                            className="dropdown-item"
-                                            onClick={() => {
-                                                updateMessages([m.id], { read: !m.read });
-                                                setOpenMenuId(null);
-                                            }}
-                                        >
-                                            {m.read ? 'Marcar como no leído' : 'Marcar como leído'}
-                                        </button>
-                                        {m.user && (
-                                            <Link href={`/admin/users/${m.user.id}`} className="dropdown-item">
-                                                Ver usuario
-                                            </Link>
-                                        )}
-                                        <div className="dropdown-divider" />
-                                        {statusMenu(m)}
-                                    </div>
-                                )}
-                            </div>
+                            <MoreMenu
+                                className="admin-row-menu"
+                                items={menuItems(m)}
+                                label={`Acciones del mensaje de ${senderName(m)}`}
+                            />
                         </div>
                     ))}
                     {visibleMessages.length === 0 && emptyMessage}
                 </div>
             </section>
 
-            <section className={`admin-list-mobile ${mobileSelecting ? 'is-selecting' : ''}`}>
-                {visibleMessages.map((m) => (
-                    <Link
-                        href={`/admin/inbox/${m.id}`}
-                        key={m.id}
-                        className={`admin-mobile-row inbox-mobile-row ${m.read ? '' : 'is-unread'} ${selectedIds.has(m.id) ? 'is-selected' : ''}`}
-                        onClick={(e) => handleMobileClick(m, e)}
-                        onPointerDown={(e) => handlePressStart(m.id, e)}
-                        onPointerMove={handlePressMove}
-                        onPointerUp={cancelPress}
-                        onPointerLeave={cancelPress}
-                        onPointerCancel={cancelPress}
-                        onContextMenu={(e) => e.preventDefault()}
-                        aria-pressed={mobileSelecting ? selectedIds.has(m.id) : undefined}
-                    >
-                        <div className="admin-mobile-left">
-                            {mobileSelecting && (
-                                <span className={`inbox-mobile-check ${selectedIds.has(m.id) ? 'checked' : ''}`} aria-hidden="true">
-                                    {selectedIds.has(m.id) ? '✓' : ''}
-                                </span>
-                            )}
-                            <div className="user-names">
-                                <span className="user-fullname">
-                                    {!m.read && <span className="pending-dot inbox-unread-dot" aria-label="No leído" />}
-                                    {senderName(m)}
-                                </span>
-                                <span className="user-handle">{m.message}</span>
+            <section className="admin-list-mobile">
+                {visibleMessages.map((m) => {
+                    const selected = selectedIds.has(m.id);
+                    return (
+                        <Link
+                            href={`/admin/inbox/${m.id}`}
+                            key={m.id}
+                            className={`admin-mobile-row inbox-mobile-row ${isRead(m) ? '' : 'is-unread'} ${selected ? 'is-selected' : ''}`}
+                            onClick={(e) => handleMobileClick(m, e)}
+                            onPointerDown={(e) => handlePressStart(m.id, e)}
+                            onPointerMove={handlePressMove}
+                            onPointerUp={cancelPress}
+                            onPointerLeave={cancelPress}
+                            onPointerCancel={cancelPress}
+                            onContextMenu={(e) => e.preventDefault()}
+                        >
+                            <div className="admin-mobile-left">
+                                {/* al seleccionar, el avatar se cambia por el círculo de marcado */}
+                                {inMobileSelect ? (
+                                    <span className={`inbox-mobile-check ${selected ? 'checked' : ''}`} aria-hidden="true">
+                                        {selected ? '✓' : ''}
+                                    </span>
+                                ) : (
+                                    renderAvatar(m)
+                                )}
+                                <div className="user-names">
+                                    <span className="user-fullname">
+                                        {renderName(m)}
+                                        {inMobileSelect && selected && <span className="sr-only"> (seleccionado)</span>}
+                                    </span>
+                                    <span className="user-handle">{m.message}</span>
+                                </div>
                             </div>
-                        </div>
-                        <div className="admin-mobile-right">
-                            <div className="admin-mobile-status inbox-mobile-status">
-                                <span className="mobile-status-text">{m.category}</span>
-                                <span className={`inbox-mobile-state inbox-status ${statusClass(m.status)}`}>{m.status}</span>
+                            <div className="admin-mobile-right">
+                                <div className="admin-mobile-status inbox-mobile-status">
+                                    <span className="mobile-status-text">{m.category}</span>
+                                    <span className={`inbox-mobile-state inbox-status ${statusClass(m.status)}`}>{m.status}</span>
+                                </div>
+                                {!inMobileSelect && (
+                                    <span className="mobile-chevron" aria-hidden="true">
+                                        ›
+                                    </span>
+                                )}
                             </div>
-                            {!mobileSelecting && <span className="mobile-chevron">›</span>}
-                        </div>
-                    </Link>
-                ))}
+                        </Link>
+                    );
+                })}
                 {visibleMessages.length === 0 && emptyMessage}
             </section>
 
+            {/* TODO: paginación de maqueta hasta que haya backend */}
             <nav className="admin-pagination" aria-label="Paginación de la bandeja">
                 <button
+                    type="button"
                     className="page-btn"
                     onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                     disabled={currentPage === 1}
+                    aria-label="Página anterior"
                 >
                     ‹
                 </button>
                 {[1, 2, 3].map((page) => (
                     <button
+                        type="button"
                         key={page}
                         className={`page-btn ${currentPage === page ? 'active' : ''}`}
                         onClick={() => setCurrentPage(page)}
+                        aria-label={`Página ${page}`}
+                        aria-current={currentPage === page ? 'page' : undefined}
                     >
                         {page}
                     </button>
                 ))}
-                <span className="page-dots">..</span>
-                <button className="page-btn" onClick={() => setCurrentPage((p) => p + 1)}>
+                <span className="page-dots" aria-hidden="true">..</span>
+                <button
+                    type="button"
+                    className="page-btn"
+                    onClick={() => setCurrentPage((p) => p + 1)}
+                    aria-label="Página siguiente"
+                >
                     ›
                 </button>
             </nav>

@@ -1,19 +1,24 @@
+import '@/styles/status-page.css';
 import './maintenance.css';
-import Link from 'next/link';
+import { CONTACT_EMAIL, DEFAULT_MAINTENANCE } from '@/app/lib/siteSettings';
 
 export default function MaintenancePage() {
-  return (
-        <div className="maintenance-container">
+    // Con backend, el mensaje y la hora vendrán de lo guardado en Admin > Ajustes
+    const { message, returnTime } = DEFAULT_MAINTENANCE;
+
+    return (
+        <div className="status-page">
             <h1 className="maintenance-title">Estamos haciendo mejoras</h1>
-            <p className="maintenance-description">
-                Volvemos enseguida.
-            </p>
-            <p className="maintenance-description">
-                Estamos actualizando la página para que funcione mejor.
-            </p>
-            <span className="maintenance-subtitle">Volvemos sobre las 18:00</span>
-            <p className="maintenance-helper-text">
-                ¿Urgente? Avísanos en <Link href="/contact">Contacto</Link>.
+            {!returnTime && (
+                <p className="status-description">Volvemos enseguida.</p>
+            )}
+            <p className="status-description">{message}</p>
+            {returnTime && (
+                <p className="maintenance-time">Volvemos sobre las {returnTime}</p>
+            )}
+            {/* Correo y no /contact: durante el mantenimiento el formulario tampoco funciona */}
+            <p className="status-helper-text">
+                ¿Urgente? Escríbenos a <a href={`mailto:${CONTACT_EMAIL}`} className="inline-link">{CONTACT_EMAIL}</a>.
             </p>
         </div>
     );

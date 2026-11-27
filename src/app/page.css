@@ -19,7 +19,6 @@
   margin-top: 4rem;
 }
 
-/* Título principal de la portada: más grande que el de las demás páginas por ser la portada */
 .head-text.head-title {
   font-family: var(--font-heading);
   font-weight: 400;
@@ -32,7 +31,21 @@
   font-size: 2.4rem;
   color: var(--primary-white);
   margin: 0;
-  max-width: 60rem;
+  margin-bottom: 1.6rem;
+}
+
+.head-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.2rem;
+}
+
+@media (max-width: 768px) {
+  .head-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
 
 /*Novedades*/
@@ -47,19 +60,6 @@
 .new-title {
   color: var(--primary-white);
   padding-bottom: 1.2rem;
-}
-
-.new-cards {
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  gap: 2.4rem;
-}
-
-.body-landing-page .carousel-pagination {
-  display: none;
 }
 
 /*Buscador*/
@@ -116,9 +116,7 @@
   justify-content: space-between;
   align-items: flex-start;
   text-align: left;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+  transition: border-color 0.35s ease;
 }
 
 .info-card:nth-child(1),
@@ -156,7 +154,7 @@
   bottom: -2.5rem;
   font-family: var(--font-heading);
   font-size: 15rem;
-  font-weight: 900;
+  font-weight: 400;
   line-height: 1;
   color: rgba(255, 255, 255, 0.04);
   pointer-events: none;
@@ -172,9 +170,7 @@
 .info-card:nth-child(5)::after { content: "★"; }
 
 .info-card:hover {
-  transform: translateY(-0.6rem);
   border-color: var(--primary-red);
-  box-shadow: 0 1.2rem 2.8rem rgba(0, 0, 0, 0.35);
 }
 
 .info-card:hover::after {
@@ -226,16 +222,7 @@
     grid-column: span 1;
     min-height: 17rem;
     padding: 2.4rem;
-    position: sticky;
-    background-color: var(--bg-card);
-    box-shadow: 0 -0.8rem 2rem rgba(0, 0, 0, 0.35);
   }
-
-  .info-card:nth-child(1) { top: 8rem; }
-  .info-card:nth-child(2) { top: 9.5rem; }
-  .info-card:nth-child(3) { top: 11rem; }
-  .info-card:nth-child(4) { top: 12.5rem; }
-  .info-card:nth-child(5) { top: 14rem; }
 
   .info-card-text {
     font-size: 1.6rem;

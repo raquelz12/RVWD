@@ -1,3 +1,6 @@
+/* Ajustes: común a los de usuario y a los de admin (SettingsShell.tsx y OptionRow.tsx).
+   Lo propio de admin está en ../admin/settings/admin-settings.css */
+
 /* =========================================
    ESTILOS GENERALES Y ESCRITORIO
    ========================================= */
@@ -18,14 +21,20 @@
     margin-bottom: 4rem;
 }
 
-.mobile-back-btn {
+/* Recibe el foco al abrir una sección en móvil (ver SettingsShell): no es un control */
+.settings-title:focus {
+    outline: none;
+}
+
+.settings-back-btn {
     display: none;
 }
 
-.mobile-title-text { display: none; }
-.desktop-title-text { display: inline; }
+.settings-title-mobile {
+    display: none;
+}
 
-.mobile-settings-menu {
+.settings-menu {
     display: none;
 }
 
@@ -36,7 +45,7 @@
     padding: 0 3rem;
 }
 
-.settings-sections-wrapper {
+.settings-sections {
     display: flex;
     flex-direction: column;
     gap: 4rem;
@@ -48,9 +57,9 @@
     gap: 1.5rem;
 }
 
+/* --- Filas --- */
 .settings-option {
     display: flex;
-    flex-direction: row;
     justify-content: space-between;
     align-items: center;
     padding: 0 1rem;
@@ -62,6 +71,10 @@
     display: flex;
     flex-direction: column;
     gap: 0.3rem;
+    /* auto: si el texto no cabe junto a un control en línea, el control baja de línea (móvil) */
+    flex: 1 1 auto;
+    /* Sin esto, un valor largo sin espacios (un email) empuja la fila y crea scroll horizontal */
+    min-width: 0;
 }
 
 .settings-option-label {
@@ -70,6 +83,7 @@
 
 .settings-option-value {
     font-size: 1.6rem;
+    overflow-wrap: anywhere;
 }
 
 .settings-option-description {
@@ -77,65 +91,203 @@
     color: var(--text-secondary);
 }
 
-.settings-option-btn {
-    width: 20rem;
+.settings-option-actions {
+    flex-shrink: 0;
 }
 
-/* Filas que abren algo y entradas del menú móvil: son <button> (ver OptionRow.tsx) */
+/* Filas que abren algo y entradas del menú móvil: son <button> o <a> */
 .settings-option-button,
-.settings-menu-button {
+.settings-menu-item {
     width: 100%;
+    box-sizing: border-box;
     background: none;
     border: none;
     color: inherit;
     font: inherit;
     text-align: left;
+    text-decoration: none;
     cursor: pointer;
-}
-
-.settings-option-button {
     border-radius: 1.6rem;
     transition: background-color 0.2s ease;
 }
 
-.settings-option-button:hover {
-    background-color: rgba(255, 255, 255, 0.04);
-}
-
-.settings-option-button:hover .custom-button.outline {
-    background-color: rgba(255, 255, 255, 0.08);
+.settings-option-button:hover:not(:disabled),
+.settings-menu-item:hover {
+    background-color: color-mix(in srgb, var(--primary-white) 6%, transparent);
 }
 
 .settings-option-button:focus-visible,
-.settings-menu-button:focus-visible {
+.settings-menu-item:focus-visible,
+.settings-back-btn:focus-visible {
     outline: 2px solid var(--primary-red-hover);
     outline-offset: 2px;
 }
 
-/* El "botón" de la fila es un <span>: se centra igual que un botón real */
+/* Fila que todavía no se puede usar */
+.settings-option-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+/* El "botón" de la fila es un <span>: se centra igual que un botón real.
+   Doble clase para ganar a .custom-button (Button.css) sin depender del orden de carga */
 .settings-option-button .settings-option-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    width: 20rem;
     box-sizing: border-box;
+    align-items: center;
+}
+
+.settings-option-button:hover:not(:disabled) .custom-button.outline {
+    background-color: color-mix(in srgb, var(--primary-white) 10%, transparent);
 }
 
 /* Flecha de la fila: solo en móvil */
-.mobile-action-icon {
+.settings-option-chevron {
     display: none;
     font-size: 2.4rem;
 }
 
-/* Filas con un control en línea (interruptor, desplegable...): no se pulsan */
-.settings-option.is-static {
-    cursor: default;
-}
-
+/* Filas con un control en línea (interruptor, desplegable...) */
 .settings-option-control {
     display: flex;
     align-items: center;
     gap: 1.4rem;
-    flex-shrink: 0;
+}
+
+/* min-width: 0 para que mande el ancho (Select trae min-width: 20rem) */
+.settings-inline-select {
+    width: 17rem;
+    min-width: 0;
+}
+
+/* Menos relleno que un Select de formulario, para que «180 días» o «10 denuncias» quepan */
+.settings-inline-select .custom-select-trigger {
+    padding: 0 1.6rem;
+}
+
+/* --- Bloques con más contenido (tabla de avisos, listas...) --- */
+.settings-block {
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+    padding: 1.6rem 1rem;
+}
+
+.settings-block-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+}
+
+.settings-block-head > div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+/* Tabla campana / email */
+.settings-notif-table {
+    width: 100%;
+    max-width: 56rem;
+    border-collapse: collapse;
+}
+
+.settings-notif-table th,
+.settings-notif-table td {
+    padding: 1rem 0.8rem;
+    font-size: 1.5rem;
+    font-weight: 400;
+    text-align: center;
+}
+
+.settings-notif-table thead th {
+    font-size: 1.3rem;
+    color: var(--text-secondary);
+}
+
+.settings-notif-table tbody th {
+    text-align: left;
+}
+
+.settings-notif-table td .toggle-wrapper {
+    margin: 0 auto;
+}
+
+.settings-notif-table tbody tr + tr {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* --- Modales de los ajustes de usuario (dentro de components/Modal) --- */
+.settings-modal {
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+    padding: 1rem;
+}
+
+.settings-modal-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    /* Deja sitio a la ✕ del modal */
+    padding-right: 3rem;
+}
+
+.settings-modal-text {
+    margin: 0;
+    font-size: 1.4rem;
+    color: var(--text-secondary);
+}
+
+.settings-modal-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.settings-modal-label {
+    font-size: 1.6rem;
+    font-weight: 600;
+}
+
+.settings-modal-error {
+    margin: 0;
+    font-size: 1.4rem;
+    color: var(--danger-red);
+}
+
+.settings-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+/* --- Aviso al guardar (ajustes de usuario; admin usa .admin-toast) --- */
+.settings-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 3rem;
+    transform: translateX(-50%);
+    max-width: calc(100% - 3.2rem);
+    box-sizing: border-box;
+    padding: 1rem 1.8rem;
+    border-radius: 1rem;
+    background-color: var(--bg-elevated);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+    font-size: 1.4rem;
+    text-align: center;
+    z-index: 1200;
+}
+
+/* Tablet y móvil: por encima de la barra inferior */
+@media (max-width: 1024px) {
+    .settings-toast {
+        bottom: 9rem;
+    }
 }
 
 /* =========================================
@@ -152,10 +304,15 @@
         margin-bottom: 2rem;
     }
 
-    .desktop-title-text { display: none; }
-    .mobile-title-text { display: inline; }
+    .settings-title-desktop {
+        display: none;
+    }
 
-    .mobile-back-btn {
+    .settings-title-mobile {
+        display: inline;
+    }
+
+    .settings-back-btn {
         display: block;
         position: absolute;
         left: 1rem;
@@ -172,99 +329,84 @@
         padding: 0 1rem;
     }
 
-    .settings-sections-wrapper:not(.show-section) {
-        display: none;
-    }
-
-    .mobile-settings-menu.hidden {
-        display: none;
-    }
-
-    .settings-section {
-        display: none;
-    }
-    
-    .settings-section.active-mobile {
-        display: flex;
-    }
-
+    .settings-sections:not(.is-open),
+    .settings-menu.is-hidden,
+    .settings-section:not(.is-active),
     .settings-subtitle {
         display: none;
     }
 
-    /* --- DISEÑO DEL MENÚ MÓVIL --- */
-    .mobile-settings-menu {
+    /* --- Menú --- */
+    .settings-menu {
+        display: block;
+    }
+
+    .settings-menu-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
         display: flex;
         flex-direction: column;
         gap: 2rem;
     }
 
-    .mobile-menu-item {
+    .settings-menu-item {
         display: flex;
         align-items: center;
         gap: 1.5rem;
-        cursor: pointer;
         padding: 2rem 1.5rem;
-        border-radius: 2.4rem;
-        transition: background-color 0.3s ease;
     }
 
-    .mobile-menu-item:hover {
-        background-color: color-mix(in srgb, var(--primary-white) 10%, transparent);
-    }
-
-    .menu-icon {
+    .settings-menu-icon {
         display: flex;
         align-items: center;
         justify-content: center;
         width: 3rem;
         height: 3rem;
+        flex-shrink: 0;
     }
 
-    .menu-icon img {
+    .settings-menu-icon img {
         width: 100%;
         height: 100%;
         filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(103%) contrast(103%);
     }
 
-    .menu-text {
+    .settings-menu-text {
         display: flex;
         flex-direction: column;
         flex: 1;
+        min-width: 0;
         gap: 0.2rem;
     }
 
-    .menu-title {
+    .settings-menu-title {
         font-size: 2rem;
         font-weight: 400;
     }
 
-    .menu-desc {
+    .settings-menu-desc {
         font-size: 1.2rem;
         color: var(--text-secondary);
     }
 
-    .menu-chevron {
+    .settings-menu-chevron {
         font-size: 2.4rem;
         color: var(--primary-white);
     }
 
-    /* --- DISEÑO DE LAS OPCIONES EN MÓVIL --- */
+    /* --- Filas --- */
     .settings-option {
         padding: 1rem;
-        height: auto;
-        align-items: center;
-        transition: background-color 0.3s ease;
-        border-radius: 2.4rem;
-        cursor: pointer;
     }
 
-    .settings-option:hover {
-        background-color: color-mix(in srgb, var(--primary-white) 10%, transparent);
+    /* Doble clase: .custom-button (Button.css) también pone display */
+    .settings-option-button .settings-option-btn {
+        display: none;
     }
 
-    .desktop-btn {
-        display: none !important;
+    .settings-option-button .settings-option-chevron {
+        display: block;
     }
 
     .settings-option-label {
@@ -281,18 +423,10 @@
         margin-top: 0.2rem;
     }
 
-    .settings-option-button .mobile-action-icon {
-        display: block;
-    }
-
     /* Sin el botón rojo de escritorio, la acción de peligro se marca en el texto */
     .settings-option.is-danger .settings-option-label,
-    .settings-option.is-danger .mobile-action-icon {
+    .settings-option.is-danger .settings-option-chevron {
         color: var(--danger-red);
-    }
-
-    .settings-option.is-static:hover {
-        background-color: transparent;
     }
 
     /* Fila con control: el texto encima y el control debajo si no cabe */
@@ -302,5 +436,28 @@
 
     .settings-option-control {
         gap: 1rem;
+    }
+
+    .settings-inline-select {
+        width: 15rem;
+    }
+
+    .settings-block-head {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1.2rem;
+    }
+
+    .settings-notif-table th,
+    .settings-notif-table td {
+        font-size: 1.4rem;
+        padding: 0.9rem 0.4rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .settings-modal-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
     }
 }

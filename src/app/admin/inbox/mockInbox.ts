@@ -1,5 +1,7 @@
 // Datos de prueba de la Bandeja: mensajes de /contact y sugerencias de /suggestions.
 
+import { MOCK_USERS } from '../users/mockUsers';
+
 export type InboxType = 'contact' | 'suggestion';
 
 export const CONTACT_STATUSES = ['Recibido', 'En curso', 'Resuelto', 'Descartado'] as const;
@@ -36,19 +38,32 @@ export interface InboxMessage {
     // las sugerencias no piden nombre
     name?: string;
     email: string;
-    // si el email es de un usuario registrado
-    user?: { id: string; username: string; avatar: string };
+    // si el email es de un usuario registrado (sale de Usuarios)
+    user?: InboxUser;
     // motivo (contacto) o categoría (sugerencia)
     category: string;
     message: string;
     status: InboxStatus;
+    // leído en los datos de partida; mientras se navega manda useReadInbox
     read: boolean;
     createdAt: string; // YYYY-MM-DD
 }
 
-const RAQUEL = { id: '1', username: '@raquelz.12204', avatar: '/placeholderCards.png' };
-const LUCIA = { id: '2', username: '@lucia.music', avatar: '/placeholderCards.png' };
-const MARCOS = { id: '3', username: '@marcos_rvw', avatar: '/placeholderCards.png' };
+export interface InboxUser {
+    id: string;
+    username: string;
+    avatar: string;
+    sanctions: number;
+}
+
+const userFrom = (id: string): InboxUser | undefined => {
+    const u = MOCK_USERS.find((user) => user.id === id);
+    return u && { id: u.id, username: u.username, avatar: u.avatar, sanctions: u.sanctions.length };
+};
+
+const RAQUEL = userFrom('1');
+const LUCIA = userFrom('2');
+const MARCOS = userFrom('3');
 
 export const MOCK_INBOX: InboxMessage[] = [
     { id: 'c1', type: 'contact', name: 'Raquel Arnaiz', email: 'raquel@email.com', user: RAQUEL, category: 'Problema con mi cuenta', message: 'No puedo cambiar mi nombre de usuario, me sale un error al guardar desde ajustes.', status: 'Recibido', read: false, createdAt: '2026-11-21' },

@@ -1,0 +1,157 @@
+/* Seguidores y seguidos (/profile/followers, /profile/following y las de /user/[username]).
+   El CSS de cada página es global en Next: todas las clases llevan "follows" para no chocar */
+
+.follows-page {
+    display: flex;
+    flex-direction: column;
+    gap: 2.4rem;
+    width: 100%;
+    max-width: 76rem;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+    box-sizing: border-box;
+}
+
+/* Un @usuario largo y sin espacios no debe desbordar */
+.follows-title {
+    overflow-wrap: anywhere;
+}
+
+/* Tabs trae su propio margen abajo; aquí ya separa el gap */
+.follows-page .tab-nav {
+    margin-bottom: 0;
+}
+
+.follows-empty {
+    margin: 0;
+    font-size: 1.6rem;
+    color: var(--text-secondary);
+    overflow-wrap: anywhere;
+}
+
+/* Recibe el foco al quitar al último seguidor: sin recuadro, no es un control */
+.follows-empty:focus {
+    outline: none;
+}
+
+/* --------------------------LISTA-------------------------- */
+.follows-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* Misma tarjeta que los usuarios del buscador (.search-page-user), pero solo el usuario es enlace */
+.follows-item {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    padding: 1.2rem 1.6rem;
+    border: 0.2rem solid color-mix(in srgb, var(--primary-white) 30%, transparent);
+    border-radius: 2.4rem;
+    background-color: color-mix(in srgb, var(--primary-white) 15%, transparent);
+}
+
+.follows-user {
+    display: flex;
+    align-items: center;
+    gap: 1.4rem;
+    flex: 1;
+    min-width: 0;
+    color: inherit;
+    text-decoration: none;
+    border-radius: 1.6rem;
+}
+
+.follows-user:hover .follows-name {
+    text-decoration: underline;
+}
+
+.follows-user:focus-visible {
+    outline: 2px solid var(--primary-white);
+    outline-offset: 4px;
+}
+
+.follows-avatar {
+    flex-shrink: 0;
+    width: 5.6rem;
+    height: 5.6rem;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.follows-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    min-width: 0;
+}
+
+/* Nombres largos: en una línea con "…" en vez de empujar los botones */
+.follows-name,
+.follows-username {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.follows-name {
+    font-size: 1.6rem;
+    font-weight: 600;
+}
+
+.follows-username {
+    font-size: 1.4rem;
+    color: var(--text-secondary);
+}
+
+.follows-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex-shrink: 0;
+}
+
+.follows-self {
+    padding: 0 1.2rem;
+    font-size: 1.4rem;
+    color: var(--text-secondary);
+}
+
+/* Botón más pequeño que el del perfil: hay uno por fila */
+.follows-actions .follows-follow-btn {
+    min-width: 11rem;
+    padding: 0.6rem 1.6rem;
+    font-size: 1.4rem;
+}
+
+@media (max-width: 768px) {
+    .follows-page {
+        gap: 2rem;
+        padding: 2.4rem 1.6rem;
+    }
+
+    .follows-item {
+        gap: 0.8rem;
+        padding: 1rem 1.2rem;
+        border-radius: 2rem;
+    }
+
+    .follows-user {
+        gap: 1rem;
+    }
+
+    .follows-avatar {
+        width: 4.4rem;
+        height: 4.4rem;
+    }
+
+    .follows-actions .follows-follow-btn {
+        min-width: 9.6rem;
+        padding: 0.6rem 1.2rem;
+        font-size: 1.3rem;
+    }
+}

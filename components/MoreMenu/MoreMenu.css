@@ -1,0 +1,87 @@
+/* Menú ⋮: el mismo en las tablas y fichas de admin y en las páginas públicas */
+.more-menu {
+    position: relative;
+}
+
+.more-menu-trigger {
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: 2.6rem;
+    font-family: inherit;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0.2rem 0.6rem;
+    border-radius: 0.6rem;
+    transition: background-color 0.2s ease;
+}
+
+.more-menu-trigger:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.more-menu-list {
+    position: absolute;
+    top: calc(100% + 0.6rem);
+    right: 0;
+    min-width: 19rem;
+    background-color: var(--bg-elevated);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 1.2rem;
+    padding: 0.6rem;
+    display: flex;
+    flex-direction: column;
+    z-index: 40;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+}
+
+.more-menu-item {
+    background: none;
+    border: none;
+    color: var(--primary-white);
+    text-decoration: none;
+    font-size: 1.4rem;
+    font-weight: 400;
+    font-family: inherit;
+    text-align: left;
+    white-space: nowrap;
+    padding: 0.9rem 1.2rem;
+    border-radius: 0.8rem;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.more-menu-item:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.more-menu-item.danger {
+    color: var(--danger-red);
+}
+
+.more-menu-item.warning {
+    color: var(--warning);
+}
+
+/* opción elegida de un grupo (checked): en rojo y con ✓ a la derecha */
+.more-menu-item.is-checked {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    color: var(--primary-red-hover);
+}
+
+.more-menu-heading {
+    display: block;
+    padding: 0.6rem 1.2rem 0.2rem;
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.more-menu-divider {
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.12);
+    margin: 0.4rem 0.6rem;
+}

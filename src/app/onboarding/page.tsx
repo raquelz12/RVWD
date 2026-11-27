@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import '@/styles/top-songs.css';
 import './onboarding.css';
@@ -13,6 +13,8 @@ import SmallCard from '../../../components/SmallCard/SmallCard';
 import Score from '../../../components/Score/Score';
 import Input from '../../../components/Input/Input';
 import TextArea from '../../../components/TextArea/TextArea';
+import Rvw from '../../../components/Rvw/Rvw';
+import SearchResults from '../../../components/SearchResults/SearchResults';
 
 interface SongData {
   title: string;
@@ -29,18 +31,32 @@ const SONGS_LIST: SongData[] = [
   { title: 'Blinding Lights', artist: 'The Weeknd', imageUrl: '/placeholderCards.png' },
 ];
 
+const TOTAL_STEPS = 3;
+/* Lo que duran las animaciones de quitar canción y cerrar buscador (top-songs.css) */
+const SLOT_ANIMATION_MS = 400;
+
+// Una canción se identifica por título y artista (no por el objeto en memoria)
+const songKey = (song: SongData) => `${song.title}|${song.artist}`;
+
+const matches = (text: string, query: string) => text.toLowerCase().includes(query.trim().toLowerCase());
+
 export default function OnboardingPage() {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
+  const mainRef = useRef<HTMLElement>(null);
+  const isFirstRender = useRef(true);
+
+  /* Estados del paso 1 */
   const [selectedArtists, setSelectedArtists] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  
+
   /* Estados del paso 2 */
   const [selectedSongs, setSelectedSongs] = useState<(SongData | null)[]>([null, null, null, null]);
   const [activeSearchSlot, setActiveSearchSlot] = useState<number>(-1);
   const [songSearchQuery, setSongSearchQuery] = useState('');
   const [closingSlot, setClosingSlot] = useState<number>(-1);
-  const [removingSlot, setRemovingSlot] = useState<number>(-1);
+  const [removingSlots, setRemovingSlots] = useState<number[]>([]);
+  const closeSearchTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   /* Estados del paso 3 */
   const [reviewSubStep, setReviewSubStep] = useState<1 | 2>(1);
@@ -50,24 +66,42 @@ export default function OnboardingPage() {
   const [reviewTitle, setReviewTitle] = useState('');
   const [reviewText, setReviewText] = useState('');
 
-  /* Del paso 3 */
-  const validSelectedSongs = selectedSongs.filter((s): s is SongData => s !== null);
-  const suggestedReviewSongs = validSelectedSongs.length > 0 
-    ? validSelectedSongs 
-    : SONGS_LIST.slice(0, 4);
+  // Al cambiar de paso (o de subpaso): arriba del todo y foco en el título, para que se anuncie
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    window.scrollTo({ top: 0 });
+    mainRef.current?.querySelector<HTMLHeadingElement>('h1')?.focus({ preventScroll: true });
+  }, [currentStep, reviewSubStep]);
 
-  const searchResultsReview = reviewSearchQuery.trim() !== ''
-    ? SONGS_LIST.filter(s => s.title.toLowerCase().includes(reviewSearchQuery.toLowerCase())).slice(0, 5)
-    : [];
+  // Un clic fuera del buscador cierra su desplegable. En cada paso solo hay un buscador
+  // a la vez, así que basta con mirar si el clic cae dentro de alguno ([data-search-box])
+  const hasOpenSearch = [searchQuery, songSearchQuery, reviewSearchQuery].some((q) => q.trim() !== '');
+  useEffect(() => {
+    if (!hasOpenSearch) return;
 
-  const handleSelectReviewSong = (song: SongData) => {
-    setReviewSong(song);
-    setReviewSearchQuery('');
-    setReviewSubStep(2); 
-  };
+    const handlePointerDown = (event: PointerEvent) => {
+      if ((event.target as Element).closest?.('[data-search-box]')) return;
+      setSearchQuery('');
+      setSongSearchQuery('');
+      setReviewSearchQuery('');
+    };
+    document.addEventListener('pointerdown', handlePointerDown);
+    return () => document.removeEventListener('pointerdown', handlePointerDown);
+  }, [hasOpenSearch]);
 
-  const nextStep = () => setCurrentStep((prev) => prev + 1);
-  const prevStep = () => setCurrentStep((prev) => prev - 1);
+  // Si se sale de la página con el buscador cerrándose, no se queda el timeout pendiente
+  useEffect(() => {
+    const timeout = closeSearchTimeout;
+    return () => {
+      if (timeout.current) clearTimeout(timeout.current);
+    };
+  }, []);
+
+  const nextStep = () => setCurrentStep((prev) => Math.min(prev + 1, TOTAL_STEPS));
+  const prevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 1));
 
   // En el paso 3, si ya se está escribiendo la reseña, "Atrás" vuelve a elegir canción
   const goBack = () => {
@@ -80,11 +114,6 @@ export default function OnboardingPage() {
 
   const goToFeed = () => router.push('/feed');
 
-  // Una canción se identifica por título y artista (no por el objeto en memoria)
-  const songKey = (song: SongData) => `${song.title}|${song.artist}`;
-  const isInTopSongs = (song: SongData) =>
-    selectedSongs.some((s) => s !== null && songKey(s) === songKey(song));
-
   /* Del paso 1 */
   const toggleArtist = (artistName: string) => {
     setSelectedArtists((prev) =>
@@ -95,121 +124,183 @@ export default function OnboardingPage() {
   };
 
   const searchResults = searchQuery.trim() !== ''
-    ? ARTISTS_LIST.filter(a => a.toLowerCase().includes(searchQuery.toLowerCase())).slice(0,5)
+    ? ARTISTS_LIST.filter((a) => matches(a, searchQuery)).slice(0, 5)
     : [];
 
   const defaultArtists = ARTISTS_LIST.slice(0, 6);
 
   /* Del paso 2 */
+  const validSelectedSongs = selectedSongs.filter((s): s is SongData => s !== null);
+
+  const isInTopSongs = (song: SongData) =>
+    validSelectedSongs.some((s) => songKey(s) === songKey(song));
+
   const searchResultsSongs = songSearchQuery.trim() !== ''
-    ? SONGS_LIST.filter(s => s.title.toLowerCase().includes(songSearchQuery.toLowerCase())).slice(0, 5)
+    ? SONGS_LIST.filter((s) => matches(s.title, songSearchQuery)).slice(0, 5)
     : [];
+
+  const clearCloseSearchTimeout = () => {
+    if (closeSearchTimeout.current) {
+      clearTimeout(closeSearchTimeout.current);
+      closeSearchTimeout.current = null;
+    }
+  };
+
+  const openSlotSearch = (slotIndex: number) => {
+    clearCloseSearchTimeout();
+    setClosingSlot(-1);
+    setActiveSearchSlot(slotIndex);
+    setSongSearchQuery('');
+  };
 
   const handleSelectSong = (song: SongData, slotIndex: number) => {
     // Las repetidas salen desactivadas en los resultados; esto es solo por seguridad
     if (isInTopSongs(song)) return;
-    
-    const newSongs = [...selectedSongs];
-    newSongs[slotIndex] = song;
-    setSelectedSongs(newSongs);
-    
+
+    setSelectedSongs((prev) => prev.map((s, i) => (i === slotIndex ? song : s)));
+    clearCloseSearchTimeout();
     setActiveSearchSlot(-1);
     setClosingSlot(-1);
     setSongSearchQuery('');
   };
 
   const handleRemoveSong = (slotIndex: number) => {
-    setRemovingSlot(slotIndex);
-    
+    if (removingSlots.includes(slotIndex)) return;
+    setRemovingSlots((prev) => [...prev, slotIndex]);
+
     setTimeout(() => {
-      const newSongs = [...selectedSongs];
-      newSongs[slotIndex] = null;
-      setSelectedSongs(newSongs);
-      setRemovingSlot(-1);
-    }, 400);
+      setSelectedSongs((prev) => prev.map((s, i) => (i === slotIndex ? null : s)));
+      setRemovingSlots((prev) => prev.filter((i) => i !== slotIndex));
+    }, SLOT_ANIMATION_MS);
   };
 
-  const handleCancelSearch = (index: number) => {
-    setClosingSlot(index);
-    
-    setTimeout(() => {
+  const handleCancelSearch = (slotIndex: number) => {
+    if (closingSlot === slotIndex) return;
+    setClosingSlot(slotIndex);
+
+    clearCloseSearchTimeout();
+    closeSearchTimeout.current = setTimeout(() => {
+      closeSearchTimeout.current = null;
       setActiveSearchSlot(-1);
       setClosingSlot(-1);
       setSongSearchQuery('');
-    }, 400);
+    }, SLOT_ANIMATION_MS);
   };
+
+  /* Del paso 3 */
+  const baseReviewSuggestions = validSelectedSongs.length > 0
+    ? validSelectedSongs
+    : SONGS_LIST.slice(0, 4);
+
+  // Si la canción elegida vino del buscador, se enseña la primera para que se vea marcada
+  const suggestedReviewSongs = reviewSong && !baseReviewSuggestions.some((s) => songKey(s) === songKey(reviewSong))
+    ? [reviewSong, ...baseReviewSuggestions]
+    : baseReviewSuggestions;
+
+  const searchResultsReview = reviewSearchQuery.trim() !== ''
+    ? SONGS_LIST.filter((s) => matches(s.title, reviewSearchQuery)).slice(0, 5)
+    : [];
+
+  const handleSelectReviewSong = (song: SongData) => {
+    setReviewSong(song);
+    setReviewSearchQuery('');
+    setReviewSubStep(2);
+  };
+
+  const canPublish = reviewScore !== '' && reviewTitle.trim() !== '' && reviewText.trim() !== '';
+
+  const renderStepHeader = (step: number, title: React.ReactNode, description: string) => (
+    <div className="step-header">
+      <div className="step-indicator">
+        <div className="step-dots" aria-hidden="true">
+          {Array.from({ length: TOTAL_STEPS }, (_, i) => (
+            <Dot key={i} type={i < step ? 'filled' : 'empty'} />
+          ))}
+        </div>
+        <span className="step-text" aria-hidden="true">{step}/{TOTAL_STEPS}</span>
+        <span className="sr-only">Paso {step} de {TOTAL_STEPS}</span>
+      </div>
+      <h1 className="page-title" tabIndex={-1}>{title}</h1>
+      <p className="step-description">{description}</p>
+    </div>
+  );
 
   const renderStepContent = () => {
     switch (currentStep) {
       case 1:
         return (
           <div className="step">
-            <div className="step-header">
-              <div className="step-indicator">
-                <Dot type="filled" />
-                <Dot type="empty" />
-                <Dot type="empty" />
-                <span className="step-text">1/3</span>
-              </div>
-              <h2 className="section-title">¿Cuáles son tus imprescindibles?</h2>
-              <p>Selecciona al menos 3 artistas para enterarte de sus novedades y ver qué opina la gente.</p>
-            </div>
-              <div className="search-dropdown-wrapper">
-                <SearchBar 
-                  placeholder="¿Falta tu favorito? Búscalo..." 
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+            {renderStepHeader(
+              1,
+              '¿Cuáles son tus imprescindibles?',
+              'Selecciona al menos 3 artistas para enterarte de sus novedades y ver qué opina la gente.'
+            )}
+            <div
+              data-search-box
+              className="search-dropdown-wrapper"
+              onKeyDown={(e) => { if (e.key === 'Escape') setSearchQuery(''); }}
+            >
+              <SearchBar
+                placeholder="¿Falta tu favorito? Búscalo..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              {searchQuery.trim() !== '' && (
+                <SearchResults
+                  notFound={`No se encontró el artista "${searchQuery}"`}
+                  items={searchResults.map((artist) => {
+                    const alreadySelected = selectedArtists.includes(artist);
+                    return {
+                      key: artist,
+                      title: artist,
+                      sub: alreadySelected ? 'Ya seleccionado' : 'Artista',
+                      imageUrl: '/placeholderCards.png',
+                      disabled: alreadySelected,
+                      onSelect: () => {
+                        toggleArtist(artist);
+                        setSearchQuery('');
+                      },
+                    };
+                  })}
                 />
-                {searchQuery.trim() !== '' && (
-                  <div className="search-dropdown-results">
-                    {searchResults.length > 0 ? (
-                      searchResults.map((artist) => (
-                        <div 
-                          key={`search-${artist}`} 
-                          className="search-result-item"
-                          onClick={() => {
-                            if (!selectedArtists.includes(artist)) {
-                                toggleArtist(artist);
-                            }
-                            setSearchQuery('');
-                          }}
-                        >
-                          <img src="/placeholderCards.png" alt={artist} />
-                          <div>
-                            <p className="result-title">{artist}</p>
-                            <p className="result-sub">Artista</p>
-                          </div>
-                        </div>
-                      ))
-                    ) : (
-                      <div className="search-result-item" style={{ pointerEvents: 'none' }}>
-                        <p className="result-sub">No se encontró el artista "{searchQuery}"</p>
-                      </div>
-                    )}
-                  </div>
-                )}
+              )}
             </div>
             {selectedArtists.length > 0 && (
-              <div className="selected-chips-container">
+              <ul className="selected-chips-container" aria-label="Artistas seleccionados">
                 {selectedArtists.map((artist) => (
-                  <div key={`chip-${artist}`} className="artist-chip" onClick={() => toggleArtist(artist)}>
-                    <img src="/placeholderCards.png" alt={artist} className="chip-image" />
-                    {artist} <span className="chip-remove">&times;</span>
-                  </div>
+                  <li key={artist}>
+                    <button
+                      type="button"
+                      className="artist-chip"
+                      onClick={() => toggleArtist(artist)}
+                      aria-label={`Quitar ${artist}`}
+                    >
+                      <img src="/placeholderCards.png" alt="" />
+                      {artist}
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </li>
                 ))}
-              </div>
+              </ul>
             )}
-            <div className="selected-artists">
+            <fieldset className="artist-suggestions">
+              <legend className="sr-only">Artistas sugeridos</legend>
               {defaultArtists.map((artist) => (
-                <div key={artist} onClick={() => toggleArtist(artist)} style={{ cursor: 'pointer' }}>
-                  <ArtistCard 
-                    hasScore={false}
-                    name={artist} 
-                    isSelected={selectedArtists.includes(artist)} 
+                <label key={artist} className="artist-option">
+                  <input
+                    type="checkbox"
+                    className="sr-only"
+                    checked={selectedArtists.includes(artist)}
+                    onChange={() => toggleArtist(artist)}
                   />
-                </div>
+                  <ArtistCard
+                    hasScore={false}
+                    name={artist}
+                    isSelected={selectedArtists.includes(artist)}
+                  />
+                </label>
               ))}
-            </div>
+            </fieldset>
             <div className="button-group">
               <Button onClick={nextStep} variant="text">Omitir</Button>
               <Button onClick={nextStep} disabled={selectedArtists.length < 3}>
@@ -221,91 +312,85 @@ export default function OnboardingPage() {
       case 2:
         return (
           <div className="step">
-            <div className="step-header">
-              <div className="step-indicator">
-                <Dot type="filled" />
-                <Dot type="filled" />
-                <Dot type="empty" />
-                <span className="step-text">2/3</span>
-              </div>
-              <h2 className="section-title">Tus 4 indiscutibles</h2>
-              <p>Busca y elige las 4 canciones que te definen. Aparecerán destacadas en tu perfil y las podrás cambiar desde ahí.</p>
-            </div>
+            {renderStepHeader(
+              2,
+              'Tus 4 indiscutibles',
+              'Busca y elige las 4 canciones que te definen. Aparecerán destacadas en tu perfil y las podrás cambiar desde ahí.'
+            )}
             <div className="top-songs-grid">
               {selectedSongs.map((song, index) => (
                 <div key={`song-slot-${index}`} className="song-slot-container">
                   {song !== null && activeSearchSlot !== index && (
-                    <div key={`filled-${song.title}`} className={`filled-slot group ${removingSlot === index ? 'removing' : ''}`}>
-                      <MediaCard 
-                         title={song.title}
-                         type="cancion"
-                         artist={song.artist}
-                         imageUrl={song.imageUrl}
-                         forceShowInfo={true}
+                    <div key={`filled-${songKey(song)}`} className={`filled-slot ${removingSlots.includes(index) ? 'removing' : ''}`}>
+                      <MediaCard
+                        title={song.title}
+                        type="cancion"
+                        artist={song.artist}
+                        imageUrl={song.imageUrl}
+                        forceShowInfo={true}
                       />
-                      <div className="remove-overlay" onClick={() => handleRemoveSong(index)}>
-                        <div className="remove-btn-circle">
-                           <span className="close-icon">&times;</span>
-                        </div>
-                      </div>
+                      <button
+                        type="button"
+                        className="remove-overlay"
+                        onClick={() => handleRemoveSong(index)}
+                        aria-label={`Quitar ${song.title} del top 4`}
+                      >
+                        <span className="remove-btn-circle" aria-hidden="true">
+                          <span className="close-icon">&times;</span>
+                        </span>
+                      </button>
                     </div>
                   )}
                   {activeSearchSlot === index && (
-                    <div className={`search-slot-active ${closingSlot === index ? 'closing' : ''}`}>
-                       <SearchBar 
-                          placeholder="Busca tu canción favorita..." 
-                          value={songSearchQuery}
-                          onChange={(e) => setSongSearchQuery(e.target.value)}
-                       />
-                       {songSearchQuery.trim() !== '' && (
-                         <div className="search-dropdown-results slot-search-dropdown">
-                            {searchResultsSongs.length > 0 ? (
-                               searchResultsSongs.map((resultSong) => {
-                                 const alreadyInTop = isInTopSongs(resultSong);
-                                 return (
-                                   <div
-                                      key={`search-song-${songKey(resultSong)}`}
-                                      className={`search-result-item ${alreadyInTop ? 'is-disabled' : ''}`}
-                                      aria-disabled={alreadyInTop}
-                                      onClick={alreadyInTop ? undefined : () => handleSelectSong(resultSong, index)}
-                                   >
-                                      <img src={resultSong.imageUrl} alt={resultSong.title} />
-                                      <div>
-                                        <p className="result-title">{resultSong.title}</p>
-                                        <p className="result-sub">{alreadyInTop ? 'Ya está en tu top 4' : resultSong.artist}</p>
-                                      </div>
-                                   </div>
-                                 );
-                               })
-                            ) : (
-                               <div className="search-result-item" style={{ pointerEvents: 'none' }}>
-                                 <p className="result-sub">No se encontró "{songSearchQuery}"</p>
-                               </div>
-                            )}
-                         </div>
-                       )}
-                       <button 
-                          className="cancel-search-btn" 
-                          onClick={() => handleCancelSearch(index)}
-                       >
-                          Cancelar
-                       </button>
+                    <div
+                      data-search-box
+                      className={`search-slot-active ${closingSlot === index ? 'closing' : ''}`}
+                      onKeyDown={(e) => { if (e.key === 'Escape') handleCancelSearch(index); }}
+                    >
+                      <SearchBar
+                        placeholder="Busca tu canción favorita..."
+                        value={songSearchQuery}
+                        onChange={(e) => setSongSearchQuery(e.target.value)}
+                        autoFocus
+                      />
+                      {songSearchQuery.trim() !== '' && (
+                        <SearchResults
+                          className="slot-search-dropdown"
+                          notFound={`No se encontró "${songSearchQuery}"`}
+                          items={searchResultsSongs.map((resultSong) => {
+                            const alreadyInTop = isInTopSongs(resultSong);
+                            return {
+                              key: songKey(resultSong),
+                              title: resultSong.title,
+                              sub: alreadyInTop ? 'Ya está en tu top 4' : resultSong.artist,
+                              imageUrl: resultSong.imageUrl,
+                              disabled: alreadyInTop,
+                              onSelect: () => handleSelectSong(resultSong, index),
+                            };
+                          })}
+                        />
+                      )}
+                      <button
+                        type="button"
+                        className="cancel-search-btn"
+                        onClick={() => handleCancelSearch(index)}
+                      >
+                        Cancelar
+                      </button>
                     </div>
                   )}
                   {song === null && activeSearchSlot !== index && (
-                    <div 
-                       className="empty-slot editable" 
-                       onClick={() => {
-                          setActiveSearchSlot(index);
-                          setSongSearchQuery('');
-                       }}
+                    <button
+                      type="button"
+                      className="empty-slot editable"
+                      onClick={() => openSlotSearch(index)}
+                      aria-label={`Añadir canción ${index + 1} de 4`}
                     >
-                      <div className="add-circle-btn">
-                        <div className="plus-icon">+</div>
-                      </div>
-                    </div>
+                      <span className="add-circle-btn" aria-hidden="true">
+                        <span className="plus-icon">+</span>
+                      </span>
+                    </button>
                   )}
-
                 </div>
               ))}
             </div>
@@ -313,10 +398,7 @@ export default function OnboardingPage() {
               <Button onClick={goBack} variant="text">‹ Atrás</Button>
               <div className="button-group-end">
                 <Button onClick={nextStep} variant="text">Omitir</Button>
-                <Button
-                  onClick={nextStep}
-                  disabled={selectedSongs.filter(s => s !== null).length === 0}
-                >
+                <Button onClick={nextStep} disabled={validSelectedSongs.length === 0}>
                   Siguiente
                 </Button>
               </div>
@@ -326,78 +408,80 @@ export default function OnboardingPage() {
       case 3:
         return (
           <div className="step step-3">
-            <div className="step-header">
-              <div className="step-indicator">
-                <Dot type="filled" />
-                <Dot type="filled" />
-                <Dot type="filled" />
-                <span className="step-text">3/3</span>
-              </div>
-              <h2 className="section-title">Deja tu primera <span className="RVWS">RVW</span></h2>
-              <p>Puntúa y cuéntale a la gente qué piensas de esta canción que tienes en bucle.</p>
-            </div>
-            <div className="review-selection-header">
-              <span className="review-question">¿Quieres empezar reseñando uno de tus favoritos?</span>
-              <div className="review-search-wrapper">
-                <SearchBar 
-                  placeholder="O busca una diferente..." 
-                  value={reviewSearchQuery}
-                  onChange={(e) => setReviewSearchQuery(e.target.value)}
-                />
-                {reviewSearchQuery.trim() !== '' && (
-                  <div className="search-dropdown-results">
-                    {searchResultsReview.length > 0 ? (
-                      searchResultsReview.map((song) => (
-                        <div 
-                          key={`rev-search-${song.title}`} 
-                          className="search-result-item"
-                          onClick={() => handleSelectReviewSong(song)}
-                        >
-                          <img src={song.imageUrl} alt={song.title} />
-                          <div>
-                            <p className="result-title">{song.title}</p>
-                            <p className="result-sub">{song.artist}</p>
-                          </div>
-                        </div>
-                      ))
-                    ) : (
-                      <div className="search-result-item" style={{ pointerEvents: 'none' }}>
-                        <p className="result-sub">No se encontró "{reviewSearchQuery}"</p>
-                      </div>
+            {renderStepHeader(
+              3,
+              <>Deja tu primera <Rvw>RVW</Rvw></>,
+              'Puntúa y cuéntale a la gente qué piensas de esta canción que tienes en bucle.'
+            )}
+            {reviewSubStep === 1 ? (
+              <>
+                <div className="review-selection-header">
+                  <p className="review-question">¿Quieres empezar reseñando uno de tus favoritos?</p>
+                  <div
+                    data-search-box
+                    className="review-search-wrapper"
+                    onKeyDown={(e) => { if (e.key === 'Escape') setReviewSearchQuery(''); }}
+                  >
+                    <SearchBar
+                      placeholder="O busca una diferente..."
+                      value={reviewSearchQuery}
+                      onChange={(e) => setReviewSearchQuery(e.target.value)}
+                    />
+                    {reviewSearchQuery.trim() !== '' && (
+                      <SearchResults
+                        notFound={`No se encontró "${reviewSearchQuery}"`}
+                        items={searchResultsReview.map((song) => ({
+                          key: songKey(song),
+                          title: song.title,
+                          sub: song.artist,
+                          imageUrl: song.imageUrl,
+                          onSelect: () => handleSelectReviewSong(song),
+                        }))}
+                      />
                     )}
                   </div>
-                )}
-              </div>
-            </div>
-            {reviewSubStep === 1 ? (
-              <div className="review-suggestions-row">
-              {suggestedReviewSongs.map((song, idx) => (
-                <SmallCard 
-                  key={`sugg-${song.title}-${idx}`}
-                  type="cancion"
-                  title={song.title}
-                  artist={song.artist}
-                  imageUrl={song.imageUrl}
-                  selected={reviewSong?.title === song.title}
-                  onClick={() => setReviewSong(song)}
-                />
-              ))}
-            </div>
+                </div>
+                <fieldset className="review-suggestions-row">
+                  <legend className="sr-only">Elige la canción que vas a reseñar</legend>
+                  {suggestedReviewSongs.map((song) => {
+                    const isSelected = reviewSong !== null && songKey(reviewSong) === songKey(song);
+                    return (
+                      <label key={songKey(song)} className="review-option">
+                        <input
+                          type="radio"
+                          name="onboarding-review-song"
+                          className="sr-only"
+                          checked={isSelected}
+                          onChange={() => setReviewSong(song)}
+                        />
+                        <SmallCard
+                          type="cancion"
+                          title={song.title}
+                          artist={song.artist}
+                          imageUrl={song.imageUrl}
+                          selected={isSelected}
+                        />
+                      </label>
+                    );
+                  })}
+                </fieldset>
+              </>
             ) : (
               <div className="review-form-card fade-in-section">
                 <div className="review-form-image">
-                  <img src={reviewSong?.imageUrl} alt={reviewSong?.title} />
+                  <img src={reviewSong?.imageUrl} alt="" />
                 </div>
                 <div className="review-form-content">
                   <div className="review-form-top">
                     <div className="review-song-info">
-                      <span className="sugg-type">Canción</span>
-                      <h3>{reviewSong?.title}</h3>
+                      <span className="review-type-badge">Canción</span>
+                      <h2 className="block-title">{reviewSong?.title}</h2>
                       <p>{reviewSong?.artist}</p>
                     </div>
                     <div className="review-score-input">
-                      <label>Deja tu puntuación</label>
-                      <Score 
+                      <label htmlFor="onboarding-review-score">Deja tu puntuación</label>
+                      <Score
+                        id="onboarding-review-score"
                         input={true}
                         score={reviewScore}
                         onChange={(newScore) => setReviewScore(newScore)}
@@ -406,18 +490,20 @@ export default function OnboardingPage() {
                     </div>
                   </div>
                   <div className="review-input-group">
-                    <label>Ponle un título a tu RVW</label>
+                    <label htmlFor="onboarding-review-title">Ponle un título a tu RVW</label>
                     <Input
+                      id="onboarding-review-title"
                       type="text"
-                      placeholder="Escribe un título breve..." 
+                      placeholder="Escribe un título breve..."
                       value={reviewTitle}
                       onChange={(e) => setReviewTitle(e.target.value)}
                     />
                   </div>
                   <div className="review-input-group">
-                    <label>Escribe tu RVW</label>
-                    <TextArea 
-                      placeholder="Escribe lo que piensas..." 
+                    <label htmlFor="onboarding-review-text">Escribe tu RVW</label>
+                    <TextArea
+                      id="onboarding-review-text"
+                      placeholder="Escribe lo que piensas..."
                       value={reviewText}
                       onChange={(e) => setReviewText(e.target.value)}
                     />
@@ -426,21 +512,18 @@ export default function OnboardingPage() {
               </div>
             )}
 
-            <div className="button-group" style={{ marginTop: '2rem' }}>
+            <div className="button-group">
               <Button variant="text" onClick={goBack}>‹ Atrás</Button>
               <div className="button-group-end">
                 <Button variant="text" onClick={goToFeed}>
                   Omitir
                 </Button>
                 {reviewSubStep === 1 ? (
-                  <Button
-                    onClick={() => setReviewSubStep(2)}
-                    disabled={!reviewSong}
-                  >
+                  <Button onClick={() => setReviewSubStep(2)} disabled={!reviewSong}>
                     Siguiente
                   </Button>
                 ) : (
-                  <Button onClick={goToFeed} disabled={!reviewScore || !reviewTitle || !reviewText} >
+                  <Button onClick={goToFeed} disabled={!canPublish}>
                     Publicar e ir al feed
                   </Button>
                 )}
@@ -452,8 +535,9 @@ export default function OnboardingPage() {
   };
 
   return (
-    <main className="onboarding-container">
-      <div className="step-content fade-in-section">
+    <main ref={mainRef} className="onboarding-container">
+      {/* Con key, la animación de entrada se repite en cada paso */}
+      <div key={currentStep} className="fade-in-section">
         {renderStepContent()}
       </div>
     </main>

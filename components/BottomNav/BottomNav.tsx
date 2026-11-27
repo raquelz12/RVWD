@@ -1,26 +1,35 @@
 'use client';
 
-import { useState, useEffect, useRef, Suspense } from 'react';
-import { usePathname } from 'next/navigation';
+import { useState, useEffect, useId, useRef, Suspense } from 'react';
+import { usePathname, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import './BottomNav.css';
 import { useModal } from '@/context/ModalContext';
 import NotificationDropdown from '../NotificationDropdown/NotificationDropdown';
-import SearchBar from '../SearchBar/SearchBar';
+import GlobalSearch from '../GlobalSearch/GlobalSearch';
 import BottomNavAdmin from '../BottomNavAdmin/BottomNavAdmin';
 import { isAdminPath } from '@/app/lib/adminNav';
+import { parseSearchQuery } from '@/app/lib/search';
 
 function BottomNavContent() {
     const { openModal } = useModal();
     const pathname = usePathname();
+    const searchParams = useSearchParams();
+    // En /search el buscador se abre con lo buscado
+    const isSearchPage = pathname === '/search';
+    const currentQuery = isSearchPage ? parseSearchQuery(searchParams.get('q')) : '';
 
-    const [isNotifOpen, setIsNotifOpen] = useState(false);
+    // Se guarda la ruta en la que se abrieron las notificaciones: al cambiar de página dejan de coincidir y quedan cerradas
+    const [notifOpenOn, setNotifOpenOn] = useState<string | null>(null);
+    const isNotifOpen = notifOpenOn !== null && notifOpenOn === pathname;
+    const setIsNotifOpen = (open: boolean) => setNotifOpenOn(open ? pathname : null);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
-    const [searchQuery, setSearchQuery] = useState('');
     const navRef = useRef<HTMLElement>(null);
+    const searchPanelRef = useRef<HTMLDivElement>(null);
+    const notifButtonRef = useRef<HTMLButtonElement>(null);
+    const notifMenuId = useId();
 
-    const toggleNotifMenu = (e: React.MouseEvent) => {
-        e.stopPropagation();
+    const toggleNotifMenu = () => {
         setIsSearchOpen(false);
         setIsNotifOpen(!isNotifOpen);
     };
@@ -35,13 +44,13 @@ function BottomNavContent() {
         setIsSearchOpen(false);
     }, [pathname]);
 
-    // ...y al tocar fuera de la barra inferior o pulsar Escape
+    // ...y al tocar fuera de la barra inferior y del buscador, o pulsar Escape
     useEffect(() => {
         if (!isSearchOpen) return;
         const handlePointerDown = (event: PointerEvent) => {
-            if (navRef.current && !navRef.current.contains(event.target as Node)) {
-                setIsSearchOpen(false);
-            }
+            const target = event.target as Node;
+            if (navRef.current?.contains(target) || searchPanelRef.current?.contains(target)) return;
+            setIsSearchOpen(false);
         };
         const handleKeyDown = (event: KeyboardEvent) => {
             if (event.key === 'Escape') setIsSearchOpen(false);
@@ -51,6 +60,35 @@ function BottomNavContent() {
         return () => {
             document.removeEventListener('pointerdown', handlePointerDown);
             document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [isSearchOpen]);
+
+    // El buscador se apoya justo encima de lo que esté más arriba: el teclado o la barra inferior.
+    // - Sin teclado: encima de la barra.
+    // - iPhone con teclado: la zona visible acaba donde la página, y la barra sigue a la vista: encima de la barra.
+    // - Android con teclado: la zona visible acaba en el teclado y la barra queda detrás: encima del teclado.
+    // Todo en coordenadas de la página (las de position: fixed); --search-bottom es el borde de abajo del buscador
+    useEffect(() => {
+        const viewport = window.visualViewport;
+        const panel = searchPanelRef.current;
+        const nav = navRef.current;
+        if (!isSearchOpen || !panel || !nav) return;
+
+        const GAP = 10;
+        const update = () => {
+            const visibleBottom = viewport ? viewport.offsetTop + viewport.height : window.innerHeight;
+            const navTop = window.innerHeight - parseFloat(getComputedStyle(nav).bottom) - nav.offsetHeight;
+            panel.style.setProperty('--search-bottom', `${Math.round(Math.min(visibleBottom, navTop) - GAP)}px`);
+        };
+
+        update();
+        viewport?.addEventListener('resize', update);
+        viewport?.addEventListener('scroll', update);
+        window.addEventListener('resize', update);
+        return () => {
+            viewport?.removeEventListener('resize', update);
+            viewport?.removeEventListener('scroll', update);
+            window.removeEventListener('resize', update);
         };
     }, [isSearchOpen]);
 
@@ -65,18 +103,22 @@ function BottomNavContent() {
     }
 
     return (
+        <>
+        {/* Fuera del <nav>: la barra tiene transform y backdrop-filter, y con eso un hijo fijo
+            se colocaría respecto a la barra y no respecto a la pantalla */}
+        {isSearchOpen && (
+            <div className="bottom-search-panel" ref={searchPanelRef}>
+                {/* onNavigate: buscando desde /search la ruta no cambia, así que se cierra a mano */}
+                <GlobalSearch
+                    direction="up"
+                    initialQuery={currentQuery}
+                    autoFocus
+                    barClassName="bottom-search-bar"
+                    onNavigate={() => setIsSearchOpen(false)}
+                />
+            </div>
+        )}
         <nav className="bottom-nav" ref={navRef} aria-label="Navegación principal">
-            {isSearchOpen && (
-                <div className="bottom-search-panel">
-                    <SearchBar
-                        placeholder="Busca canciones, usuarios, ..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        autoFocus
-                        className="bottom-search-bar"
-                    />
-                </div>
-            )}
             <Link
                 href="/feed"
                 className={`bottom-item ${isActive('/feed') ? 'active' : ''}`}
@@ -87,7 +129,7 @@ function BottomNavContent() {
             </Link>
             <button
                 type="button"
-                className={`bottom-item bottom-search-btn ${isSearchOpen ? 'active' : ''}`}
+                className={`bottom-item bottom-search-btn ${isSearchOpen || isSearchPage ? 'active' : ''}`}
                 onClick={toggleSearch}
                 aria-label={isSearchOpen ? 'Cerrar búsqueda' : 'Buscar'}
                 aria-expanded={isSearchOpen}
@@ -95,16 +137,16 @@ function BottomNavContent() {
                 <span className="icon-search"></span>
             </button>
             <button type="button" className="primary-action" onClick={() => openModal('add')} aria-label="Crear RVW">
-                <img src="/Logo.svg" alt="" className="icon-logo-img" />
+                <img src="/logo.svg" alt="" className="icon-logo-img" />
             </button>
             <button
                 type="button"
+                ref={notifButtonRef}
                 className={`bottom-item ${isNotifOpen || isActive('/notifications') ? 'active' : ''}`}
                 onClick={toggleNotifMenu}
-                // Sin esto, el clic "fuera" del desplegable lo cerraría y el propio clic lo volvería a abrir
-                onMouseDown={(e) => e.stopPropagation()}
                 aria-label="Notificaciones"
                 aria-expanded={isNotifOpen}
+                aria-controls={notifMenuId}
             >
                 <span className="icon-bell"></span>
             </button>
@@ -118,10 +160,15 @@ function BottomNavContent() {
             </Link>
             {/* Se abre encima de la barra, con su mismo ancho (igual que la búsqueda) */}
             {isNotifOpen && (
-                <NotificationDropdown onClose={() => setIsNotifOpen(false)} />
+                <NotificationDropdown
+                    id={notifMenuId}
+                    triggerRef={notifButtonRef}
+                    onClose={() => setIsNotifOpen(false)}
+                />
             )}
 
         </nav>
+        </>
     );
 }
 

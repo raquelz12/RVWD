@@ -279,3 +279,8 @@
         padding: 0 0.5rem;
     }
 }
+
+/* Buscador del header: ancho fijo (dentro de una fila que se ajusta a su contenido el 100% no vale) */
+.nav-links .global-search {
+    width: 34rem;
+}

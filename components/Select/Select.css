@@ -10,6 +10,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 1rem;
     width: 100%;
     height: 4.4rem;
     padding: 0 2.3rem;
@@ -18,6 +19,7 @@
     border: 0.2rem solid color-mix(in srgb, var(--primary-white) 30%, transparent);
     border-radius: 3rem;
     font-size: 1.6rem;
+    text-align: left;
     transition: all 0.2s ease;
     color: var(--primary-white);
     font-family: inherit;
@@ -30,35 +32,46 @@
     background-color: color-mix(in srgb, var(--primary-white) 15%, transparent);
 }
 
-.placeholder-text {
+.custom-select-trigger:focus-visible {
+    outline: 0.2rem solid var(--primary-white);
+    outline-offset: 0.2rem;
+}
+
+.custom-select-placeholder {
     color: var(--primary-white);
     opacity: 0.8;
 }
 
-.selected-text {
+.custom-select-value {
     color: var(--primary-white);
 }
 
-.chevron {
+.custom-select-chevron {
+    flex-shrink: 0;
     font-size: 1.2rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: color-mix(in srgb, var(--primary-white) 50%, transparent);
     transition: transform 0.3s ease;
 }
 
-.custom-select-trigger.open .chevron {
+.custom-select-trigger.open .custom-select-chevron {
     transform: rotate(180deg);
 }
 
 /* Desplegable */
 .custom-select-dropdown {
+    /* Animación propia (antes usaba .edit-anim, que solo existía en el CSS del perfil) */
+    animation: selectFadeScale 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    transform-origin: top center;
     position: absolute;
     top: calc(100% + 0.8rem);
     left: 0;
     width: 100%;
+    margin: 0;
+    list-style: none;
     background-color: color-mix(in srgb, var(--bg-card) 95%, transparent);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid color-mix(in srgb, var(--primary-white) 10%, transparent);
     border-radius: 1.2rem;
     padding: 0.8rem 0;
     box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.5);
@@ -66,14 +79,19 @@
     max-height: 25rem;
     overflow-y: auto;
     scrollbar-width: thin;
-    scrollbar-color: rgba(255,255,255,0.2) transparent;
+    scrollbar-color: color-mix(in srgb, var(--primary-white) 20%, transparent) transparent;
+}
+
+/* El foco está en la lista, pero se marca la opción activa (.focused) */
+.custom-select-dropdown:focus {
+    outline: none;
 }
 
 .custom-select-dropdown::-webkit-scrollbar {
     width: 0.6rem;
 }
 .custom-select-dropdown::-webkit-scrollbar-thumb {
-    background-color: rgba(255,255,255,0.2);
+    background-color: color-mix(in srgb, var(--primary-white) 20%, transparent);
     border-radius: 1rem;
 }
 
@@ -88,7 +106,8 @@
     transition: background-color 0.2s ease;
 }
 
-.custom-select-item:hover {
+/* .focused la pone tanto el ratón (hover) como las flechas */
+.custom-select-item.focused {
     background-color: color-mix(in srgb, var(--primary-red) 25%, transparent);
 }
 
@@ -97,12 +116,13 @@
     font-weight: 600;
 }
 
-.check-icon {
-    font-size: 1.4rem;
-    font-weight: bold;
-}
-
-@keyframes fadeScale {
+@keyframes selectFadeScale {
     0% { opacity: 0; transform: scaleY(0.95); }
     100% { opacity: 1; transform: scaleY(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .custom-select-dropdown {
+        animation: none;
+    }
 }

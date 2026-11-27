@@ -1,31 +1,12 @@
-'use client';
+import Tabs from '../Tabs/Tabs';
 
-import { useSearchParams, useRouter, usePathname } from 'next/navigation';
+export type FeedTab = 'para-ti' | 'descubrir';
 
-export default function FeedTabs() {
-    const searchParams = useSearchParams();
-    const router = useRouter();
-    const pathname = usePathname();
-    const currentTab = searchParams.get('tab') || 'para-ti';
+const TABS = [
+    { id: 'para-ti', label: 'Para ti', href: '/feed' },
+    { id: 'descubrir', label: 'Descubrir', href: '/feed?tab=descubrir' },
+];
 
-    const handleTabChange = (newTab: string) => {
-        router.push(`${pathname}?tab=${newTab}`);
-    };
-
-    return (
-        <div className="feed-buttons">
-            <button 
-                className={currentTab === 'para-ti' ? "feed-button active" : "feed-button"} 
-                onClick={() => handleTabChange('para-ti')}
-            >
-                Para ti
-            </button>
-            <button 
-                className={currentTab === 'descubrir' ? "feed-button active" : "feed-button"} 
-                onClick={() => handleTabChange('descubrir')}
-            >
-                Descubrir
-            </button>
-        </div>
-    );
+export default function FeedTabs({ currentTab }: { currentTab: FeedTab }) {
+    return <Tabs tabs={TABS} currentTab={currentTab} label="Pestañas del feed" />;
 }

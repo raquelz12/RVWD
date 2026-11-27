@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import './MediaCard.css';
 import Score from '../Score/Score';
 
@@ -13,6 +14,8 @@ export interface MediaCardProps {
   imageUrl: string;
   forceShowInfo?: boolean;
   scoreType?: 'red' | 'white';
+  /** Si se pasa, la tarjeta entera es un enlace a esta ruta */
+  href?: string;
 }
 
 //Ejemplo para pegar en otros lados:
@@ -38,10 +41,11 @@ export interface MediaCardProps {
 //   forceShowInfo={true}
 // />
 
-export default function MediaCard({ type, title, artist, imageUrl, userName, userPicture, score, forceShowInfo, scoreType }: MediaCardProps) {
-  return (
+export default function MediaCard({ type, title, artist, imageUrl, userName, userPicture, score, forceShowInfo, scoreType, href }: MediaCardProps) {
+  const card = (
     <article className={`media-card ${type === 'artista' ? 'is-artist' : ''} ${forceShowInfo ? 'force-show-info' : ''}`}>
-      {score && (
+      {/* != null: una nota de 0 también se enseña */}
+      {score != null && (
           <div className="media-score-position">
             <Score input={false} score={score} variant={scoreType || "red"} />
           </div>
@@ -49,7 +53,7 @@ export default function MediaCard({ type, title, artist, imageUrl, userName, use
       <div className="media-image-container">
         {userName && (
           <div className="user-badge-pill">
-            <img src={userPicture || '/placeholderCards.png'} className="user-picture" alt={userName} />
+            <img src={userPicture || '/placeholderCards.png'} className="user-picture" alt="" />
             <span className="user-name">{userName}</span>
           </div>
         )}
@@ -69,4 +73,6 @@ export default function MediaCard({ type, title, artist, imageUrl, userName, use
       </div>
     </article>
   );
+
+  return href ? <Link href={href} className="media-card-link">{card}</Link> : card;
 }

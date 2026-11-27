@@ -1,90 +1,24 @@
-.suggestions-container {
-    display: flex;
-    flex-direction: column;
-    padding: 4rem 2rem;
-    width: 100%;
-    max-width: 120rem;
-    margin: 0 auto;
-    box-sizing: border-box;
-}
+/* El contenedor y la cabecera están en src/styles/text-page.css; las columnas y el formulario, en src/styles/forms.css */
 
-.suggestions-header {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    padding: 1rem .8rem;
-    padding-bottom: 4rem;
-}
-
-.suggestions-description {
-    font-size: 2rem;
-    margin: 0;
-}
-
-.suggestions-column-wrapper {
-    display: flex;
-    flex-direction: row;
-    gap: 1rem;
-    padding: 0 3.2rem;
-}
-
-.suggestions-column {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    flex: 1;
-    padding: 1rem;
-}
-
-/* Formulario de sugerencias */
-.suggestions-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.6rem;
-}
-
-/* Ultimas sugerencias */
+/* Últimas mejoras hechas a partir de sugerencias */
 .suggestions-list {
     display: flex;
     flex-direction: column;
     gap: 1.6rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
 }
 
 .suggestions-list-item {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    padding: 1rem;
+    padding: 1rem 0;
     border-bottom: 1px solid color-mix(in srgb, var(--text-secondary) 20%, transparent);
 }
 
 .suggestions-list-item-description {
-    font-size: 1.6rem;
     margin: 0;
-}
-
-/* Responsive */
-
-@media (max-width: 768px) {
-    .suggestions-header {
-        padding-bottom: 2rem;
-    }
-
-    .suggestions-column-wrapper {
-        flex-direction: column;
-        padding: 0 1.6rem;
-    }
-
-    .suggestions-description {
-        text-align: justify;
-    }
-
-    .suggestions-column {
-        padding: 0;
-        padding-bottom: 4rem;
-    }
-
-    .suggestions-list {
-        padding: 0;
-    }
+    line-height: 1.5;
 }
