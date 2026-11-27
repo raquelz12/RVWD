@@ -9,32 +9,24 @@ import '@/styles/top-songs.css';
 import '@/styles/status-page.css';
 import '../../profile/profile.css';
 import './user.css';
-import Button from '../../../../components/Button/Button';
 import MediaCard from '../../../../components/MediaCard/MediaCard';
 import ReviewBigCard from '../../../../components/ReviewBigCard/ReviewBigCard';
 import Carousel from '../../../../components/Carousel/Carousel';
 import ProfileStats from '../../../../components/ProfileStats/ProfileStats';
 import MoreMenu, { type MoreMenuItem } from '../../../../components/MoreMenu/MoreMenu';
-import Modal from '../../../../components/Modal/Modal';
+import FollowButton from '../../../../components/FollowButton/FollowButton';
 import Rvw from '../../../../components/Rvw/Rvw';
 import { useModal } from '@/context/ModalContext';
-import { canSeeProfile, userHref, type FollowState, type PublicUser } from '../../lib/publicUsers';
+import { canSeeProfile, followersHref, followingHref, userHref, type FollowState, type PublicUser } from '../../lib/publicUsers';
 import type { UserReview } from '../../lib/mockReviews';
 
 /** RVWs que se enseñan en el perfil; el resto, en "Ver todas" */
 const PROFILE_REVIEWS = 2;
 
-const FOLLOW_LABEL: Record<FollowState, string> = {
-    no: 'Seguir',
-    solicitado: 'Solicitado',
-    siguiendo: 'Siguiendo',
-};
-
 export default function UserProfile({ user, reviews }: { user: PublicUser; reviews: UserReview[] }) {
     const { openReport } = useModal();
-    // TODO: seguir / pedir seguir de verdad cuando haya backend
+    // FollowButton cambia el estado; aquí decide si se ve el contenido de una cuenta privada
     const [follow, setFollow] = useState<FollowState>(user.follow);
-    const [confirmUnfollow, setConfirmUnfollow] = useState(false);
 
     // Solo el @usuario: ni foto, ni nombre, ni botones
     if (user.status === 'desactivada') {
@@ -50,19 +42,6 @@ export default function UserProfile({ user, reviews }: { user: PublicUser; revie
     const canSee = canSeeProfile(user, follow);
     const profileHref = userHref(user.username);
     const reviewsHref = `${profileHref}/reviews`;
-
-    // Pública: seguir / dejar de seguir. Privada: pedirlo, cancelar la petición o dejar de seguir
-    const toggleFollow = () => {
-        // En una privada, dejar de seguir oculta su contenido y volver exige otra solicitud: se pregunta antes
-        if (isPrivate && follow === 'siguiendo') setConfirmUnfollow(true);
-        else if (follow !== 'no') setFollow('no');
-        else setFollow(isPrivate ? 'solicitado' : 'siguiendo');
-    };
-
-    const unfollow = () => {
-        setFollow('no');
-        setConfirmUnfollow(false);
-    };
 
     const menuItems: MoreMenuItem[] = [
         { label: 'Copiar enlace', copyPath: profileHref },
@@ -111,18 +90,21 @@ export default function UserProfile({ user, reviews }: { user: PublicUser; revie
                             <p className="profile-info-username">{user.username}</p>
                         </div>
                         <div className="profile-info-buttons">
-                            <Button
-                                variant={follow === 'no' ? 'primary' : 'outline'}
-                                className="user-profile-follow-btn"
-                                aria-pressed={follow !== 'no'}
-                                onClick={toggleFollow}
-                            >
-                                {FOLLOW_LABEL[follow]}
-                            </Button>
+                            <FollowButton
+                                username={user.username}
+                                isPrivate={isPrivate}
+                                state={follow}
+                                onChange={setFollow}
+                            />
                             <MoreMenu items={menuItems} label="Opciones del perfil" />
                         </div>
-                        {/* Las stats se ven también en un perfil privado */}
-                        <ProfileStats className="profile-info-stats" {...user.stats} />
+                        {/* Las stats se ven también en un perfil privado; sus listas, solo si puedes ver el perfil */}
+                        <ProfileStats
+                            className="profile-info-stats"
+                            {...user.stats}
+                            followersHref={canSee ? followersHref(user.username) : undefined}
+                            followingHref={canSee ? followingHref(user.username) : undefined}
+                        />
                         {canSee && user.bio && (
                             <div className="profile-info-bio">
                                 <p className="profile-info-bio-text">{user.bio}</p>
@@ -197,24 +179,6 @@ export default function UserProfile({ user, reviews }: { user: PublicUser; revie
                     </section>
                 )}
             </div>
-            <Modal isOpen={confirmUnfollow} onClose={() => setConfirmUnfollow(false)} labelledBy="user-unfollow-title">
-                <div className="user-profile-modal">
-                    <div className="user-profile-modal-header">
-                        <h2 className="section-title" id="user-unfollow-title">¿Dejar de seguir a {user.username}?</h2>
-                        <p className="user-profile-modal-text">
-                            Su cuenta es privada: dejarás de ver sus canciones favoritas y sus <Rvw>RVWS</Rvw>, y para volver a seguirle tendrás que enviarle otra solicitud.
-                        </p>
-                    </div>
-                    <div className="user-profile-modal-actions">
-                        <Button type="button" variant="text" onClick={() => setConfirmUnfollow(false)}>
-                            Cancelar
-                        </Button>
-                        <Button type="button" variant="danger" onClick={unfollow}>
-                            Dejar de seguir
-                        </Button>
-                    </div>
-                </div>
-            </Modal>
         </div>
     );
 }

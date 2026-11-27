@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import './ProfileStats.css';
 import Rvw from '../Rvw/Rvw';
 
@@ -8,6 +9,9 @@ interface ProfileStatsProps {
     rvws: number;
     followers?: number;
     following?: number;
+    /** Lista de seguidores / seguidos (solo perfiles de usuario; en artistas no se pasa) */
+    followersHref?: string;
+    followingHref?: string;
     className?: string;
 }
 
@@ -20,20 +24,29 @@ const formatCompact = (n: number) => {
     return n.toString().replace('.', ',');
 };
 
-export default function ProfileStats( { minutes, songs, favs, rvws, followers, following, className }: ProfileStatsProps ) {
+/** Seguidores / Siguiendo: con href se puede pulsar para ver la lista */
+function StatItem({ value, label, href }: { value: number; label: string; href?: string }) {
+    const content = (
+        <>
+            <span className="stat-value">{formatCompact(value)}</span>
+            <span className="stat-label">{label}</span>
+        </>
+    );
+    return href ? (
+        <Link href={href} className="stat-item stat-item-link">{content}</Link>
+    ) : (
+        <div className="stat-item">{content}</div>
+    );
+}
+
+export default function ProfileStats( { minutes, songs, favs, rvws, followers, following, followersHref, followingHref, className }: ProfileStatsProps ) {
     return (
         <div className={`stats ${className || ''}`}>
             {followers !== undefined && (
-                <div className="stat-item">
-                    <span className="stat-value">{formatCompact(followers)}</span>
-                    <span className="stat-label">Seguidores</span>
-                </div>
+                <StatItem value={followers} label="Seguidores" href={followersHref} />
             )}
             {following !== undefined && (
-                <div className="stat-item">
-                    <span className="stat-value">{formatCompact(following)}</span>
-                    <span className="stat-label">Siguiendo</span>
-                </div>
+                <StatItem value={following} label="Siguiendo" href={followingHref} />
             )}
             {minutes !== undefined && (
                 <div className="stat-item">

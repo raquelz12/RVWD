@@ -1,0 +1,49 @@
+/* Botón de seguir a un usuario y su confirmación para dejar de seguir una cuenta privada */
+
+/* Mismo ancho en Seguir, Siguiendo y Solicitado, para que lo de al lado no se mueva al pulsar */
+.follow-button {
+  min-width: 12rem;
+}
+
+/* --------------------------CONFIRMAR DEJAR DE SEGUIR--------------------------
+   Mismo aspecto que los modales de confirmación de Ajustes (settings-modal) */
+.follow-button-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+  padding: 1rem;
+}
+
+.follow-button-modal-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  /* Deja sitio a la ✕ del modal */
+  padding-right: 3rem;
+}
+
+/* Un @usuario largo en el título no debe desbordar el modal */
+.follow-button-modal-header .section-title {
+  overflow-wrap: anywhere;
+}
+
+.follow-button-modal-text {
+  margin: 0;
+  font-size: 1.4rem;
+  color: var(--text-secondary);
+}
+
+.follow-button-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  .follow-button-modal-actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+}

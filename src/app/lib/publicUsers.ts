@@ -110,3 +110,67 @@ export const isSessionUser = (slug: string) =>
 /** Se ve todo el perfil si está activo y es público, o es privado y ya le sigues */
 export const canSeeProfile = (user: PublicUser, follow: FollowState = user.follow) =>
     user.status === 'activa' && (user.privacy === 'publica' || follow === 'siguiendo');
+
+/* --------------------------SEGUIDORES Y SEGUIDOS-------------------------- */
+
+/** Lo que se enseña de cada usuario en las listas de seguidores y seguidos */
+export interface FollowListUser {
+    id: string;
+    username: string;
+    name: string;
+    avatarUrl: string;
+    privacy: 'publica' | 'privada';
+    /** Tu relación con este usuario */
+    follow: FollowState;
+    /** Es el usuario de la sesión: sin botón de seguir */
+    isSelf: boolean;
+}
+
+/** Los datos del usuario conectado que salen en las listas. TODO: saldrán de la sesión */
+const SESSION_PROFILE = { id: '1', name: 'Raquel Arnaiz Mínguez', avatarUrl: '/placeholder.png' };
+
+// TODO: vendrá del backend (y paginado). Quién sigue a quién, por @usuario.
+// Coherente con el "follow" de USERS: la sesión sigue a @clarent y @sara.vinilos (@marcos_rvw está solicitado)
+const FOLLOWERS: Record<string, string[]> = {
+    [SESSION_USERNAME]: ['@lucia.music', '@clarent', '@juanp', '@marcos_rvw', '@quevedo.20'],
+    '@lucia.music': ['@clarent', '@sara.vinilos', '@juanp'],
+    '@clarent': [SESSION_USERNAME, '@lucia.music', '@sara.vinilos', '@marcos_rvw', '@juanp', '@resenas.gratis'],
+    '@juanp': ['@lucia.music'],
+    '@marcos_rvw': ['@sara.vinilos'],
+    '@sara.vinilos': [SESSION_USERNAME, '@clarent', '@lucia.music'],
+};
+
+const FOLLOWING: Record<string, string[]> = {
+    [SESSION_USERNAME]: ['@clarent', '@sara.vinilos'],
+    '@lucia.music': [SESSION_USERNAME, '@clarent', '@sara.vinilos', '@juanp'],
+    '@clarent': ['@lucia.music', '@sara.vinilos'],
+    '@juanp': [SESSION_USERNAME, '@lucia.music', '@clarent'],
+    '@marcos_rvw': [SESSION_USERNAME, '@clarent'],
+    '@sara.vinilos': [],
+};
+
+const toListUser = (username: string): FollowListUser | null => {
+    if (username === SESSION_USERNAME) {
+        return { ...SESSION_PROFILE, username, privacy: 'publica', follow: 'no', isSelf: true };
+    }
+    const user = findPublicUser(username);
+    // Las cuentas desactivadas no salen en las listas (como en el buscador)
+    if (!user || user.status !== 'activa') return null;
+    return {
+        id: user.id, username: user.username, name: user.name, avatarUrl: user.avatarUrl,
+        privacy: user.privacy, follow: user.follow, isSelf: false,
+    };
+};
+
+const listOf = (source: Record<string, string[]>, username: string) =>
+    (source[username] ?? []).map(toListUser).filter((u): u is FollowListUser => u !== null);
+
+/** Quién sigue a este usuario */
+export const followersOf = (username: string) => listOf(FOLLOWERS, username);
+
+/** A quién sigue este usuario */
+export const followingOf = (username: string) => listOf(FOLLOWING, username);
+
+/** Enlaces a las listas de seguidores y seguidos de un perfil (el propio, en /profile) */
+export const followersHref = (username: string) => `${userHref(username)}/followers`;
+export const followingHref = (username: string) => `${userHref(username)}/following`;

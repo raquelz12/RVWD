@@ -414,7 +414,13 @@ export default function ProfilePage() {
                             </div>
                         )}
                         {/* Una sola vez: el CSS la pone junto al nombre en escritorio y bajo la bio en móvil */}
-                        <ProfileStats className="profile-info-stats" {...STATS} />
+                        {/* Editando no se enlazan, como las canciones: salir de la página perdería los cambios */}
+                        <ProfileStats
+                            className="profile-info-stats"
+                            {...STATS}
+                            followersHref={isEditing ? undefined : '/profile/followers'}
+                            followingHref={isEditing ? undefined : '/profile/following'}
+                        />
                         <div className="profile-info-bio">
                             {isEditing ? (
                                 <>
