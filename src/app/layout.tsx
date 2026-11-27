@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { Raleway } from "next/font/google";
-import localFont from "next/font/local";
+import { fontClasses } from "./fonts";
 import "./globals.css";
 import Header from "../../components/Header/Header";
 import BottomNav from "../../components/BottomNav/BottomNav";
@@ -8,18 +7,6 @@ import Footer from "../../components/Footer/Footer";
 import GlobalModals from "../../components/GlobalModal";
 import { ModalProvider } from "@/context/ModalContext";
 import RButton from "../../components/RButton/RButton";
-
-const raleway = Raleway({
-  subsets: ["latin"],
-  variable: "--font-raleway",
-  display: "swap",
-});
-
-const antonCustom = localFont({
-  src: "./fonts/AntonReversedR-Regular.ttf",
-  variable: "--font-anton",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: "RVWD",
@@ -30,7 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="es"
-      className={`${raleway.variable} ${antonCustom.variable}`}
+      className={fontClasses}
     >
       <body>
         <ModalProvider>
