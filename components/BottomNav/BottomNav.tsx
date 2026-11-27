@@ -1,25 +1,29 @@
 'use client';
 
 import { useState, useEffect, useId, useRef, Suspense } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import './BottomNav.css';
 import { useModal } from '@/context/ModalContext';
 import NotificationDropdown from '../NotificationDropdown/NotificationDropdown';
-import SearchBar from '../SearchBar/SearchBar';
+import GlobalSearch from '../GlobalSearch/GlobalSearch';
 import BottomNavAdmin from '../BottomNavAdmin/BottomNavAdmin';
 import { isAdminPath } from '@/app/lib/adminNav';
+import { parseSearchQuery } from '@/app/lib/search';
 
 function BottomNavContent() {
     const { openModal } = useModal();
     const pathname = usePathname();
+    const searchParams = useSearchParams();
+    // En /search el buscador se abre con lo buscado
+    const isSearchPage = pathname === '/search';
+    const currentQuery = isSearchPage ? parseSearchQuery(searchParams.get('q')) : '';
 
     // Se guarda la ruta en la que se abrieron las notificaciones: al cambiar de página dejan de coincidir y quedan cerradas
     const [notifOpenOn, setNotifOpenOn] = useState<string | null>(null);
     const isNotifOpen = notifOpenOn !== null && notifOpenOn === pathname;
     const setIsNotifOpen = (open: boolean) => setNotifOpenOn(open ? pathname : null);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
-    const [searchQuery, setSearchQuery] = useState('');
     const navRef = useRef<HTMLElement>(null);
     const searchPanelRef = useRef<HTMLDivElement>(null);
     const notifButtonRef = useRef<HTMLButtonElement>(null);
@@ -104,12 +108,13 @@ function BottomNavContent() {
             se colocaría respecto a la barra y no respecto a la pantalla */}
         {isSearchOpen && (
             <div className="bottom-search-panel" ref={searchPanelRef}>
-                <SearchBar
-                    placeholder="Busca canciones, usuarios, ..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                {/* onNavigate: buscando desde /search la ruta no cambia, así que se cierra a mano */}
+                <GlobalSearch
+                    direction="up"
+                    initialQuery={currentQuery}
                     autoFocus
-                    className="bottom-search-bar"
+                    barClassName="bottom-search-bar"
+                    onNavigate={() => setIsSearchOpen(false)}
                 />
             </div>
         )}
@@ -124,7 +129,7 @@ function BottomNavContent() {
             </Link>
             <button
                 type="button"
-                className={`bottom-item bottom-search-btn ${isSearchOpen ? 'active' : ''}`}
+                className={`bottom-item bottom-search-btn ${isSearchOpen || isSearchPage ? 'active' : ''}`}
                 onClick={toggleSearch}
                 aria-label={isSearchOpen ? 'Cerrar búsqueda' : 'Buscar'}
                 aria-expanded={isSearchOpen}

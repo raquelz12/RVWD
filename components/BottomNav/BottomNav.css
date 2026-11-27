@@ -126,6 +126,7 @@
   animation: bottomSearchIn 0.2s ease-out;
 }
 
+.bottom-search-panel .global-search,
 .bottom-search-bar {
   max-width: none;
 }

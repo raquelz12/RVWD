@@ -2,7 +2,7 @@
 
 import './page.css';
 import MediaCard from '../../components/MediaCard/MediaCard';
-import SearchBar from '../../components/SearchBar/SearchBar';
+import GlobalSearch from '../../components/GlobalSearch/GlobalSearch';
 import Button from '../../components/Button/Button';
 import { useModal } from '@/context/ModalContext';
 import Carousel from '../../components/Carousel/Carousel';
@@ -58,7 +58,7 @@ export default function Home() {
       </div>
       <div className="search">
         <p className="search-title">Busca canciones, artistas, álbumes...</p>
-        <SearchBar placeholder="Buscar..." value="" onChange={(): void => {}} />
+        <GlobalSearch placeholder="Buscar..." label="Buscar en la portada" />
       </div>
       <div className="info-wrapper">
         <h2 className="info-title section-title">¿Qué puedes hacer en <Rvw>RVWD</Rvw>?</h2>

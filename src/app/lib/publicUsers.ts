@@ -79,6 +79,9 @@ const USERS: PublicUser[] = [
     },
 ];
 
+/** Todos los perfiles (para el buscador) */
+export const listPublicUsers = (): readonly PublicUser[] => USERS;
+
 /** El trozo de la URL tal cual o, si viene codificado (%40...), descodificado */
 export const slugFromParam = (raw: string) => {
     try {

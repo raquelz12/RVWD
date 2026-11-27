@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import './SearchResults.css';
 
 export interface SearchResultItem {
@@ -14,11 +15,13 @@ interface SearchResultsProps {
     /** Texto si no hay resultados */
     notFound: string;
     className?: string;
+    /** Debajo de los resultados (p. ej. "Ver todos los resultados" del buscador de la web) */
+    footer?: ReactNode;
 }
 
-/* Desplegable de resultados de un buscador (modal de crear RVW, onboarding y perfil).
+/* Desplegable de resultados de un buscador (modal de crear RVW, onboarding, perfil y buscador de la web).
    Cada resultado es un botón en una lista, para poder elegirlo con teclado */
-export default function SearchResults({ items, notFound, className = '' }: SearchResultsProps) {
+export default function SearchResults({ items, notFound, className = '', footer }: SearchResultsProps) {
     return (
         <div className={`search-dropdown-results ${className}`.trim()}>
             {items.length > 0 ? (
@@ -43,6 +46,7 @@ export default function SearchResults({ items, notFound, className = '' }: Searc
             ) : (
                 <p className="search-no-results">{notFound}</p>
             )}
+            {footer}
         </div>
     );
 }

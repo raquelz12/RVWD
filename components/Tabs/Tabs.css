@@ -1,0 +1,57 @@
+/* Pestañas (feed y resultados de búsqueda) */
+.tab-nav {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: left;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    border-bottom: 0.1rem solid color-mix(in srgb, var(--primary-white) 30%, transparent);
+}
+
+.tab-nav-link {
+    display: flex;
+    flex-direction: row;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    /* El borde de la activa tapa la línea gris del contenedor en vez de quedar encima */
+    margin-bottom: -0.1rem;
+    border-bottom: 0.2rem solid transparent;
+    transition: all 0.3s ease;
+    color: var(--primary-white);
+    text-decoration: none;
+    font-family: inherit;
+    font-size: 2rem;
+    white-space: nowrap;
+}
+
+.tab-nav-link:hover {
+    transform: translateY(-0.2rem);
+}
+
+.tab-nav-link.active {
+    color: var(--primary-red);
+    font-weight: 600;
+    border-bottom-color: var(--primary-red);
+}
+
+.tab-nav-link:focus-visible {
+    outline: 2px solid var(--primary-white);
+    outline-offset: -2px;
+}
+
+/* Móvil: si no caben todas, se deslizan en horizontal en vez de desbordar la página
+   (sin el saltito al pasar por encima, que con el scroll se cortaría) */
+@media (max-width: 768px) {
+    .tab-nav {
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+
+    .tab-nav-link:hover {
+        transform: none;
+    }
+}
